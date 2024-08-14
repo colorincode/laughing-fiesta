@@ -1,20 +1,20 @@
 //** navigation wrapper and all children here only**//
 @font-face {
     font-family: "Manrope";
-    src: url('../assets/fonts/Manrope-VariableFont_wght.ttf');
+    src: url('../../assets/fonts/Manrope-VariableFont_wght.ttf');
 }
 .hidden {
     visibility: hidden;
     opacity: 0;
-    transform: translateY(20px);
-    transition: all 1s ease-in-out;
+    // transform: translateY(20px);
+    // transition: all 1s ease-in-out;
 }
 .visible{
     visibility: visible;
     opacity: 1;
-    transform: translateY(0);
-    -webkit-animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
-    animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
+    // transform: translateY(0);
+    // -webkit-animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
+    // animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
 }
 .fade-in-top {
 	-webkit-animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) both;
@@ -62,6 +62,7 @@ ul.sidenav__text>li>a {
     position: absolute;
     z-index: 79;
     cursor: pointer;
+    transform: translateY(-50px);
 }
 .xmark--closer {
     color: #fff;
@@ -111,7 +112,7 @@ ul.sidenav__text>li>a {
         margin: 0;
         margin-top: auto;
         font-size: 1.25rem;
-        text-align: center;
+        text-align: left;
         padding: 20px;
     }
 }
@@ -148,28 +149,6 @@ ul.sidenav__text>li>a {
 }
 
 
-.sublink__text {
-    font-weight: 100;
-    font-size: 0.875em;
-    position: relative;
-}
-
-.sublink__listitem {
-    border-bottom:none;
-}
-
-
-.sidenav__socialiconlist>ul {
-    list-style: none;
-}
-
-
-
-.sidenav_socialiconlist a {
-    text-decoration: none;
-    color: #fff;
-}
-
 .sidenav__desktop {
     display: flex;
     height: 100%;
@@ -177,28 +156,9 @@ ul.sidenav__text>li>a {
     font-family: "Manrope", sans-serif;
     font-weight: 900;
     font-size: 1.5rem;
-    color: black;
+    color: black; //why
 }
 
-// .mm-menu > .mm-panel {
-//     background: inherit;
-//     -webkit-overflow-scrolling: touch;
-//     overflow: scroll;
-//     overflow-x: hidden;
-//     overflow-y: auto;
-//     box-sizing: border-box;
-//     padding: 20px;
-//     -webkit-transform: translateX(100%);
-//     transform: translateX(100%);
-// }
-// .mm-menu, .mm-menu > .mm-panel {
-//     width: 100%;
-//     height: 100%;
-//     position: absolute;
-//     left: 0;
-//     top: 0;
-//     z-index: 0;
-// }
 .navigation {
     -webkit-font-smoothing: antialiased;
     font-family: "Manrope", sans-serif;
@@ -211,26 +171,31 @@ ul.sidenav__text>li>a {
     z-index: 998;
     bottom: 0;
     right: 0;
-    transform: translateY(50%);
-    transition: all 0.9s ease-in-out;
+    transform: translateY(5%);
+    // transition: all 0.9s ease-in-out;
     display: flex;
     height: 100vh;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.76);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
-    animation: fade-in-top 0.7s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
+    // animation: fade-in-top 0.7s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
 }
-
+.toggle-wrapper {
+    position: fixed; 
+    top: 10px;
+    right: 10px; 
+    z-index: 1000;
+}
 // start toggle button
 .navigation .toggle-wrapper {
     border-left: none;
     height: 52px;
-    width: 51px;
+    width: 60px;
     pointer-events: all;
     overflow: hidden;
     position: absolute;
-    top: -2px;
+    top: -30px;
     left: calc(0px - 75px);
     background: transparent;
     backdrop-filter: blur(18px);
@@ -248,13 +213,13 @@ ul.sidenav__text>li>a {
     position: absolute;
     top: 0;
     left: 0;
-    transition: all 0.25s ease;
+    // transition: all 0.25s ease;
     text-transform: uppercase;
 }
 
 .navigation .toggle-wrapper .show {
-    left: -50px;
-
+    // left: -70px;
+    // transform: translateY(-77px);
 }
 .navigation .toggle-wrapper .hide {
     // transform: translateX(98px);
@@ -263,10 +228,10 @@ ul.sidenav__text>li>a {
     position: absolute;
     top:0;
     right:0;
-    transition: all 0.25s ease;
+    // transition: all 0.25s ease;
     // border: 1px solid red;
     // -webkit-animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) backwards;
-    animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) backwards;
+    // animation: fade-in-top 0.6s cubic-bezier(0.445, 0.050, 0.550, 0.950) backwards;
 }
 
 
@@ -309,7 +274,7 @@ ul.sidenav__text>li>a {
     left: 100%;
     bottom: 0;
     left: 0;
-    transition: top 0.25s, top 0.25s;
+    // transition: top 0.25s, top 0.25s;
     opacity: 0.5;
     z-index: -1;
 }
@@ -335,21 +300,21 @@ ul.sidenav__text>li>a {
     z-index: 1;
 }
 
-.navigation .has-menu::after {
-    content: '\027A4';
-    padding: 15px 0;
-    height: 50px;
-    width: 50px;
-    line-height: 20px;
-    text-align: center;
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    transform: rotate(90deg);
-    transition: transform 0.25s;
-}
+// .navigation .has-menu::after {
+//     content: '\027A4';
+//     padding: 15px 0;
+//     height: 50px;
+//     width: 50px;
+//     line-height: 20px;
+//     text-align: center;
+//     cursor: pointer;
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     z-index: 1;
+//     transform: rotate(90deg);
+//     transition: transform 0.25s;
+// }
 
 .navigation .has-menu>.menu {
     overflow: hidden;
@@ -385,7 +350,7 @@ ul.sidenav__text>li>a {
 }
 
 .navigation .has-menu:not(.open)::after {
-    transform: rotate(-90deg);
+    // transform: rotate(-90deg);
 }
 
 .navigation .has-menu:not(.open)>.menu {
@@ -441,29 +406,3 @@ ul.sidenav__text {
     color: #fff;
 }
 
-
- @-webkit-keyframes fade-in-top {
-    0% {
-      -webkit-transform: translateY(-50px);
-              transform: translateY(-50px);
-      opacity: 0;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-              transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  @keyframes fade-in-top {
-    0% {
-      -webkit-transform: translateY(-50px);
-              transform: translateY(-50px);
-      opacity: 0;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-              transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  

@@ -70,15 +70,17 @@
         "typescript": "^5.3.3"
     },
     "dependencies": {
-        "@awesome.me/kit-e56bb8c3d5": "^1.0.6",
+        "@awesome.me/kit-41423f075f": "latest",
         "@fortawesome/fontawesome-pro": "^6.6.0",
         "@parcel/transformer-image": "^2.12.0",
         "cjs-loader": "^0.1.0",
         "glob": "^10.3.10",
+        "gsap": "^3.12.5",
         "hsl-to-hex": "^1.0.0",
         "http-proxy-middleware": "^3.0.0",
-        "jquery": "^3.7.0",
+        "lenis": "^1.1.9",
         "posthtml": "^0.16.6",
+        "video.js": "^8.17.2",
         "yarn": "^1.22.21"
     }
 }

@@ -1,5 +1,5 @@
 //partials
-// @forward './_navbar.scss';
+@forward './_navbar.scss';
 // @forward './_animations.scss';
 @forward './_mixins.scss';
 @forward './_colors.scss';
@@ -8,3 +8,6 @@
 //modules 
 // @forward './loaders.scss';
 // @forward './splide.module.scss';
+@forward '../../node_modules/@awesome.me/kit-41423f075f/icons/scss/fontawesome.scss';
+// @forward '../../node_modules/@awesome.me/kit-41423f075f/icons/scss/_duotone-icons.scss';
+// @forward '../../node_modules/@awesome.me/kit-41423f075f/icons/scss/_sharp-duotone-icons.scss';
