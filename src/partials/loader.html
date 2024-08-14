@@ -1,0 +1,188 @@
+<style>
+ 
+   #site-loader{
+        margin:0;
+        padding:0;
+        /* height:100%; */
+        background: #000;
+        background-size:cover; 
+        font-family: 'Manrope', sans-serif;
+        /* display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center; */
+    }
+
+    .loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: white;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 1;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-transition: opacity .6s cubic-bezier(.165,.84,.44,1) .2s;
+    transition: opacity .6s cubic-bezier(.165,.84,.44,1) .2s;
+}
+
+.loader-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    opacity: 1;
+    z-index: 1;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    -webkit-transition: opacity .4s cubic-bezier(.25,.46,.45,.94);
+    transition: opacity .4s cubic-bezier(.25,.46,.45,.94);
+}
+
+.loader-text {
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1;
+    text-align: center;
+    color: black;
+    font-size: .8333333333rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+}
+
+.loader-bar {
+    margin-top: 18px;
+    width: 95%;
+    background-color: #ccc;
+    height: 1px;
+}
+
+.loader-progress {
+    height: 100%;
+    width: 100%;
+    display: block;
+    background-color: black;
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+    -webkit-transition: -webkit-transform .4s cubic-bezier(.19,1,.22,1);
+    transition: -webkit-transform .4s cubic-bezier(.19,1,.22,1);
+    transition: transform .4s cubic-bezier(.19,1,.22,1);
+    transition: transform .4s cubic-bezier(.19,1,.22,1),-webkit-transform .4s cubic-bezier(.19,1,.22,1);
+}
+    .mr--bloberton__wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+    .mr--bloberton {
+        /* fill: linear-gradient(to right, red, blue); */
+        position: relative;
+        width: 500px;
+        height: 500px;
+        z-index: 1;
+        opacity: .5;
+    }
+    .mr--texterton__wrapper {
+        font-family: "Manrope";
+        position: absolute;
+        display: grid;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    .mr--texterton {
+        align-self: center;
+        justify-self: center;
+        font-size: 40px;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 900;
+    }
+    .logo-svg {
+        width: 47px;
+        transform: translateY(6px);
+    }
+    .stop {
+        animation: colors 12s infinite;
+    }
+    @keyframes colors {
+15% {
+stop-color: #3f7d9c;
+}
+30% {
+stop-color: #00e9d2;
+}
+45% {
+stop-color: teal;
+}
+60% {
+stop-color: rgb(40, 76, 111);
+}
+75% {
+stop-color: rgb(15, 89, 103);
+}
+90% {
+stop-color: rgb(0, 128, 94);
+}
+}
+</style>
+<section id="site-loader" class="loader">
+<div class="mr--texterton__wrapper loader-wrapper loader-overlay u-absolute u-pos-tl u-fit">
+    <svg 
+                class="loading--smile--svg"
+                version="1.1" 
+                id="Layer_1"  
+                x="0px" y="0px" 
+                viewBox="0 0 742.57 682.01" 
+                style="enable-background:new 0 0 742.57 682.01; mix-blend-mode: difference;" 
+                xml:space="preserve"
+                >
+                <style type="text/css">
+                    .st0{fill: #FFFFFF;}
+                </style>
+                <rect class="st0" x="343.54" y="295.61" width="135.43" height="77.28"/> <!-- nose -->
+                <polygon class="st0" points="303.85,129.41 234.08,151.01 234.64,77.28 168.47,77.28 168.47,151.05 98.58,129.41 77.28,187.78 147.86,208.9 102.97,267.1 155.66,304.35 201.51,242.84 247.37,304.35 300.11,267.06 254.67,208.87 325.16,187.78 " />
+                <path class="st0" d="M575.83,68.3l-3.37-4.54h-75.12l8.9,16.56c31.47,58.59,67.6,140.26,67.6,252.75c0,113.91-34.17,192.88-67.6,255.11l-8.9,16.56h75.12l3.37-4.54c46.2-62.22,79.62-154.59,79.62-267.13C655.45,223.66,621.37,129.63,575.83,68.3z" /> <!-- mouth -->
+                <polygon class="st0" points="239.9 434.7 239.9 405.5 217.5 405.5 188.4 405.5 162.6 405.5 162.6 433.9 162.6 459.9 162.6 487.9 162.6 522.1 162.6 563.4 201.2 564.1 239.9 563.9 239.9 535.2 239.9 499.8 239.9 458.1 239.9 434.7" />
+            </svg>
+
+    
+</div>
+
+<div class="mr--bloberton__wrapper">
+    <svg 
+        class="mr--bloberton"
+        preserveAspectRatio="xMinYMin meet" 
+        viewBox="-100 -100 200 200"
+        >
+        <defs>
+            <linearGradient id="mrGradienterton">
+                <stop offset="5%" stop-color="#0093E9" class="stop" />
+                <stop offset="95%" stop-color="#124E8A" class="stop" />
+            </linearGradient>
+        </defs>
+        <path d="" fill="url(#mrGradienterton)">
+            <animate 
+                attributeName="d" 
+                dur="6s" 
+                repeatCount="1000" 
+                values="
+                M44.7,-78.1C58.4,-69.5,70.1,-58.4,75.1,-45C80.1,-31.5,78.3,-15.8,76.7,-0.9C75.1,13.9,73.7,27.8,66.9,38.2C60.2,48.7,48.2,55.6,36.1,59.9C24.1,64.2,12.1,65.7,-0.9,67.2C-13.8,68.6,-27.5,70.1,-39.5,65.8C-51.5,61.5,-61.7,51.5,-67.9,39.6C-74.1,27.7,-76.3,13.8,-72.3,2.3C-68.3,-9.2,-58,-18.4,-51.4,-29.5C-44.7,-40.6,-41.6,-53.7,-33.7,-65.6C-25.7,-77.5,-12.8,-88.2,1.3,-90.5C15.5,-92.8,31,-86.7,44.7,-78.1Z;
+                
+                M35.9,-59.6C49.5,-54.4,65.5,-50.7,69.1,-41.1C72.6,-31.4,63.6,-15.7,64.4,0.5C65.2,16.6,75.8,33.3,72.4,43.2C69,53.1,51.7,56.2,37.3,60.8C22.9,65.3,11.4,71.2,-0.7,72.4C-12.8,73.6,-25.7,70.2,-35.2,62.8C-44.6,55.5,-50.7,44.1,-56.9,33C-63.1,21.9,-69.4,10.9,-73.1,-2.2C-76.9,-15.3,-78.2,-30.6,-73.9,-45C-69.6,-59.4,-59.8,-73,-46.6,-78.4C-33.3,-83.9,-16.7,-81.2,-2.8,-76.4C11.2,-71.6,22.3,-64.8,35.9,-59.6Z;
+
+                M32.2,-50.1C46,-47.9,64.2,-47.7,73.8,-39.7C83.4,-31.7,84.5,-15.9,82,-1.4C79.5,13,73.4,25.9,63.5,33.5C53.7,41.1,40,43.4,28.8,51.7C17.6,59.9,8.8,74.2,-0.3,74.7C-9.4,75.3,-18.9,62.1,-29.1,53.3C-39.3,44.5,-50.3,39.9,-60.6,31.8C-71,23.6,-80.6,11.8,-79.1,0.9C-77.6,-10.1,-64.9,-20.1,-56.5,-31.5C-48,-42.9,-43.7,-55.6,-35,-60.7C-26.3,-65.8,-13.1,-63.2,-2,-59.8C9.2,-56.5,18.5,-52.2,32.2,-50.1Z;
+
+                M44.7,-78.1C58.4,-69.5,70.1,-58.4,75.1,-45C80.1,-31.5,78.3,-15.8,76.7,-0.9C75.1,13.9,73.7,27.8,66.9,38.2C60.2,48.7,48.2,55.6,36.1,59.9C24.1,64.2,12.1,65.7,-0.9,67.2C-13.8,68.6,-27.5,70.1,-39.5,65.8C-51.5,61.5,-61.7,51.5,-67.9,39.6C-74.1,27.7,-76.3,13.8,-72.3,2.3C-68.3,-9.2,-58,-18.4,-51.4,-29.5C-44.7,-40.6,-41.6,-53.7,-33.7,-65.6C-25.7,-77.5,-12.8,-88.2,1.3,-90.5C15.5,-92.8,31,-86.7,44.7,-78.1Z;
+                ">
+            </animate>
+        </path>
+    </svg>
+</div>
+<!-- <div class="loader-overlay u-absolute u-pos-tl u-fit"></div> -->
+</section>

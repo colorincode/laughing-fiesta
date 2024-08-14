@@ -1,0 +1,84 @@
+{
+    "name": "colorincode-devsite",
+    "browserslist": "> 0.5%, last 2 versions, not dead",
+    "version": "1.0.8",
+    "source": "src/*.html",
+    "web": "dist/index.html",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "@parcel/transformer-css": {
+        "drafts": {
+            "nesting": true
+        },
+        "cssModules": {
+            "dashedIdents": true,
+            "cssModules": true
+        }
+    },
+    "targets": {
+        "web": {
+            "context": "browser",
+            "publicUrl": "./"
+        },
+        "production": {
+            "distDir": "./production/"
+        }
+    },
+    "scripts": {
+        "build": "parcel build './src/*.html' --target web --no-optimize --no-source-maps",
+        "test": "yarn build src/index.html --reporter @parcel/reporter-bundle-analyzer r @parcel/reporter-bundle-buddy",
+        "start": "parcel --open --no-cache ./src/index.html --target web --no-source-maps",
+        "clear-cache": "rimraf --glob .parcel-cache/*",
+        "clear-dist": "rimraf --glob dist/*",
+        "remove-maps": "rimraf --glob dist/**/*.*.map",
+        "clean": "npm run clear-dist && npm run clear-cache",
+        "format": "prettier --write 'dist/**/*' --no-error-on-unmatched-pattern",
+        "production": "parcel build './src/*.html' --target production --no-cache --no-source-maps --no-content-hash"
+    },
+    "devDependencies": {
+        "@parcel/bundler-library": "^2.11.1-canary.3149",
+        "@parcel/compressor-gzip": "^2.12.0",
+        "@parcel/diagnostic": "2.12.0",
+        "@parcel/reporter-bundle-analyzer": "^2.12.0",
+        "@parcel/reporter-bundle-buddy": "^2.12.0",
+        "@parcel/reporter-cli": "^2.12.0",
+        "@parcel/resolver-glob": "^2.12.0",
+        "@parcel/transformer-glsl": "^2.12.0",
+        "@parcel/transformer-pug": "^2.12.0",
+        "@parcel/transformer-sass": "^2.12.0",
+        "@parcel/utils": "^2.12.0",
+        "@swc/helpers": "^0.5.3",
+        "@types/node": "^20.14.10",
+        "parcel": "latest",
+        "parcel-transformer-bypass": "^1.0.0",
+        "parcel-transformer-ejs": "^1.0.1",
+        "postcss": "^8.4.32",
+        "postcss-custom-properties": "^13.2.1",
+        "postcss-import": "^16.1.0",
+        "postcss-modules": "^6.0.0",
+        "postcss-nested": "^6.0.1",
+        "postcss-preset-env": "^9.3.0",
+        "postcss-url": "^10.1.3",
+        "posthtml-doctype": "^1.1.1",
+        "posthtml-include": "^2.0.1",
+        "prettier": "3.3.2",
+        "process": "^0.11.10",
+        "querystring-es3": "^0.2.1",
+        "rimraf": "^6.0.1",
+        "sharp": "^0.32.4",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "@awesome.me/kit-e56bb8c3d5": "^1.0.6",
+        "@fortawesome/fontawesome-pro": "^6.6.0",
+        "@parcel/transformer-image": "^2.12.0",
+        "cjs-loader": "^0.1.0",
+        "glob": "^10.3.10",
+        "hsl-to-hex": "^1.0.0",
+        "http-proxy-middleware": "^3.0.0",
+        "jquery": "^3.7.0",
+        "posthtml": "^0.16.6",
+        "yarn": "^1.22.21"
+    }
+}

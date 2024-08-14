@@ -1,0 +1,97 @@
+// this stylesheet isnt for editing, edit the custom player rather than this, default styles only. 
+    .container {max-width:700px; margin: 0 auto;}
+    .video-js {
+        width: auto ; 
+        height: auto ;
+    }
+
+    .video-js video {position: relative ;}
+    .video-js video {height: auto }
+
+//firefox
+   .video-js:-moz-full-screen {
+    position: absolute;
+  }
+  body.vjs-full-window {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+  .video-js.vjs-fullscreen {
+    position: fixed;
+    overflow: hidden;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 100% ;
+    height: 100% ;
+  }
+  .video-js:-webkit-full-screen {
+    width: 100% ;
+    height: 100% ;
+  }
+  .video-js.vjs-fullscreen.vjs-user-inactive {
+    cursor: none;
+  }
+  /* Poster Styles */
+  .vjs-poster {
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: contain;
+    cursor: pointer;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
+  }
+  .vjs-poster img {
+    display: block;
+    margin: 0 auto;
+    max-height: 100%;
+    padding: 0;
+    width: 100%;
+  }
+  /* Hide the poster when native controls are used otherwise it covers them */
+  .video-js.vjs-using-native-controls .vjs-poster {
+    display: none;
+  }
+  /* Text Track Styles */
+  /* Overall track holder for both captions and subtitles */
+  .video-js .vjs-text-track-display {
+    text-align: center;
+    position: absolute;
+    bottom: 4em;
+    /* Leave padding on left and right */
+    left: 1em;
+    right: 1em;
+  }
+
+  .video-js .vjs-text-track {
+    display: none;
+    font-size: 1.4em;
+    text-align: center;
+    margin-bottom: 0.1em;
+    background-color: #000000;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .video-js .vjs-subtitles {
+    color: #ffffff;
+  }
+  .video-js .vjs-captions {
+    color: #ffcc66;
+  }
+  .vjs-tt-cue {
+    display: block;
+  }
+
+  .vjs-default-skin .vjs-hidden {
+    display: none;
+  }
+  .vjs-lock-showing {
+    display: block ;
+    opacity: 1;
+    visibility: visible;
+  }

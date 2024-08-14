@@ -1,0 +1,26 @@
+# DEPENDENCIES
+node_modules/
+assets/
+working-files/
+package-lock.json
+yarn.lock
+.npmrc
+
+# ENV FILES
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.codesandbox
+.vscode
+# MAC
+._*
+.DS_Store
+Thumbs.db
+# local files
+working-files/
+# build and cache files
+dist/
+.vscode/
+.parcel-cache/
