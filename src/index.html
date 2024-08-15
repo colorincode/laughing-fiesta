@@ -5,73 +5,40 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Boilerplate</title>
+    <link rel="stylesheet" href="./scss/testgrid.scss" />
+
     <link rel="stylesheet" href="./scss/style.scss" />
     <script type="module" src="./ts/app.ts"></script>
     <script src="https://kit.fontawesome.com/41423f075f.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body class="outer__wrapper">
 <!-- begin header inject -->
 <include src="./header.html" ></include>
 <!-- end header inject -->
-<section id="trigger">
-	<div class="spin"></div>
-	<div class="grow"></div>
-</section>
-    <!-- lead section-->
-    <section>
-        <main>We are ready to fork.</main>
-        <aside></aside>
-    </section>
-    <!-- resource section-->
-    <section>
-        <button></button>
-        <button></button>
-        <div></div>
-        <span></span>
-        <!--code denotation--><code></code>
-        <address></address>
-        <audio></audio>
-        <video></video>
-        <picture>
-            <img src="#" srcset="#">
-        </picture>
-    </section>
-    <!-- lists section-->
-    <section>
-        <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-        <ol>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ol>
-    </section>
-    <!-- radio section-->
-    <section>
-        <form>
-            <input required="#">
-            <input>
-            <textarea></textarea>
-            <textarea></textarea>
-            <textarea></textarea>
-            <button data-button=""></button>
-        </form>
-    </section>
-    <!-- footer section-->
-    <footer>
-        <!--fa icons will go here-->
-        <img src="#">
-        <!--placeholder only-->
-        <p> &copy; Copyright $year 2023 | Color In Code </p>
-    </footer>
+
+<div class="homegrid__container">
+
+      <div class="grid__item item-1">   
+            <figure class="video--figure first pos-1">
+                &nbsp;
+            </figure>
+        </div>
+
+      <div class="grid__item item-2">2 (click me)</div>
+      <div class="grid__item item-3">3 (click me)</div>
+      <div class="grid__item item-4">4 (click me)</div>
+      <div class="grid__item item-5">5 (click me)</div>
+      <div class="grid__item item-6">6 (click me)</div>
+      <div class="grid__item item-7">7 (click me)</div>
+      <div class="grid__item item-8">8 (click me)</div>
+      <div class="grid__item item-9">9 (click me)</div>
+
+  </div>
+  <div class="section">
+    this should remain fixed
+  </div>
+
 </body>
 
 </html>

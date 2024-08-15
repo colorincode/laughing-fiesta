@@ -1,37 +1,60 @@
 @use './helpers.scss' as *;
 
-* {
-    margin: 0;
-    padding: 0;
-  }
+
+  // .grid1 {
+  //   display: grid;
+  //   grid-template-columns: repeat(7, 1fr);
+  //   gap: 2px;
+  //   width: 30%;
+    
+  //   .item {
+  //     color: #fff;
+  //     grid-column: span 2;
+  //     aspect-ratio:1;
+      
+  //     &:nth-child(4) {
+  //       grid-column: 2 / span 2; 
+  //     }
+      
+  //     &.item-1 {
+  //       background-color: blue;
+  //     }
   
-  body {
-    background-color: #000;
-    color: #333;
-    font-size: 1.1em;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
+  //     &.item-2 {
+  //       background-color: pink;
+  //     }
   
- .homegrid__container {
-    margin: 40px 0;
-    max-width: 1200px;
-    display: grid;
-    grid-template-columns: 275px 175px 175px 175px 175px 175px  ;
-    grid-gap: 0.5em 0.5em;
-  }
-  .grid-item1 {
-    margin-top: unset;
-  }
-  .grid__item:nth-child(2n+1),
-  .grid__item:nth-child(5n) {
-    align-self: start;
-  } 
-  .grid__item:nth-child(3n+2),
-  .grid__item:nth-child(2n) {
-    align-self: center;
-  } 
-  .grid__item:nth-child(5n+3),
-  .grid__item:nth-child(3n) {
-    align-self: end;
-  } 
+  //     &.item-3 {
+  //       background-color: green;
+  //     }
   
+  //     &.item-4 {
+  //       background-color: violet;
+  //     }
+  
+  //     &.item-5 {
+  //       background-color: brown;
+  //     }
+      
+  //     &.item-6 {
+  //       background-color: yellow;
+  //     }
+  
+  //     &.item-7 {
+  //       background-color: gray;
+  //     }
+      
+  //     &.item-8 {
+  //       background-color: yellowgreen;
+  //     }
+      
+  //     &.item-9 {
+  //       background-color: orange;
+  //     }
+  //   }
+  // }
+  
+  // .section{
+  //   height: 100vh;
+  //   background-color: red;
+  // }

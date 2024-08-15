@@ -11,64 +11,63 @@ gsap.registerPlugin(EasePack);
 import "./shared/header";
 import {Navigation, AnimationHandler} from "./shared/nav";
 import {scrollEvent} from "./scrollhandler";
+import { listenForFlip, killFlip, initSize} from "./grid";
+import {EventDispatcher} from "./shared/eventdispatch";
 
 const navigation = new Navigation();
 const animationHandler = new AnimationHandler();
-const scroll = new scrollEvent();
-
-
-// event listeners
-// listen for nav 
-const loaded = () => {
-    document.addEventListener("DOMContentLoaded", () => {
-        navigation.setupNavigationEvents();
-       
-
-    })
-}
-const click = () => {
-    document.addEventListener("click", () => {
-        console.log("click fired from app")
-        animationHandler.setupGSAPtl();
-        // if (navigation.isClassActive("open")) {
-        //     animationHandler.setupGSAPtl() 
-        //     .to(navigation, {
-        //         duration: 1.5,
-        //         ease: "Power4.out",
-        //         y: 0
-        //       }).to(".navigation", {
-        //         opacity: 1,
-        //         y: 0,
-        //         duration: 3,
-        //         stagger: {
-        //           // wrap advanced options in an object
-        //           each: 0.2,
-        //           ease: "Power4.in"
-        //         }
-        //       })
-        //       .reverse();;
-        //     console.log("open detected, click fired");
-        // }
-        // else {
-        //     animationHandler.setupGSAPtl().pause();
-        //     // console.log("closed detected, click fired");
-        // }
-
-
-})
-
-}
+// const scroll = new scrollEvent();
 
 
 
-document.addEventListener("change", function () {
-	if (scroll.isScrolling) {
-		let allTriggers = ScrollTrigger.getAll();
-		allTriggers.forEach((trigger) => {
-			trigger.kill(true);
-		});
-	} else {
-		scroll.createTimelines();
-	}
-});
-document.addEventListener("click", click);
+const eventDispatcher = new EventDispatcher();
+const onClick = () => {
+    // console.log("click fired from app");
+    animationHandler.setupGSAPtl();
+    navigation.checkforAnimation();
+    listenForFlip();
+    if (navigation.isClassActive('is-animating')) {
+        killFlip();
+    }
+ 
+    // shuffle();
+};
+const onDOMContentLoaded = () => {
+    navigation.setupNavigationEvents();
+    initSize();
+    listenForFlip();
+    // shuffle();
+};
+// const killFlip = () => {
+
+// };
+
+
+// use the dispatcher, this should not need editing 
+eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
+eventDispatcher.addEventListener("click", onClick);
+// eventDispatcher.addEventListener("click",shuffleGridBack);
+
+// Later, if you need to remove specific event listeners
+// eventDispatcher.removeEventListener("DOMContentLoaded", onDOMContentLoaded);
+// eventDispatcher.removeEventListener("click", onClick);
+
+// Or dispose of all event listeners when they are no longer needed
+// eventDispatcher.dispose();
+// const loaded = () => {
+//     document.addEventListener("DOMContentLoaded", () => {
+//         navigation.setupNavigationEvents();
+//         shuffle();  
+
+
+//     })
+// }
+
+
+// document.addEventListener("click", () => {
+//     console.log("click fired from app");
+//     animationHandler.setupGSAPtl();
+
+//     listenForFlip ();
+//     shuffle();
+// });
