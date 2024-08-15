@@ -20,7 +20,7 @@ export class Navigation {
       const hideButton = document.querySelector('.navigation .toggle-wrapper .hide');
       const xMarkSpan = document.querySelector('.xmark--closer__span');
       const navigation = document.querySelector('.navigation');
-      console.log('Setting up event listeners');
+    //   console.log('Setting up event listeners');
 
       showButton?.addEventListener('click', (e) => {
         // console.log('Show button clicked');
@@ -88,8 +88,8 @@ export class Navigation {
     }
   
     logWindowSize(): void {
-      console.log("Window width: ", window.innerWidth, "px");
-      console.log("Window height: ", window.innerHeight, "px");
+    //   console.log("Window width: ", window.innerWidth, "px");
+    //   console.log("Window height: ", window.innerHeight, "px");
     }
 
 

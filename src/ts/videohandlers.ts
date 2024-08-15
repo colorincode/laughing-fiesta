@@ -1,28 +1,73 @@
-// //gsap modules
-// import gsap, { SteppedEase, toArray } from 'gsap'
-// import { Flip } from 'gsap/Flip';
-// import Draggable from 'gsap/Draggable';
-// import ScrollTrigger from 'gsap/ScrollTrigger';
-// import ScrollToPlugin from 'gsap/ScrollToPlugin';
-// import EasePack from 'gsap/EasePack';
-// import { Power4 } from 'gsap/gsap-core';
-// import Observer from 'gsap/Observer';
-// import Timeline from 'gsap/all';
-// import  Tween  from 'gsap/src/all';
 
-// //register gsap
-// gsap.registerPlugin(EasePack);
-// gsap.registerPlugin(Tween);
-// gsap.registerPlugin(SteppedEase);
-// gsap.registerPlugin(Timeline);
-// gsap.registerPlugin(Power4);
-// gsap.registerPlugin(Flip);
-// gsap.registerPlugin(Draggable);
-// gsap.registerPlugin(ScrollTrigger);
-// gsap.registerPlugin(Observer);
-// gsap.registerPlugin(ScrollToPlugin);
+import videojs from 'video.js';
 
-import * as gsap from './vendors/gsapinit';
-import { Flip, Draggable, ScrollTrigger, ScrollToPlugin, Observer, Timeline, Tween, Power4, EasePack } from "./vendors/gsapinit";
+const items: any[] = [];
+const videoAssets = [
+    { src: '../../assets/videos/lenovo-thinkpad-mountain.mp4' },
+    { src: '../../assets/optimized/y3000casefilmH.264.mp4' },
+    { src: '../../assets/optimized/voicesofgalaxyH.264.mp4' },
+    { src: '../../assets/optimized/galaxyfold4launchH.264.mp4' },
+    { src: '../../assets/optimized/food_moodH.264.mp4' },
+    { src: '../../assets/voices-of-galaxy.mp4' },
+    { src: '../../assets/optimized/samsungtinytypeH.264.mp4' },
+    { src: '../../assets/videos/hrblock-life-uncertainties.mp4' },
+    { src: '../../assets/optimized/flip_&_fold_launchH.264.mp4' },
+    { src: '../../assets/optimized/selfie_by_flipH.264.mp4' },
 
 
+    
+];
+
+const fullScreenPlayer = {
+            controls: true,
+            autoplay: false,
+            PictureInPictureWindow:false,
+            preload: 'auto',
+            fluid: true,
+            muted: true,
+            loop:true,
+            isCrossOrigin: true,
+            playsinline:true,
+            sources: [{
+                src: "videoAssets[0].src",
+                type: 'video/mp4',
+            }]
+        };
+
+        const videoPlayer = {} as any;
+        const videoPlayers: videojs.Player[] = [];
+        items.forEach((item, index) => {
+            const videoElement = item.querySelector('video');
+            if (videoElement) {
+              const player = videojs(videoElement, {
+                controls: true,
+                autoplay: false,
+                preload: 'auto'
+              });
+              videoPlayers.push(player);
+              
+              // Add click event listener to enter fullscreen
+              item.addEventListener('click', () => {
+                player.requestFullscreen();
+                player.play();
+              });
+            }
+          });
+          videoPlayers.forEach(player => {
+            player.spatialNavigation();
+          });
+        
+
+
+
+export function videoScreenChange() {
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            videoPlayers.forEach(player => {
+                console.log('Focusable elements changed:', player.focusableElements());
+                player.pause();
+            });
+        }
+    });
+}
+  

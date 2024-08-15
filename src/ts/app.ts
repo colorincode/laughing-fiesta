@@ -13,6 +13,8 @@ import {Navigation, AnimationHandler} from "./shared/nav";
 import {scrollEvent} from "./scrollhandler";
 import { listenForFlip, killFlip, initSize} from "./grid";
 import {EventDispatcher} from "./shared/eventdispatch";
+import {videoScreenChange} from "./videohandlers";
+
 
 const navigation = new Navigation();
 const animationHandler = new AnimationHandler();
@@ -29,23 +31,22 @@ const onClick = () => {
     if (navigation.isClassActive('is-animating')) {
         killFlip();
     }
- 
-    // shuffle();
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
     initSize();
     listenForFlip();
-    // shuffle();
+
 };
-// const killFlip = () => {
 
-// };
-
+const onChange = () => {
+    videoScreenChange();
+}
 
 // use the dispatcher, this should not need editing 
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
+eventDispatcher.addEventListener("fullscreenchange",onChange)
 // eventDispatcher.addEventListener("click",shuffleGridBack);
 
 // Later, if you need to remove specific event listeners
@@ -63,11 +64,3 @@ eventDispatcher.addEventListener("click", onClick);
 //     })
 // }
 
-
-// document.addEventListener("click", () => {
-//     console.log("click fired from app");
-//     animationHandler.setupGSAPtl();
-
-//     listenForFlip ();
-//     shuffle();
-// });
