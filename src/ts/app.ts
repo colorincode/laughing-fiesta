@@ -14,11 +14,18 @@ import {scrollEvent} from "./scrollhandler";
 import { listenForFlip, killFlip, initSize} from "./grid";
 import {EventDispatcher} from "./shared/eventdispatch";
 import {videoScreenChange} from "./videohandlers";
-
+// import {modal} from "./modal"
+import { initEvents,callAfterResize } from './flipvideos';
+import { kill } from 'process';
 
 const navigation = new Navigation();
 const animationHandler = new AnimationHandler();
+
+
 // const scroll = new scrollEvent();
+const parentGrid = document.querySelector('.homegrid__container');
+// const modalOpen = document.querySelector('.modal-overlay');
+// const modalNew = new modal();
 
 
 
@@ -28,14 +35,18 @@ const onClick = () => {
     animationHandler.setupGSAPtl();
     navigation.checkforAnimation();
     listenForFlip();
-    if (navigation.isClassActive('is-animating')) {
-        killFlip();
-    }
+    initEvents();
+
+
+
+
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
     initSize();
     listenForFlip();
+    initEvents();
+
 
 };
 
@@ -43,10 +54,19 @@ const onChange = () => {
     videoScreenChange();
 }
 
+const onResize = () => {
+    callAfterResize();
+    killFlip();
+    listenForFlip();
+}
+
+
 // use the dispatcher, this should not need editing 
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
-eventDispatcher.addEventListener("fullscreenchange",onChange)
+eventDispatcher.addEventListener("fullscreenchange",onChange);
+eventDispatcher.addEventListener("resize",onResize);
+
 // eventDispatcher.addEventListener("click",shuffleGridBack);
 
 // Later, if you need to remove specific event listeners

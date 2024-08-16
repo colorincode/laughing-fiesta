@@ -23,7 +23,7 @@ gsap.registerPlugin(Observer);
 gsap.registerPlugin(ScrollToPlugin);
 
 //others
-import videojs from 'video.js';
+
 //local imports
 import {EventDispatcher} from "./shared/eventdispatch";
 import {videoScreenChange} from "./videohandlers";
@@ -38,7 +38,12 @@ const GRID_AREAS = {
     CENTER: 'center',
     CONTENT: 'content'
   };
-  
+  // const gallery = document.querySelector(".gallery");
+  //   const imgPreview = document.querySelector(".imgPreview");
+  //   const imgs = document.querySelectorAll(".imgContainer");
+  //   let isimgPreviewOpen = false;
+  //   let activeImg: string | Element | Window | null = null;
+  //   let activeImgParent: ParentNode | null = null;
   
 const gsapDefaults = {
      overwrite: true 
@@ -175,17 +180,17 @@ interface FlipBatchActionSelf {
         const contentItems = items.filter(item => !item.classList.contains('fixed-item'));
         const availableAreas = getAvailableGridAreas();
     
-        contentItems.forEach((item, index) => {
-          // random size
-          const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
-          item.classList.remove('small', 'medium', 'large');
-          item.classList.add(sizeClass);
+        // contentItems.forEach((item, index) => {
+        //   // random size
+        //   const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
+        //   item.classList.remove('small', 'medium', 'large');
+        //   item.classList.add(sizeClass);
     
-          // random position
-          const area = availableAreas[index % availableAreas.length];
-          const [row, col] = area.split('/').map(Number);
-          item.style.gridArea = `${row} / ${col} / auto / span 1`;
-        });
+        //   // random position
+        //   const area = availableAreas[index % availableAreas.length];
+        //   const [row, col] = area.split('/').map(Number);
+        //   item.style.gridArea = `${row} / ${col} / auto / span 1`;
+        // });
     
         return contentItems;
       },
@@ -208,143 +213,216 @@ interface FlipBatchActionSelf {
       },
       once: true
     };
-  
 
+    // interface GalleryModalBatch {
+    //   self: {
+    //     state: FlipState;
+    //     targets: Element[];
+    //   };
+    //   getState: (self: GalleryModalBatch['self']) => FlipState;
+    //   setState: (self: GalleryModalBatch['self']) => Element[];
+    //   animate: (self: GalleryModalBatch['self']) => void;
+    //   onStart: (self: GalleryModalBatch['self']) => void;
+    //   onComplete: (self: GalleryModalBatch['self']) => void;
+    //   once: boolean;
+    // }
+    // const galleryModalBatch: FlipBatchAction = {
+    //   self: { state: {} as Flip.FlipState, targets: [] as Element[] },
+    //   getState(self) {
+    //     return Flip.getState(self.targets);
+    //   },
+    //   setState(self) {
+    //     const clickedImg = self.targets[0] as HTMLElement;
+    //     if (!clickedImg) {
+    //       console.warn("No target found for gallery modal");
+    //       return [];
+    //     }
+    //     const imgMask = clickedImg.querySelector(".wrap");
+    //     const img = clickedImg.querySelector("img");
+    //     gsap.set(imgPreview, { autoAlpha: 1 });
+    //     activeImg = imgMask;
+    //     // activeImgImg = img;
+    //     activeImgParent = imgMask.parentNode;
+    //     imgPreview.appendChild(imgMask);
+    //     return [imgMask, img];
+    //   },
+    //   animate(self) {
+    //     const [imgMask, img] = self.targets as HTMLElement[];
+    //     if (!imgMask || !img) {
+    //       console.warn("Missing elements for gallery modal animation");
+    //       return;
+    //     }
+    //     const imgState = Flip.getState([imgMask, img]);
+    //     Flip.from(imgState, {
+    //       duration: 1,
+    //       ease: "power3.inOut",
+    //       scale: true,
+    //       onStart: () => {
+    //         imgPreview.classList.add("imgPreview--active");
+    //       },
+    //       onComplete: () => {
+    //         isimgPreviewOpen = true;
+    //       },
+    //     });
+    //   },
+    //   onStart(self) {
+    //     console.log("Gallery modal animation started");
+    //   },
+    //   onComplete(self) {
+    //     console.log("Gallery modal animation completed");
+    //   },
+    //   once: false,
+    // };
 
-  
-function getAvailableGridAreas() {
-    const areas = [];
-    for (let row = 1; row <= 3; row++) {
-      for (let col = 1; col <= 4; col++) {
-        // Exclude top-left, top-right, and center areas
-        if (!((row === 1 && (col === 1 || col === 4)) || (row === 2 && (col === 2 || col === 3)))) {
-          areas.push(`${row}/${col}`);
+    function getAvailableGridAreas() {
+      const areas = [];
+      for (let row = 1; row <= 12; row++) {
+        for (let col = 1; col <= 12; col++) {
+          // exclude top-left, top-right, center, and content areas
+          if (!((row >= 1 && row <= 4 && col >= 1 && col <= 4) ||
+                (row >= 1 && row <= 3 && col >= 9 && col <= 12) ||
+                (row >= 4 && row <= 6 && col >= 5 && col <= 8) ||
+                (row >= 7 && row <= 12 && col >= 1 && col <= 12))) {
+            areas.push(`${row}/${col}`);
+          }
         }
       }
+      return gsap.utils.shuffle(areas);
     }
-    return gsap.utils.shuffle(areas);
-  }
-  
-  const flipgridBatch: FlipBatchAction = {
-    self: { state: {} as Flip.FlipState },
-    getState(self) {
-      return Flip.getState(".grid__item:not(.fixed-item)");
-    },
-    setState(self) {
-      const contentItems = items.filter(item => !item.classList.contains('fixed-item'));
-      const availableAreas = getAvailableGridAreas();
-  
-      contentItems.forEach((item, index) => {
-        const area = availableAreas[index % availableAreas.length];
-        const [row, col] = area.split('/').map(Number);
-        item.style.gridArea = `${row} / ${col} / auto / span 1`;
-      });
-  
-      return contentItems;
-    },
-    animate(self) {
-      Flip.from(self.state, {
-        duration: 0.8,
-        ease: "power4.inOut",
-        absolute: true,
-        stagger: 0.05,
-        onEnter: elements => {
-          gsap.fromTo(elements, 
-            { 
-              opacity: 0,
-              rotation: () => gsap.utils.random(-45, 45),
-            },
-            { 
-              opacity: 1,
-              rotation: 0,
-              duration: 0.8,
-              ease: "back.out(1.7)"
-            }
-          );
-        },
-        onLeave: elements => {
-          gsap.to(elements, {
-            opacity: 0,
-            rotation: () => gsap.utils.random(-45, 45),
-            duration: 0.8,
-            ease: "back.in(1.7)"
-          });
-        },
-      });
-    },
-    onStart(self) {
-      console.log("Shuffle animation started");
-    },
-    onComplete(self) {
-      console.log("Shuffle animation completed");
-    },
-    once: false
-  };
 
   //function invocation and ex ports
   const flipBatch = createFlipBatch();
   const initBatch = createFlipBatch();
   initBatch.add(initializeSizesBatch);
-//   flipBatch.add(contentModalBatch);
+  // flipBatch.add(galleryModalBatch);
 
-  flipBatch.add(flipgridBatch);
 
-//   const flipBatchHandler = async (e: Event) => {
-//     e.stopPropagation();
-//     const clickedItem = e.currentTarget as HTMLElement;
-    
-//     try {
-//       // Wait for the shuffle animation to complete
-//       await flipBatch.start();
-      
-//       // Now trigger the content modal
-//       contentModalBatch.self.targets = [clickedItem];
-//       await contentModalBatch.animate(contentModalBatch.self);
-//     } catch (error) {
-//       console.error("Error in flip batch:", error);
-//     } finally {
-//       contentModalBatch.self.targets = [];
-//       flipBatch.cleanup();
-//     }
-//   };
-const flipBatchHandler = (e: Event) => {
-    e.stopPropagation();
-    const clickedItem = e.currentTarget as HTMLElement;
-    const player = videojs(clickedItem.querySelector('video'));
-    
-    flipBatch.start().then(() => {
-      player.requestFullscreen();
-      player.play();
-    }).catch(error => {
-      console.error("Error in flip batch:", error);
-    });
+
+  const flipBatchHandler = (e: Event) => {
+    // const clickedImg = e.currentTarget as HTMLElement;
+    // galleryModalBatch.self.targets = [clickedImg];
+    flipBatch.start();
   };
+  // const closeModalHandler = (e: Event) => {
+  //   if (e.target !== imgPreview) return;
   
-  // exports
+  //   const activeImgState = Flip.getState([activeImg]);
+  //   activeImgParent.appendChild(activeImg);
+  
+  //   Flip.from(activeImgState, {
+  //     duration: 1,
+  //     ease: "power3.inOut",
+  //     absolute: true,
+  //     scale: true,
+  //     onStart: () => {
+  //       imgPreview.classList.remove("imgPreview--active");
+  //     },
+  //     onComplete: () => {
+  //       isimgPreviewOpen = false;
+  //       gsap.set(imgPreview, { autoAlpha: 0 });
+        
+  //       // Return the element to its original position on the grid
+  //       const originalState = Flip.getState(activeImg);
+  //       Flip.from(originalState, {
+  //         duration: 0.5,
+  //         ease: "power3.inOut",
+  //         absolute: true,
+  //         scale: true,
+  //         onComplete: () => {
+  //           activeImg.style.zIndex = "";
+  //         }
+  //       });
+  //     },
+  //   });
+  // };
+  
+// exports
 export function initSize () {
     window.addEventListener('load', () => {
     initBatch.start();
   });
   
 }
+
 export function listenForFlip() {
     items.forEach(item => {
-      item.removeEventListener('click', flipBatchHandler);
-      item.addEventListener('click', flipBatchHandler);
+      item.removeEventListener('click', flipBatchHandler); // remove existing listener
+      item.addEventListener('click', flipBatchHandler); // rdd new listener
     });
   }
-  
-// export function listenForFlip() {
-//     items.forEach(item => {
-//     //   item.removeEventListener('click', flipBatchHandler); // remove existing listener
-//     //   item.addEventListener('click', flipBatchHandler); // rdd new listener
-//     });
-//   }
 
-  
-  export function killFlip() {
-    flipBatch.kill();
-  }
+export function killFlip() {
+  flipBatch.kill();
+  // imgs.forEach(img => {
+  //   img.removeEventListener('click', flipBatchHandler);
+  // });
+  // imgPreview.removeEventListener('click', closeModalHandler);
+}
+
+
+      // const contentModalBatch: FlipBatchAction = {
+    //   self: { state: {} as Flip.FlipState, targets: [] as Element[] },
+      
+    //   getState(self) {
+    //     return Flip.getState(self.targets);
+    //   },
+    //   setState(self) {
+    //     const clickedItem = self.targets[0] as HTMLElement;
+    //     if (!clickedItem) {
+    //       console.warn("No target found for content modal");
+    //       return [];
+    //     }
+        
+    //   // clone the clicked item and append it to the fullscreen element
+    //   // const clonedItem = clickedItem.cloneNode(true) as HTMLElement;
+    //   // const fullscreenElement = document.querySelector('.fullscreen--scale') as HTMLElement;
+    //   // fullscreenElement.appendChild(clonedItem);
+    // // Add close button
+
+    // //set grid, preview vid and regular vid up 
+ 
+    //     const closeButton = document.createElement('button');
+    //     closeButton.textContent = 'Close';
+    //     closeButton.classList.add('modal-close');
+    //     fullscreenElement.appendChild(closeButton);
+
+    //   // Show the fullscreen element
+    //   gsap.set(fullscreenElement, { display: 'block', opacity: 0 });
+    //   gsap.to(fullscreenElement, { opacity: 1, duration: 0.3 });
+    //     // Open the modal and pass the clicked item to it
+    //     modal.open(clickedItem);
+        
+    //     return [clickedItem];
+    //   },
+    //   animate(self) {
+    //     const [originalItem] = self.targets as HTMLElement[];
+    //     if (!originalItem) {
+    //       console.warn("No target found for content modal animation");
+    //       return;
+    //     }
+        
+    //     const state = Flip.getState(originalItem);
+    //     Flip.from(state, {
+    //       duration: 0.5,
+    //       ease: "power4.inOut",
+    //       scale: true,
+    //       absolute: true,
+    //       onComplete: () => {
+    //         // originalItem.style.visibility = 'hidden';
+    //         //             clonedItem.classList.add('modal-active');
+    //         //             gsap.to(fullscreenElement, { opacity: 1, duration: 0.3 });
+    //       }
+    //     });
+    //   },
+    //   onStart(self) {
+    //     console.log("Content modal animation started");
+    //   },
+    //   onComplete(self) {
+    //     console.log("Content modal animation completed");
+    //   },
+    //   once: false
+    // };
+    
 //   const contentModalBatch: FlipBatchAction = {
 //     self: { state: {} as Flip.FlipState, targets: [] as Element[] },
 //     getState(self) {
