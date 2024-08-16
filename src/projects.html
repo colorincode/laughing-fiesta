@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="scss/projects.scss" type="text/css">
     <link rel="stylesheet" href="scss/customvideoplayer.scss" type="text/css">
     <link rel="stylesheet" href="scss/style.scss" type="text/css" >
-    <script type="module" src="ts/nav.ts"></script>
-    <script type="module" src="ts/projects-slide.ts" ></script>
+    <script type="module" src="ts/app.ts" ></script>
+    <script type="module" src="ts/project-showcase.ts" ></script>
     <link rel="icon" href="/assets/favicon.ico">
 </head>
 
@@ -23,12 +23,17 @@
 </header>  
 <!-- end header inject -->
 
- <section class="sticky-element half-height">
+
+<!--begin slider inject-->
+<include src="./slider.html"></include>
+<!--end slider inject-->
+
+
+ <!-- <section class="sticky-element half-height">
 
     <div class="track">
       <div class="track-flex">
         <div class="panel-wide" data-box="elem1">
-          <!-- <img src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/galaxy_3-2.jpg" alt=""> -->
           <video 
               class=""
               picture-in-picture="false"
@@ -47,8 +52,6 @@
               <source src="../assets/optimized/selfie_by_flipH.264.mp4" type="video/mp4">
         
           </video> 
-         <!-- <img class="image" src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/9-slider.jpg" alt="" style="mix-blend-mode: screen;">  -->
-          <!-- <span class="panel-overlay-text">SAMSUNG:</span><br> -->
           <span class="panel-overlay-text">SELFIE BY FLIP</span>
         </div>
         <div class="panel-wide" data-box="elem2">
@@ -65,10 +68,6 @@
             poster="../assets/optimized/03-food-mood.jpg">
             <source src="../assets/optimized/food_moodH.264.mp4" type="video/mp4">
            </video>
-         <!-- <img src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/galaxy.jpg" alt=""> -->
-          <!-- <video autoplay="" loop="" src="https://preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/space.mp4"></video> -->
-          <!-- <img class="image" src="https://preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/bw.jpg" alt="" style="mix-blend-mode: screen;">  -->
-          <!-- <span class="panel-overlay-text">COCA COLA </span><br> -->
           <span class="panel-overlay-text">FOOD MOOD</span>
         </div>
         <div class="panel-wide" data-box="elem3">
@@ -85,10 +84,8 @@
             poster="../assets/optimized/04-galaxy-fold-4.jpg">
             <source src="../assets/optimized/galaxyfold4launchH.264.mp4" type="video/mp4">
            </video>
-          <!-- <img src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/mountain4.jpg" alt=""> -->
-          <!-- <video  autoplay="" loop="" src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/tp_vid_clouds.mp4"></video> -->
-          <!-- <img class="image" src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/manbw.jpg" alt="" style="mix-blend-mode: screen;"> 
-          <span>SAMSUNG:</span><br> -->
+     
+          <span>SAMSUNG:</span><br> 
           <span class="panel-overlay-text">GALAXY FOLD 4 LAUNCH</span>
         </div>
         <div class="panel-wide" data-box="elem4">
@@ -105,10 +102,9 @@
               poster="../assets/optimized/07-y3000-case-film.jpg">
               <source src="../assets/optimized/y3000casefilmH.264.mp4" type="video/mp4">
           </video>
-          <!-- <img class="image" src="https://assets.website-files.com/62f4dd003ef1495b1bb8f3a0/62f4f620dbc7f7e7db222488_and-machines-YLplJ9m_RKE-unsplash.jpg" alt="">  -->
+  
           <span class="panel-overlay-text"><p>Y3000 CASE FILM</p></span><br>
      
-          <!-- <span>possible? see all projects by samsung (?)</span> -->
         </div>
         <div class="panel-wide" data-box="elem5">
             <video 
@@ -124,7 +120,7 @@
               poster="../assets/optimized/05-samsung-tiny-type.jpg">
               <source src="../assets/optimized/samsungtinytypeH.264.mp4" type="video/mp4">
             </video>
-          <!-- <img class="image" src="https://assets.website-files.com/62f4dd003ef1495b1bb8f3a0/62f4f62054964a1416e0b3c8_and-machines-vqTWfa4DjEk-unsplash.jpg" alt=""> -->
+   
           <span class="panel-overlay-text">TINY TYPE</span>
         </div>
         <div class="panel-wide" data-box="elem6">
@@ -141,7 +137,7 @@
             poster="../assets/optimized/06-voices-of-galaxy.jpg">
             <source src="../assets/optimized/voicesofgalaxyH.264.mp4" type="video/mp4">
         </video>
-        <!-- <img class="image" src="https://assets.website-files.com/62f4dd003ef1495b1bb8f3a0/62f4f62054964a1416e0b3c8_and-machines-vqTWfa4DjEk-unsplash.jpg" alt=""> -->
+
         <span class="panel-overlay-text">VOICES OF GALAXY</span>
       </div>
 
@@ -160,9 +156,8 @@
         picture-in-picture="false"
         poster="../assets/optimized/02-flip-and-fold.jpg">
         <source src="../assets/optimized/flip_&_fold_launchH.264.mp4" type="video/mp4" >
-        <!-- <source src="../assets/optimized/flip-and-fold-launch.mp4" type="video/webm"> -->
+   
       </video>
-    <!-- <img class="image" src="https://assets.website-files.com/62f4dd003ef1495b1bb8f3a0/62f4f62054964a1416e0b3c8_and-machines-vqTWfa4DjEk-unsplash.jpg" alt=""> -->
     <span class="panel-overlay-text">FLIP AND FOLD</span>
   </div>
 
@@ -207,7 +202,7 @@
         <div class="progress--bar-total"></div>
       </div>
     </div>
-  </section>
+  </section> -->
 
  
   <!-- <section class="sticky-element">

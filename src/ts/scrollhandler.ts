@@ -17,7 +17,7 @@ gsap.registerPlugin(Draggable);
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(Observer);
 gsap.registerPlugin(ScrollToPlugin);
-
+gsap.registerPlugin(Draggable);
 export class scrollEvent  {
     constructor() {
         this.createTimelines();
@@ -33,18 +33,31 @@ export class scrollEvent  {
     trigger = document.querySelector("#trigger");
 
     createTimelines() {
-        let tl1 = gsap.timeline({
-            scrollTrigger: {
-                trigger: "#trigger",
-                scrub: true,
-                start: "5% top",
-                end: "bottom bottom"
-            }
-        });
+        gsap
+		.timeline({
+			defaults: {
+				ease: 'none'
+			},
+			scrollTrigger: {
+                markers: true,
+				trigger: this.trigger,
+				start: 'top bottom-=15%',
+				end: '+=50%',
+				scrub: true
+			}
+		})
+        // let tl1 = gsap.timeline({
+        //     scrollTrigger: {
+        //         trigger: "#trigger",
+        //         scrub: true,
+        //         start: "5% top",
+        //         end: "bottom bottom"
+        //     }
+        // });
     
-        tl1.to(".grow", {
-            scale: 2
-        });
+        // tl1.to(".grow", {
+        //     scale: 2
+        // });
     
         let tl2 = gsap.timeline({
             scrollTrigger: {
@@ -61,4 +74,30 @@ export class scrollEvent  {
     }
     
   
+}
+
+export function scrollInit() {
+    const logo = document.querySelector("topbar--svg");
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t:any) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+        direction: 'horizontal', // vertical, horizontal
+        gestureDirection: 'horizontal', // vertical, horizontal, both
+        smooth: true,
+        smoothTouch: true,
+        prevent: (node: any) => node.id === logo,
+
+    })
+    function raf(time:any) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add((time)=>{
+        lenis.raf(time * 1000);
+    })
+  
+    gsap.ticker.lagSmoothing(0)
+
+    ScrollTrigger.defaults({});
 }

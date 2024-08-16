@@ -10,13 +10,15 @@ gsap.registerPlugin(EasePack);
 // component deps
 import "./shared/header";
 import {Navigation, AnimationHandler} from "./shared/nav";
-import {scrollEvent} from "./scrollhandler";
+// import {scrollEvent} from "./scrollhandler";
 import { listenForFlip, killFlip, initSize} from "./grid";
 import {EventDispatcher} from "./shared/eventdispatch";
 import {videoScreenChange} from "./videohandlers";
 // import {modal} from "./modal"
 import { initEvents,callAfterResize } from './flipvideos';
 import { LoadVideoAssets } from './videohandlers';
+import {scrollEvent , scrollInit}  from './scrollhandler';
+
 
 const navigation = new Navigation();
 const animationHandler = new AnimationHandler();
@@ -63,12 +65,20 @@ const onResize = () => {
     LoadVideoAssets();
 }
 
+const onScroll = () => {
+//    scrollInit();
+
+
+}
+
 
 // use the dispatcher, this should not need editing 
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("fullscreenchange",onChange);
 eventDispatcher.addEventListener("resize",onResize);
+eventDispatcher.addEventListener("scroll",onScroll);
+
 
 // eventDispatcher.addEventListener("click",shuffleGridBack);
 

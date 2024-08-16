@@ -78,31 +78,31 @@ const animationDefaults = { duration: 0.7, ease: 'expo.inOut' };
 const samsung = controlsElement.querySelector('.project-name-revealed');
 
 
-function fitPositionAbsoluteElements() {
-    const smileyWrapper = document.querySelector('.central--smile__wrapper') as HTMLElement;
-    function getDomSize() {
-    //get height
-    smileyWrapper.style.getPropertyValue('--adjust-height');
-    getComputedStyle(smileyWrapper).getPropertyValue('--adjust-height');
-    // get width
-    smileyWrapper.style.getPropertyValue('--adjust-width');
-    getComputedStyle(smileyWrapper).getPropertyValue('--adjust-width');
-    }
-    if (smileyWrapper) {
-        function updateSize() {
-            getDomSize(); 
-            //let's reset the values of our var, or leave them
-            let width = window.innerWidth.toString();
-            let height = window.innerHeight.toString();
-            smileyWrapper.style.setProperty('--adjust-width', width);
-            smileyWrapper.style.setProperty('--adjust-height', height);
-        }
-        updateSize();
-        window.addEventListener('resize', updateSize);
-    } else {
-        console.error('Element with class .video--placement--grid not found.');
-    }
-}
+// function fitPositionAbsoluteElements() {
+//     const smileyWrapper = document.querySelector('.central--smile__wrapper') as HTMLElement;
+//     function getDomSize() {
+//     //get height
+//     smileyWrapper.style.getPropertyValue('--adjust-height');
+//     getComputedStyle(smileyWrapper).getPropertyValue('--adjust-height');
+//     // get width
+//     smileyWrapper.style.getPropertyValue('--adjust-width');
+//     getComputedStyle(smileyWrapper).getPropertyValue('--adjust-width');
+//     }
+//     if (smileyWrapper) {
+//         function updateSize() {
+//             getDomSize(); 
+//             //let's reset the values of our var, or leave them
+//             let width = window.innerWidth.toString();
+//             let height = window.innerHeight.toString();
+//             smileyWrapper.style.setProperty('--adjust-width', width);
+//             smileyWrapper.style.setProperty('--adjust-height', height);
+//         }
+//         updateSize();
+//         window.addEventListener('resize', updateSize);
+//     } else {
+//         console.error('Element with class .video--placement--grid not found.');
+//     }
+// }
 
 
 if (samsung) {
@@ -172,7 +172,7 @@ const flipVideo = (video: HTMLVideoElement) => {
     if (!parent || !position) return; // Ensure parent and position are valid
   
     if (currentFullscreenVideo && currentFullscreenVideo !== video) {
-      returnToOriginalPosition(currentFullscreenVideo);
+      returnToOriginalPosition(video);
     }
     insertProjectName(video);
     let cleanupDelayedCall: gsap.core.Tween | null = null;
@@ -201,7 +201,7 @@ const flipVideo = (video: HTMLVideoElement) => {
 
     if (fullscreenElement.contains(video)) {
       fullscreenElement.removeChild(video);
-      parent.appendChild(videoFigure); //this may need work
+      parent.insertBefore(videoFigure, video); //this may need work
       parent.appendChild(video);
       // parent.removeChild(video);
     } else {
@@ -341,7 +341,7 @@ const toggleVideo = (e: Event) => {
       
 // target the fullscreen and such
 function handleDocumentClick(e: MouseEvent) {
-    e: MouseEvent;
+    // e: MouseEvent;
 
     if (currentFullscreenVideo && !fullscreenElement.contains(e.target as Node)) {
         returnToOriginalPosition(currentFullscreenVideo);
@@ -350,7 +350,7 @@ function handleDocumentClick(e: MouseEvent) {
   // Initialize event listeners for grid videos
 export const initEvents = () => {
     saveInitialState(); // Save the initial state of videos
-    fitPositionAbsoluteElements(); //reposition grid
+    // fitPositionAbsoluteElements(); //reposition grid
     gridItems.forEach((item: HTMLElement) => {
       const video = item.querySelector('.video--item') as HTMLElement;
       if (video) {
