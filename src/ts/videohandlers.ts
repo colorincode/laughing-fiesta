@@ -1,7 +1,8 @@
 
 //empty grid item array
 const items: any[] = [];
-
+const figures = document.querySelectorAll('.video--figure');
+let videoPlacementArray: any[] = [];
 
 // we are just gonna pass the url string to them
 // set up the src of the video assets - small version
@@ -69,49 +70,101 @@ const gridVideoItems = {
           // }]
 };
 
-//^^ these arrays exist so we can set up the players. once you take videos & sources *out* of the dom, you wanna load them.  
+// function processFigures() {
+//   figures.forEach((figure, index) => {
+//     const posClass = `pos-${index + 1}`;
+//     const videoPosClass = `video--item${index + 1}`;
+//     let arrayInfo = {
+//       figurePos: posClass,
+//       videoPos: videoPosClass
+//     };
+//     videoPlacementArray.push(arrayInfo);
+//   })
+//   shuffleArray(videoPlacementArray);
+// }
+// function shuffleArray(array: any) {
+//   for (let i = array.length - 1; i > 0; i--) {
+//     const j = Math.floor(Math.random() * (i + 1));
+//     [array[i], array[j]] = [array[j], array[i]];
+//   }
+//   console.log("Shuffled array:", array);
+//   return array;
+// }
+// function replacePositioningClasses() {
+//   const figures = document.querySelectorAll('.video--figure');
+//   figures.forEach((figure, index) => {
+//     if (index < videoPlacementArray.length) {
+//       figure.classList.remove(...figure.classList);
+//       figure.classList.add('video--figure', videoPlacementArray[index].figurePos);
+
+//       const video = figure.querySelector('video');
+//       if (video) {
+//         video.classList.remove(...video.classList);
+//         video.classList.add('video--item', videoPlacementArray[index].videoPos);
+//       }
+//     }
+//   });
+// }
+// document.addEventListener('DOMContentLoaded', () => {
+//   processFigures();
+//   replacePositioningClasses();
+// });
+// end video randomization functions
+
+ 
 export function LoadVideoAssets() {
-    smallVideoAssets.forEach((videoAsset, index) => {
-      const videoElement = document.createElement('video');
    
-        //if the source array exists, pass it url
-        videoElement.src = videoAsset.src;
-        // videoElement.src = videoAsset.src;
-        //you can call your params above if you need to modify the loop, e.g 
-        // videoElement.controls = true;
-        // videoElement.autoplay = false;
+  function processFigures() {
+    figures.forEach((figure, index) => {
+      const posClass = `pos-${index + 1}`;
+      const videoPosClass = `video--item${index + 1}`;
+      let arrayInfo = {
+        figurePos: posClass,
+        videoPos: videoPosClass
+      };
+      videoPlacementArray.push(arrayInfo);
     })
-    //if it's not passing your source as a string, or you're not seeing it on the dom
-    // you can try this (this can be passed to earlier array or modified in func)
-    // let videoElement = document.createElement('video');
-    // let src = new URL('../../assets/videos/lenovo-thinkpad-mountain.mp4' , import.meta.url).href;
-    // videoElement.src = src.toString(); //if ur not getting a string
+    shuffleArray(videoPlacementArray);
+  }
+  function shuffleArray(array: any) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    console.log("Shuffled array:", array);
+    return array;
+  }
+  function replacePositioningClasses() {
+    const figures = document.querySelectorAll('.grid__item');
+    const filteredFigures = Array.from(figures).filter(figure => !figure.classList.contains('fixed-item'));
+
+
+    filteredFigures.forEach((figure, index) => {
+
+      // if (figures[index].classList.contains("fixed-item")){
+      //   figure.classList.remove(...figure.classList);
+
+      // }
+      if (index < videoPlacementArray.length ) {
+        
+
+        figure.classList.remove(...figure.classList);
+        figure.classList.add(`item-${index + 1}`, videoPlacementArray[index].figurePos);
+  
+        const video = figure.querySelector('video');
+        if (video) {
+          video.classList.remove(...video.classList);
+          video.classList.add('video--item', videoPlacementArray[index].videoPos);
+        }
+      }
+    });
+  }
+
+  processFigures();
+  replacePositioningClasses();
 
 }
       
-//this no good. but so u have the concept of the loops
-        // const videoPlayer = {} as any;
-        // const videoPlayers: videojs.Player[] = [];
-        // items.forEach((item, index) => {
-        //     const videoElement = item.querySelector('video');
-        //     if (videoElement) {
-        //       const player = videojs(videoElement, {
-        //         controls: true,
-        //         autoplay: false,
-        //         preload: 'auto'
-        //       });
-        //       videoPlayers.push(player);
-              
-      
-        //       item.addEventListener('click', () => {
-        //         player.requestFullscreen();
-        //         player.play();
-        //       });
-        //     }
-        //   });
-        //   videoPlayers.forEach(player => {
-        //     player.spatialNavigation();
-        //   });
         
 //event listern is good
 export function videoScreenChange() {

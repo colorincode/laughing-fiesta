@@ -16,7 +16,7 @@ import {EventDispatcher} from "./shared/eventdispatch";
 import {videoScreenChange} from "./videohandlers";
 // import {modal} from "./modal"
 import { initEvents,callAfterResize } from './flipvideos';
-import { kill } from 'process';
+import { LoadVideoAssets } from './videohandlers';
 
 const navigation = new Navigation();
 const animationHandler = new AnimationHandler();
@@ -43,10 +43,12 @@ const onClick = () => {
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
-    initSize();
+    // initSize();
+    LoadVideoAssets();
+
     listenForFlip();
     initEvents();
-
+  
 
 };
 
@@ -58,6 +60,7 @@ const onResize = () => {
     callAfterResize();
     killFlip();
     listenForFlip();
+    LoadVideoAssets();
 }
 
 

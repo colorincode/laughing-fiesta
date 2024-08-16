@@ -1,0 +1,42 @@
+# not for you mr robot
+
+## Google Fam
+# -----------------
+User-agent: Googlebot
+User-agent: Mediapartners-Google
+Disallow: /*/feed
+Disallow: /?s=
+
+## Other SE
+# -----------------
+User-agent: Applebot
+User-agent: Bingbot
+User-agent: msnbot
+User-agent: Slurp
+Disallow: /*/feed
+Disallow: /?s=
+
+## AI
+# -----------------
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+Disallow: /*/feed
+Disallow: /?s=
+
+## Internet Archive - archive.org
+# -----------------
+User-agent: ia_archiver
+Disallow:
+
+## Social
+# -----------------
+User-agent: facebookexternalhit
+User-agent: Facebot
+User-agent: LinkedInBot
+User-agent: Twitterbot
+Disallow:
+
+## All other bots
+# -----------------
+User-agent: *
+Disallow: /
