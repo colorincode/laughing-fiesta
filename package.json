@@ -66,7 +66,7 @@
         "process": "^0.11.10",
         "querystring-es3": "^0.2.1",
         "rimraf": "^6.0.1",
-        "sharp": "^0.32.4",
+        "sharp": "^0.31.1",
         "typescript": "^5.3.3"
     },
     "dependencies": {
@@ -81,6 +81,7 @@
         "http-proxy-middleware": "^3.0.0",
         "lenis": "^1.1.9",
         "posthtml": "^0.16.6",
+        "three": "^0.167.1",
         "video.js": "^8.17.2",
         "yarn": "^1.22.21"
     }

@@ -1,6 +1,4 @@
-// import * as curtainsjs from 'curtainsjs'
 
-// import { Curtains, Plane, Vec2 } from 'curtainsjs'
 import curtainsjs, { Curtains, Plane, Vec2 } from './vendors/curtains/index';
 
 

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import vertexShader from './shader/screen.vert'
 import fragmentShader from './shader/screen.frag'
-import { Three } from './core/Three'
+import { Three } from './vendors/Three'
 import { Simulator } from './Simulator'
 import { gui } from './Gui'
 // import { resolveObjectURL } from 'buffer'

@@ -18,7 +18,7 @@ import {videoScreenChange} from "./videohandlers";
 import { initEvents,callAfterResize } from './flipvideos';
 import { LoadVideoAssets } from './videohandlers';
 import {scrollEvent , scrollInit}  from './scrollhandler';
-
+import { Canvas } from './Canvas'
 
 const navigation = new Navigation();
 const animationHandler = new AnimationHandler();
@@ -26,6 +26,7 @@ const animationHandler = new AnimationHandler();
 
 // const scroll = new scrollEvent();
 const parentGrid = document.querySelector('.homegrid__container');
+const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
 // const modalOpen = document.querySelector('.modal-overlay');
 // const modalNew = new modal();
 
@@ -79,6 +80,12 @@ eventDispatcher.addEventListener("fullscreenchange",onChange);
 eventDispatcher.addEventListener("resize",onResize);
 eventDispatcher.addEventListener("scroll",onScroll);
 
+if (canvasElement) {
+  const canvas = new Canvas(canvasElement);
+  eventDispatcher.addEventListener('beforeunload', () => {
+    canvas.dispose();
+  });
+}
 
 // eventDispatcher.addEventListener("click",shuffleGridBack);
 
