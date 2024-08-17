@@ -2,7 +2,7 @@
     "name": "colorincode-devsite",
     "browserslist": "> 0.5%, last 2 versions, not dead",
     "version": "1.0.8",
-    "source": "src/*.html",
+    "source": ["src/*.html"],
     "web": "dist/index.html",
     "license": "MIT",
     "private": true,
@@ -22,7 +22,11 @@
             "publicUrl": "./"
         },
         "production": {
-            "distDir": "./production/"
+            "context": "node",
+            "distDir": "./production/",
+              "publicUrl": "./"
+
+
         }
     },
     "scripts": {
@@ -34,7 +38,7 @@
         "remove-maps": "rimraf --glob 'dist/**/*.*.map'",
         "clean": "npm run clear-dist && npm run clear-cache",
         "format": "prettier --write 'dist/**/*' --no-error-on-unmatched-pattern",
-        "production": "parcel build './src/*.html' --target production --no-cache --no-source-maps --no-content-hash"
+        "production": "parcel build ./src/index.html --target production --no-cache --no-source-maps --no-content-hash"
     },
     "devDependencies": {
         "@parcel/bundler-library": "^2.11.1-canary.3149",

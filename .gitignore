@@ -24,3 +24,4 @@ working-files/
 dist/
 .vscode/
 .parcel-cache/
+production/
