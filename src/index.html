@@ -20,19 +20,20 @@
 <!-- begin header inject -->
 <include src="./header.html" ></include>
 <!-- end header inject -->
-<main>
-  <canvas class="webgl-canvas" >
-  </canvas>
-</main>
-<div class="homegrid__container">
 
+<div class="homegrid__container">
+  <main>
+    <canvas class="webgl-canvas" style="z-index: -1;
+    position: absolute;">
+    </canvas>
+</main>
       <div class="grid__item item-1 fixed-item">   
             <figure class="">
             &nbsp;
             </figure>
         </div>
 
-      <div class="grid__item item-2"> 
+      <div class="grid__item figure--wrapper--div"> 
         
         <figure class="video--figure first">
         <video 
@@ -52,7 +53,7 @@
         </video>
         </figure>
     </div>
-      <div class="grid__item item-3">
+      <div class="grid__item figure--wrapper--div">
          <figure class="video--figure">
            <video 
                 class="video--item video--item2"
@@ -75,7 +76,7 @@
     
     
     </div>
-      <div class="grid__item item-4">
+      <div class="grid__item figure--wrapper--div">
         <figure class="video--figure pos-3">
             <video 
                 class="video--item video--item3"
@@ -95,7 +96,7 @@
             </video>
         </figure>
      </div>
-      <div class="grid__item item-5 fixed-item" id="center-logo">
+      <div class="grid__item fixed-item" id="center-logo">
            
         <svg 
         class="central--smile--svg"
@@ -124,7 +125,9 @@
         </svg>
 
       </div>
-      <div class="grid__item item-6">
+   
+
+      <div class="grid__item figure--wrapper--div">
         <figure class="video--figure">
             <video 
                 class="video--item video--item4"
@@ -144,7 +147,7 @@
             </video>
         </figure>
       </div>
-      <div class="grid__item item-7">
+      <div class="grid__item figure--wrapper--div">
         <figure class="video--figure">
             <video
                 class="video--item video--item5" 
@@ -164,7 +167,7 @@
             </video>
         </figure>
       </div>
-      <div class="grid__item item-8">
+      <div class="grid__item figure--wrapper--div">
         <figure class="video--figure">
             <video 
                 class="video--item video--item6"
@@ -184,7 +187,7 @@
             </video>
         </figure>
        </div>
-      <div class="grid__item item-9">
+      <div class="grid__item figure--wrapper--div">
         <figure class="video--figure">
             <video 
                 class="video--item video--item7"
@@ -205,7 +208,7 @@
             </video>
         </figure>
       </div>
-      <div class="grid__item item-11">
+      <div class="grid__item figure--wrapper--div">
         <figure class="video--figure">
             <video 
                 class="video--item video--item8"
@@ -226,7 +229,7 @@
         </figure>
        </div>
       <div class="grid__item item-10 fixed-item">&nbsp;</div>
-      <div class="grid__item item-12"> 
+      <div class="grid__item figure--wrapper--div"> 
         <figure class="video--figure ">
         <video 
             class="video--item video--item9"

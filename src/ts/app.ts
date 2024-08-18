@@ -29,7 +29,14 @@ const parentGrid = document.querySelector('.homegrid__container');
 const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
 // const modalOpen = document.querySelector('.modal-overlay');
 // const modalNew = new modal();
-
+function loadCanvas() {
+  if (canvasElement) {
+    const canvas = new Canvas(canvasElement);
+    eventDispatcher.addEventListener('beforeunload', () => {
+      canvas.dispose();
+    });
+  }
+}
 
 
 const eventDispatcher = new EventDispatcher();
@@ -50,13 +57,13 @@ const onDOMContentLoaded = () => {
     LoadVideoAssets();
 
     listenForFlip();
-    initEvents();
-  
+    // initEvents();
+    loadCanvas();
 
 };
 
 const onChange = () => {
-    videoScreenChange();
+    // videoScreenChange();
 }
 
 const onResize = () => {
@@ -64,6 +71,7 @@ const onResize = () => {
     killFlip();
     listenForFlip();
     LoadVideoAssets();
+    console.clear();
 }
 
 const onScroll = () => {
@@ -79,13 +87,14 @@ eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("fullscreenchange",onChange);
 eventDispatcher.addEventListener("resize",onResize);
 eventDispatcher.addEventListener("scroll",onScroll);
+// eventDispatcher.removeEventListener("click", onClick);
+// eventDispatcher.removeEventListener("click",LoadVideoAssets);
 
-if (canvasElement) {
-  const canvas = new Canvas(canvasElement);
-  eventDispatcher.addEventListener('beforeunload', () => {
-    canvas.dispose();
-  });
-}
+
+
+
+
+
 
 // eventDispatcher.addEventListener("click",shuffleGridBack);
 

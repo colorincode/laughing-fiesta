@@ -149,7 +149,8 @@ export function LoadVideoAssets() {
         
 
         figure.classList.remove(...figure.classList);
-        figure.classList.add(`item-${index + 1}`, videoPlacementArray[index].figurePos);
+        figure.classList.add('grid__item', videoPlacementArray[index].figurePos);
+        // figure.classList.add(`item-${index + 1}`, videoPlacementArray[index].figurePos);
   
         const video = figure.querySelector('video');
         if (video) {

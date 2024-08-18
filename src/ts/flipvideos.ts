@@ -201,7 +201,9 @@ const flipVideo = (video: HTMLVideoElement) => {
 
     if (fullscreenElement.contains(video)) {
       fullscreenElement.removeChild(video);
-      parent.insertBefore(videoFigure, video); //this may need work
+      // parent.insertBefore(videoFigure, video); //this may need work
+      videoFigure.appendChild(video);
+
       parent.appendChild(video);
       // parent.removeChild(video);
     } else {
@@ -360,16 +362,3 @@ export const initEvents = () => {
     document.addEventListener('click', handleDocumentClick);
   };
   
-
-
-// document.addEventListener( "resize",( ev: UIEvent) =>  {
-//     callAfterResize();
-
-// });
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   initEvents();
-//   console.log('flip videos loaded')
-
-
-// });
