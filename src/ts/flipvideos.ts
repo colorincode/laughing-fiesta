@@ -32,50 +32,85 @@ let currentFullscreenVideo: HTMLElement | null = null;
 const originalStates = new Map<Element, { parent: Element, index: number, position: { top: number, left: number, width: number, height: number } }>();
 let isFullscreen = false;
 
+// const linkWrapper = document.createElement('div') as HTMLDivElement; 
+// const gridSelector = document.querySelector('.video--placement--grid');
+// linkWrapper.className = 'shadow-inner-grid';
+// linkWrapper.style.display = 'none'; // Initially hidden
+// gridSelector!.appendChild(linkWrapper);
+// begin create the link elements
+const companyName = document.createElement('div');
+companyName.className = 'company-name';
+companyName.style.display = 'none'; // Initially hidden
+document.body.appendChild(companyName);
+const samsung = companyName.querySelector('.project-name-revealed');
 
-// Create and style the controls element
-const controlsElement = document.createElement('div');
-controlsElement.className = 'video-controls';
-controlsElement.innerHTML = `<span class="project-name-revealed">SAMSUNG</span>`;
-controlsElement.style.position = 'absolute';
-controlsElement.style.bottom = '20px';
-controlsElement.style.left = '25%';
-controlsElement.style.transform = 'translateX(-50%)';
-controlsElement.style.background = 'rgba(0, 0, 0, 0.7)';
-controlsElement.style.color = '#fff';
-controlsElement.style.padding = '10px';
-controlsElement.style.border = '1px solid black';
-controlsElement.style.zIndex = '9999';
-controlsElement.style.cursor = 'pointer';
-controlsElement.style.fontFamily = '"Manrope", sans-serif';
-controlsElement.style.fontSize = '1.5rem';
-controlsElement.style.lineHeight = '1.5';
-controlsElement.style.fontWeight = '200';
-controlsElement.style.display = 'none'; // Initially hidden
-document.body.appendChild(controlsElement);
 const projectName = document.createElement('div');
 projectName.className = 'project-name';
-projectName.innerHTML = `<span class="project-name">SAMSUNG</span>`;
-projectName.style.position = 'absolute';
-projectName.style.bottom = '20px';
-projectName.style.left = '50%';
-projectName.style.transform = 'translateX(-50%)';
-projectName.style.background = 'rgba(0, 0, 0, 0.7)';
-projectName.style.color = '#fff';
-projectName.style.padding = '10px';
-projectName.style.border = '1px solid black';
-projectName.style.zIndex = '9999';
-projectName.style.cursor = 'pointer';
-projectName.style.fontFamily = '"Manrope", sans-serif';
-projectName.style.fontSize = '1.5rem';
-projectName.style.lineHeight = '1.5';
-projectName.style.fontWeight = '200';
-
 projectName.style.display = 'none'; // Initially hidden
 document.body.appendChild(projectName);
+
+
+
+
+function insertProjectName(video: HTMLVideoElement) {
+  let projectId = video.getAttribute('data-project');
+  let getprojectLink =  video.getAttribute('data-hashnav')?.substring(1) ;
+  let setprojectLink = '/projects.html' + '#' + getprojectLink;
+
+
+    if (!projectId) return;
+    projectName.innerHTML = `
+      <a class="project-name-revealed" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>
+      
+      `;
+      return projectName
+
+}
+
+function insertCompanyName(video: HTMLVideoElement) {
+  let projectId = video.getAttribute('data-company');
+  let getprojectLink =  video.getAttribute('data-company-link')?.substring(1) ;
+  let setprojectLink = '/projects.html' + '#' + getprojectLink;
+
+
+    if (!projectId) return;
+    companyName.innerHTML = `
+    
+      <a class="company-name-revealed" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>
+      
+    
+      `;
+
+      return companyName
+}
+
+function insertShadowGrid() {
+
+
+
+  const shadowGrid = document.createElement('div') as HTMLElement;
+  shadowGrid.className = "shadow-inner-grid";
+shadowGrid.style.display = "grid";
+
+  shadowGrid.innerHTML = `<div class="shadow-inner-grid">` + companyName + projectName + `</div>`;
+  return shadowGrid;
+
+
+        
+
+
+
+    
+}
+
+
+// end create the link elements
+
+
+// document.body.appendChild(projectName);
 // defaults
 const animationDefaults = { duration: 0.7, ease: 'expo.inOut' };
-const samsung = controlsElement.querySelector('.project-name-revealed');
+// const samsung = controlsElement.querySelector('.project-name-revealed');
 
 
 // function fitPositionAbsoluteElements() {
@@ -113,16 +148,15 @@ if (samsung) {
   samsung.addEventListener('click', handleClick);
 }
 
-function insertProjectName(video: HTMLVideoElement) {
-  let projectId = video.getAttribute('data-project');
-  let getprojectLink =  video.getAttribute('data-hashnav')?.substring(1) ;
-  let setprojectLink = '/projects.html' + '#' + getprojectLink;
+// function insertProjectName(video: HTMLVideoElement) {
+//   let projectId = video.getAttribute('data-project');
+//   let getprojectLink =  video.getAttribute('data-hashnav')?.substring(1) ;
+//   let setprojectLink = '/projects.html' + '#' + getprojectLink;
 
 
-    if (!projectId) return;
-    projectName.innerHTML = `
-      <a class="project-name" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>`;
-}
+//     if (!projectId) return;
+//     projectName.innerHTML = `<a class="project-name-revealed" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>`;
+// }
 
 
 const saveInitialState = () => {
@@ -175,6 +209,7 @@ const flipVideo = (video: HTMLVideoElement) => {
       returnToOriginalPosition(video);
     }
     insertProjectName(video);
+    insertCompanyName(video);
     let cleanupDelayedCall: gsap.core.Tween | null = null;
     let isAnimating = false;
     const timeline = gsap.timeline();
@@ -198,7 +233,7 @@ const flipVideo = (video: HTMLVideoElement) => {
     gsap.set(maskingLayer, { zIndex: 0 });
     gsap.to(maskingLayer, { ...animationDefaults, opacity: 0.85 });
       let videoFigure = parent.querySelector('.video--figure') as HTMLElement;
-
+      
     if (fullscreenElement.contains(video)) {
       fullscreenElement.removeChild(video);
       // parent.insertBefore(videoFigure, video); //this may need work
@@ -211,9 +246,10 @@ const flipVideo = (video: HTMLVideoElement) => {
       parent.appendChild(video);
       
       fullscreenElement.appendChild(video);
+      parent.appendChild(insertShadowGrid());
+      // parent.appendChild(companyName);
+      // parent.appendChild(projectName);
 
-      parent.appendChild(controlsElement);
-      parent.appendChild(projectName);
     //   addControlEventListeners(controlsElement); // Add event listeners to controls
       pauseOtherVideos(video); // Pause other videos
       playFullscreenVideo(video); // Ensure fullscreen video plays
@@ -233,8 +269,16 @@ const flipVideo = (video: HTMLVideoElement) => {
       height: '90vh',
       zIndex: 9999,
     });
-    // Show controls
-    controlsElement.style.display = 'block';
+    // show project and company names
+    
+    // insertProjectName(video);
+    // insertCompanyName(video);
+    insertShadowGrid();
+    // controlsElement.style.display = 'block';
+    // projectName.style.display = 'block';
+    // linkWrapper.style.display = 'grid';
+    // insertShadowGrid.shadowGrid.style.display = "grid";
+    companyName.style.display = 'block';
     projectName.style.display = 'block';
 
     Flip.from(state, {
@@ -260,8 +304,8 @@ const flipVideo = (video: HTMLVideoElement) => {
       fullscreenElement.removeChild(video);
       parent.appendChild(video);
 
-      if (controlsElement.parentElement) {
-        controlsElement.parentElement.removeChild(controlsElement);
+      if (companyName.parentElement) {
+        companyName.parentElement.removeChild(companyName);
       }
       if (projectName.parentElement) {
         projectName.parentElement.removeChild(projectName);
@@ -271,9 +315,9 @@ const flipVideo = (video: HTMLVideoElement) => {
       video.muted = true; // Mute the video
       video.playbackRate = 1; // Reset playback rate to normal speed
       // Hide controls
-      if (controlsElement) {
-        controlsElement.style.display = 'none';
-      }
+      // if (companyName) {
+      //   companyName.style.display = 'none';
+      // }
       //couldnt set a timer here, no good
       gsap.set(video, {
         position: 'absolute',

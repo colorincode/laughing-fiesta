@@ -17,7 +17,7 @@ import {videoScreenChange} from "./videohandlers";
 // import {modal} from "./modal"
 import { initEvents,callAfterResize } from './flipvideos';
 import { LoadVideoAssets } from './videohandlers';
-import {scrollEvent , scrollInit}  from './scrollhandler';
+// import { scrollInit}  from './scrollhandler';
 import { Canvas } from './Canvas'
 
 const navigation = new Navigation();
@@ -37,6 +37,21 @@ function loadCanvas() {
     });
   }
 }
+function smoothLinkClick(e: MouseEvent) {
+
+  e.preventDefault();
+
+ let targetUrl = e.currentTarget.getAttribute('href');
+  // Create GSAP animation
+  gsap.to("body", {
+      opacity: 0,
+      duration: 0.5,
+      onComplete: () => {
+          window.location.href = targetUrl;
+      }
+  });
+
+}
 
 
 const eventDispatcher = new EventDispatcher();
@@ -53,11 +68,8 @@ const onClick = () => {
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
-    // initSize();
     LoadVideoAssets();
-
     listenForFlip();
-    // initEvents();
     loadCanvas();
 
 };
@@ -75,7 +87,7 @@ const onResize = () => {
 }
 
 const onScroll = () => {
-//    scrollInit();
+//  scrollInit();
 
 
 }
@@ -86,7 +98,7 @@ eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("fullscreenchange",onChange);
 eventDispatcher.addEventListener("resize",onResize);
-eventDispatcher.addEventListener("scroll",onScroll);
+// eventDispatcher.addEventListener("scroll",onScroll);
 // eventDispatcher.removeEventListener("click", onClick);
 // eventDispatcher.removeEventListener("click",LoadVideoAssets);
 

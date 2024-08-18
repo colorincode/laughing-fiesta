@@ -1,549 +1,1271 @@
 
-import curtainsjs, { Curtains, Plane, Vec2 } from './vendors/curtains/index';
-
-
+//gsap modules
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-// import SplitType from 'split-type'
+import { Flip } from 'gsap/Flip';
+import Draggable from 'gsap/Draggable';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+import ScrollToPlugin from 'gsap/ScrollToPlugin';
+import EasePack from 'gsap/EasePack';
+import { Power4 } from 'gsap/gsap-core';
+import Observer from 'gsap/Observer';
+import SplitText from 'gsap/SplitText';
+import Timeline from 'gsap/all';
+import  Tween  from 'gsap/src/all';
 
-import fragment from './shader/fragment.glsl'
-import vertex from './shader/screen.vert'
-import videojs from 'video.js';
+//others
+import curtainsjs, { Curtains, Plane, Vec2 } from './vendors/curtains/index';
+import Lenis from 'lenis';
+import { Canvas } from './Canvas'
+// import fragment from './shader/fragment.glsl'
+// import vertex from './shader/screen.vert'
+// import videojs from 'video.js';
 
-gsap.registerPlugin(ScrollTrigger)
+console.log("slider module loaded");
 
-window.addEventListener("load", () => {
-    // track the mouse positions to send it to the shaders
-    const mousePosition = new Vec2();
-    // we will keep track of the last position in order to calculate the movement strength/delta
-    const mouseLastPosition = new Vec2();
-
-    const deltas = {
-        max: 0,
-        applied: 0,
-    };
-
-    // set up our WebGL context and append the canvas to our wrapper
-    const curtains = new Curtains({
-        container: "canvas",
-        watchScroll: false, // no need to listen for the scroll in this example
-        pixelRatio: Math.min(1.5, window.devicePixelRatio) // limit pixel ratio for performance
-    });
-
-    // handling errors
-    curtains.onError(() => {
-        // we will add a class to the document body to display original video
-        document.body.classList.add("no-curtains", "curtains-ready");
-
-        // handle video
-        document.getElementById("enter-site").addEventListener("click", () => {
-            // display canvas and hide the button
-            document.body.classList.add("video-started");
-
-            planeElements[0].getElementsByTagName("video")[0].play();
-        }, false);
-    }).onContextLost(() => {
-        // on context lost, try to restore the context
-        curtains.restoreContext();
-    });
-
-    // get our plane element
-    const planeElements = document.getElementsByClassName("curtain");
+//locals
+// import { scrollEvent, scrollInit } from './scrollhandler';
 
 
-    const vs = `
-        precision mediump float;
+gsap.registerPlugin(EasePack);
+gsap.registerPlugin(Tween);
+gsap.registerPlugin(SteppedEase);
+gsap.registerPlugin(Timeline);
+gsap.registerPlugin(Power4);
+gsap.registerPlugin(Flip);
+gsap.registerPlugin(Draggable);
+gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(Observer);
+gsap.registerPlugin(ScrollToPlugin);
+gsap.registerPlugin(Power4);
 
-        // default mandatory variables
-        attribute vec3 aVertexPosition;
-        attribute vec2 aTextureCoord;
-
-        uniform mat4 uMVMatrix;
-        uniform mat4 uPMatrix;
-        
-        // our texture matrix uniform
-        uniform mat4 simplePlaneVideoTextureMatrix;
-
-        // custom variables
-        varying vec3 vVertexPosition;
-        varying vec2 vTextureCoord;
-
-        uniform float uTime;
-        uniform vec2 uResolution;
-        uniform vec2 uMousePosition;
-        uniform float uMouseMoveStrength;
-
-
-        void main() {
-
-            vec3 vertexPosition = aVertexPosition;
-
-            // get the distance between our vertex and the mouse position
-            float distanceFromMouse = distance(uMousePosition, vec2(vertexPosition.x, vertexPosition.y));
-
-            // calculate our wave effect
-            float waveSinusoid = cos(5.0 * (distanceFromMouse - (uTime / 75.0)));
-
-            // attenuate the effect based on mouse distance
-            float distanceStrength = (0.4 / (distanceFromMouse + 0.4));
-
-            // calculate our distortion effect
-            float distortionEffect = distanceStrength * waveSinusoid * uMouseMoveStrength;
-
-            // apply it to our vertex position
-            vertexPosition.z +=  distortionEffect / 30.0;
-            vertexPosition.x +=  (distortionEffect / 30.0 * (uResolution.x / uResolution.y) * (uMousePosition.x - vertexPosition.x));
-            vertexPosition.y +=  distortionEffect / 30.0 * (uMousePosition.y - vertexPosition.y);
-
-            gl_Position = uPMatrix * uMVMatrix * vec4(vertexPosition, 1.0);
-
-            // varyings
-            vTextureCoord = (simplePlaneVideoTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
-            vVertexPosition = vertexPosition;
-        }
-    `;
-
-    const fs = `
-        precision mediump float;
-
-        varying vec3 vVertexPosition;
-        varying vec2 vTextureCoord;
-
-        uniform sampler2D simplePlaneVideoTexture;
-
-        void main() {
-            // apply our texture
-            vec4 finalColor = texture2D(simplePlaneVideoTexture, vTextureCoord);
-
-            // fake shadows based on vertex position along Z axis
-            finalColor.rgb -= clamp(-vVertexPosition.z, 0.0, 1.0);
-            // fake lights based on vertex position along Z axis
-            finalColor.rgb += clamp(vVertexPosition.z, 0.0, 1.0);
-
-            // handling premultiplied alpha (useful if we were using a png with transparency)
-            finalColor = vec4(finalColor.rgb * finalColor.a, finalColor.a);
-
-            gl_FragColor = finalColor;
-        }
-    `;
-
-    // some basic parameters
-    const params = {
-        vertexShader: vs,
-        fragmentShader: fs,
-        widthSegments: 20,
-        heightSegments: 20,
-        uniforms: {
-            resolution: { // resolution of our plane
-                name: "uResolution",
-                type: "2f", // notice this is an length 2 array of floats
-                value: [planeElements[0].clientWidth, planeElements[0].clientHeight],
-            },
-            time: { // time uniform that will be updated at each draw call
-                name: "uTime",
-                type: "1f",
-                value: 0,
-            },
-            mousePosition: { // our mouse position
-                name: "uMousePosition",
-                type: "2f", // again an array of floats
-                value: mousePosition,
-            },
-            mouseMoveStrength: { // the mouse move strength
-                name: "uMouseMoveStrength",
-                type: "1f",
-                value: 0,
-            }
-        },
-    };
-
-    // create our plane
-    const simplePlane = new Plane(curtains, planeElements[0], params);
-
-    simplePlane.onReady(() => {
-        // display the button
-        document.body.classList.add("curtains-ready");
-
-        // set a fov of 35 to reduce perspective (we could have used the fov init parameter)
-        simplePlane.setPerspective(35);
-
-        // now that our plane is ready we can listen to mouse move event
-        const wrapper = document.getElementById("page-wrap");
-
-        wrapper.addEventListener("mousemove", (e) => {
-            handleMovement(e, simplePlane);
-        });
-
-        wrapper.addEventListener("touchmove", (e) => {
-            handleMovement(e, simplePlane);
-        }, {
-            passive: true
-        });
-
-        // click to play the videos
-        document.getElementById("enter-site").addEventListener("click", () => {
-            // display canvas and hide the button
-            document.body.classList.add("video-started");
-
-            // apply a little effect once everything is ready
-            deltas.max = 2;
-
-            simplePlane.playVideos();
-        }, false);
-
-
-    }).onRender(() => {
-        // increment our time uniform
-        simplePlane.uniforms.time.value++;
-
-        // decrease both deltas by damping : if the user doesn't move the mouse, effect will fade away
-        deltas.applied += (deltas.max - deltas.applied) * 0.02;
-        deltas.max += (0 - deltas.max) * 0.01;
-
-        // send the new mouse move strength value
-        simplePlane.uniforms.mouseMoveStrength.value = deltas.applied;
-
-    }).onAfterResize(() => {
-        const planeBoundingRect = simplePlane.getBoundingRect();
-        simplePlane.uniforms.resolution.value = [planeBoundingRect.width, planeBoundingRect.height];
-    }).onError(() => {
-        // we will add a class to the document body to display original video
-        document.body.classList.add("no-curtains", "curtains-ready");
-
-        // handle video
-        document.getElementById("enter-site").addEventListener("click", () => {
-            // display canvas and hide the button
-            document.body.classList.add("video-started");
-
-            planeElements[0].getElementsByTagName("video")[0].play();
-        }, false);
-    });
-
-    // handle the mouse move event
-    function handleMovement(e, plane) {
-        // update mouse last pos
-        mouseLastPosition.copy(mousePosition);
-
-        const mouse = new Vec2();
-
-        // touch event
-        if(e.targetTouches) {
-            mouse.set(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
-        }
-        // mouse event
-        else {
-            mouse.set(e.clientX, e.clientY);
-        }
-
-        // lerp the mouse position a bit to smoothen the overall effect
-        mousePosition.set(
-            curtains.lerp(mousePosition.x, mouse.x, 0.3),
-            curtains.lerp(mousePosition.y, mouse.y, 0.3)
-        );
-
-        // convert our mouse/touch position to coordinates relative to the vertices of the plane and update our uniform
-        plane.uniforms.mousePosition.value = plane.mouseToPlaneCoords(mousePosition);
-
-        // calculate the mouse move strength
-        if(mouseLastPosition.x && mouseLastPosition.y) {
-            let delta = Math.sqrt(Math.pow(mousePosition.x - mouseLastPosition.x, 2) + Math.pow(mousePosition.y - mouseLastPosition.y, 2)) / 30;
-            delta = Math.min(4, delta);
-            // update max delta only if it increased
-            if(delta >= deltas.max) {
-                deltas.max = delta;
-            }
-        }
-    }
-});
-
-
-// class App {
-//   curtains
-//   lenis
-//   planes = []
-//   scrollEffect = 0
-
-//   DOM = {
-//     h1: document.querySelector('h1'),
-//     planeElements: [...document.querySelectorAll('[data-animation="image"]')],
-//     heroImage: document.querySelector('.project_header_img'),
-//     heroWebGlPlane: null,
-//     paragraphs: [...document.querySelectorAll('[data-animation="paragraph"]')],
-//     wheel: document.querySelector('.wheel_icon'),
-//     wheelWrapper: document.querySelector('.wheel_wrapper'),
-//     pageWrap: document.querySelector('.page-wrapper'),
+// const hash = window.location.hash.replace('#', '');
+// const logo = document.querySelector("topbar--svg");
+// // lenis
+// const lenis = new Lenis({
+//     duration: 1.2,
+//     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+//     smooth: true,
+//     prevent: (node) => node.id === logo,
+//   });
+  
+//   function raf(time) {
+//     lenis.raf(time);
+//     requestAnimationFrame(raf);
 //   }
+  
+//   requestAnimationFrame(raf);
 
-//   animationState = {}
+//   lenis.on('scroll', (e: any) => {
+//  console.log('is scrfolling')
+//   })
+  
+//   lenis.on('scroll', ScrollTrigger.update)
+  
+//   gsap.ticker.add((time)=>{
+//     lenis.raf(time * 1000);
+    
+//   })
+  
+//   gsap.ticker.lagSmoothing(0)
 
-//   constructor() {
-//     this.init()
-//   }
+  
+//   let select = (e) => document.querySelector(e);
+//   let selectAll = (e) => document.querySelectorAll(e);
+  
+//   const tracks = selectAll(".sticky-element");
 
-//   async init() {
-//     await this.createLoaderAnimation()
-//     this.createCurtains()
-//     this.setupCurtains()
-//     this.createLenis()
-//     this.createPlanes()
-//     this.createPageAnimations()
-//   }
 
-//   createLoaderAnimation() {
-//     const loaderDuration = 2
-//     return new Promise((resolve) => {
-//       this.animationState.pageLoaderTimeline = gsap.timeline()
-
-//       // page loading animation
-//       this.animationState.pageLoaderTimeline.set(this.DOM.wheelWrapper, {
-//         xPercent: -50,
-//         yPercent: -50,
-//         x: innerWidth / 2,
-//         y: innerHeight / 2,
-//         scale: 1.2,
-//       })
-
-//       this.animationState.pageLoaderTimeline.to(this.DOM.wheelWrapper, {
-//         autoAlpha: 1,
-//         rotation: 360 * 3,
-//         duration: loaderDuration,
-//       })
-
-//       this.animationState.pageLoaderTimeline.to(this.DOM.wheelWrapper, {
-//         xPercent: 0,
-//         yPercent: -100,
-//         x: 20,
-//         y: innerHeight - 20,
-//         scale: 0.75,
-//         duration: 1,
-//         onComplete: resolve,
-//       })
-//     })
-//   }
-
-//   createCurtains() {
-//     this.curtains = new Curtains({
-//       container: 'canvas',
-//       pixelRatio: Math.min(1.5, window.devicePixelRatio), // limit pixel ratio for performance
-//       watchScroll: false,
-//     })
-//   }
-
-//   setupCurtains() {
-//     this.curtains
-//       .onRender(() => {
-//         // update our planes deformation
-//         this.scrollEffect = this.curtains.lerp(this.scrollEffect, 0, 0.075)
-//       })
-//       .onScroll(() => {
-//         // get scroll deltas to apply the effect on scroll
-//         const delta = this.curtains.getScrollDeltas()
-
-//         // invert value for the effect
-//         delta.y = -delta.y
-
-//         // threshold
-//         if (delta.y > 60) {
-//           delta.y = 60
-//         } else if (delta.y < -60) {
-//           delta.y = -60
-//         }
-
-//         if (Math.abs(delta.y) > Math.abs(this.scrollEffect)) {
-//           this.scrollEffect = this.curtains.lerp(
-//             this.scrollEffect,
-//             delta.y,
-//             0.5
-//           )
-//         }
-//       })
-//       .onError(() => {
-//         // we will add a class to the document body to display original images
-//         document.body.classList.add('no-curtains', 'planes-loaded')
-//       })
-//       .onContextLost(() => {
-//         // on context lost, try to restore the context
-//         this.curtains.restoreContext()
-//       })
-//   }
-
-//   createLenis() {
-//     this.curtains.disableDrawing()
-
-//     this.lenis = new Lenis({
-//       duration: 2.5,
-//       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
-//       direction: 'vertical', // vertical, horizontal
-//       gestureDirection: 'vertical', // vertical, horizontal, both
-//       smooth: true,
-//       mouseMultiplier: 1,
-//       smoothTouch: false,
-//       touchMultiplier: 2,
-//       infinite: false,
-//     })
-
-//     this.lenis.on('scroll', ({ scroll }) => {
-//       // update our scroll manager values
-//       this.curtains.updateScrollValues(0, scroll)
-//       // render scene
-//       this.curtains.needRender()
-//     })
-
-//     gsap.ticker.add((time) => {
-//       this.lenis.raf(time * 1000)
-//     })
-//   }
-
-//   createPlanes() {
-//     const params = {
-//       vertexShader: vertex,
-//       fragmentShader: fragment,
-//       widthSegments: 20,
-//       heightSegments: 20,
-//       uniforms: {
-//         scrollEffect: {
-//           name: 'uScrollEffect',
-//           type: '1f',
-//           value: 0.0,
-//         },
-//       },
-//     }
-
-//     // add our planes and handle them
-//     for (let i = 0; i < this.DOM.planeElements.length; i++) {
-//       const plane = new Plane(this.curtains, this.DOM.planeElements[i], params)
-
-//       this.planes.push(plane)
-
-//       this.handlePlanes(plane)
-//     }
-
-//     this.DOM.heroWebGlPlane = this.planes[0]
-//   }
-
-//   handlePlanes(plane) {
-//     plane.setRenderOrder(-10)
-//     plane
-//       .onReady(() => {
-//         // once everything is ready, display everything
-//         if (plane === this.planes[this.planes.length - 1]) {
-//           document.body.classList.add('planes-loaded')
-//         }
-//       })
-//       .onRender(() => {
-//         // update the uniform
-//         if (!this.animationState.pageIntroTimeline.isActive()) {
-//           plane.uniforms.scrollEffect.value = this.scrollEffect
-//         }
-//       })
-//   }
-
-//   createPageAnimations() {
-//     this.animationState.pageIntroTimeline = gsap.timeline({})
-
-//     this.animationState.pageIntroValues = {
-//       translationY: 1000,
-//       wiggle: 1500,
-//     }
-
-//     // Set h1 visibility back to visible
-//     this.animationState.pageIntroTimeline.set(this.DOM.h1, {
-//       autoAlpha: 1,
-//     })
-
-//     // hero plane intro
-//     this.animationState.pageIntroTimeline.to(
-//       this.animationState.pageIntroValues,
-//       {
-//         translationY: 0,
-//         duration: 1.5,
-//         onUpdate: () => {
-//           // plane translation
-//           this.DOM.heroWebGlPlane.relativeTranslation.y =
-//             this.animationState.pageIntroValues.translationY
-//           this.curtains.needRender()
-//         },
-//       },
-//       'start'
-//     )
-
-//     // hero plane intro
-//     this.animationState.pageIntroTimeline.to(
-//       this.animationState.pageIntroValues,
-//       {
-//         wiggle: 0,
-//         duration: 2,
-//         onUpdate: () => {
-//           // update uniform value
-//           this.DOM.heroWebGlPlane.uniforms.scrollEffect.value =
-//             this.scrollEffect + this.animationState.pageIntroValues.wiggle * 0.2
-
-//           this.curtains.needRender()
-//         },
-//       },
-//       'start'
-//     )
-
-//     // h1 intro
-//     const splitH1 = new SplitType(this.DOM.h1, {
-//       types: 'lines, words',
-//       lineClass: 'line-wrapper',
-//     })
-
-//     this.animationState.pageIntroTimeline.from(
-//       splitH1.words,
-//       {
-//         yPercent: 100,
-//         duration: 0.6,
-//         stagger: 0.075,
-//       },
-//       'start+=1.5'
-//     )
-
-//     // wheel rotation on scroll
-//     this.animationState.pageIntroTimeline.to(this.DOM.wheel, {
-//       rotate: 360 * 4,
+//   tracks.forEach((track, i) => {
+//     let trackWrapper = track.querySelectorAll(".track");
+//     let trackFlex = track.querySelectorAll(".track-flex");
+//     let allImgs = track.querySelectorAll(".image");
+//     let progress = track.querySelectorAll(".progress--bar-total");
+  
+//     let sliders = gsap.utils.toArray(".panel-wide");
+//     let thumbs = gsap.utils.toArray(".thumbs");
+//     let visible = gsap.utils.toArray(".visible");
+  
+//     let trackWrapperWidth = () => {
+//       let width = 0;
+//       trackWrapper.forEach((el) => (width += el.offsetWidth));
+//       return width;
+//     };
+  
+//     let trackFlexWidth = () => {
+//       let width = 0;
+//       trackFlex.forEach((el) => (width += el.offsetWidth));
+//       return width;
+//     };
+  
+//     ScrollTrigger.defaults({});
+  
+//     gsap.defaults({
+//       ease: "none",
+//     });
+  
+//     let scrollTween = gsap.to(trackWrapper, {
+//       x: () => -trackWrapperWidth() + window.innerWidth,
 //       scrollTrigger: {
-//         trigger: this.DOM.pageWrap,
+//         trigger: track,
+//         pin: true,
+//         anticipatePin: 1,
 //         scrub: 1,
-//         start: 'top top',
-//         end: '+=10000',
-//       },
-//     })
-
-//     // paragraphs
-//     this.DOM.paragraphs.forEach((paragraph) => {
-//       const parentSplitText = new SplitType(paragraph, {
-//         types: 'lines',
-//         lineClass: 'line-wrapper',
-//       })
-
-//       const splitText = new SplitType(parentSplitText.lines, {
-//         types: `lines`,
-//       })
-
-//       gsap.set(paragraph, {
-//         autoAlpha: 1,
-//       })
-
-//       gsap.from(splitText.lines, {
-//         autoAlpha: 0,
-//         yPercent: 150,
-//         stagger: 0.1,
-//         duration: 0.75,
-//         ease: 'power.out4',
-//         delay: 0.5,
+//         start: "center center",
+//         end: () => "+=" + (track.scrollWidth - window.innerWidth),
+//         onRefresh: (self) => self.getTween().resetTo("totalProgress", 0),
+//         invalidateOnRefresh: true
+//       }
+//     });
+  
+//     allImgs.forEach((img, i) => {
+//       gsap.fromTo(img, {
+//         x: "-45vw"
+//       }, {
+//         x: "45vw",
 //         scrollTrigger: {
-//           trigger: paragraph,
-//           start: 'top 90%',
-//           once: true,
-//         },
-//       })
-//     })
+//           trigger: img.parentNode,
+//           containerAnimation: scrollTween,
+//           start: "left right",
+//           end: "right left",
+//           scrub: true,
+//           invalidateOnRefresh: true,
+//           onRefresh: self => {
+//             if (gsap.start < 0) {
+//               self.animation.progress(gsap.utils.mapRange(self.start, self.end, 0, 1, 0));
+//             }
+//           }
+//         }
+//       });
+//     });
+  
+//     let progressBar = gsap.timeline({
+//       scrollTrigger: {
+//         trigger: trackWrapper,
+//         containerAnimation: scrollTween,
+//         start: "left left",
+//         end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
+//         scrub: true
+//       }
+//     }).to(progress, {
+//       width: "100%",
+//       ease: "none"
+//     });
+  
+//     sliders.forEach((slider, i) => {
+//       let anim = gsap.timeline({
+//         scrollTrigger: {
+//           trigger: slider,
+//           containerAnimation: scrollTween,
+//           start: "left right",
+//           end: "right right",
+//           scrub: true,
+//         }
+//       }).to(visible, {
+//         width: "100%",
+//         backgroundColor: "#000000",
+//         ease: "none"
+//       });
+//     });
+  
+//     sliders.forEach((slider, i) => {
+//       if (thumbs[i]) {
+//         thumbs[i].onclick = () => {
+//           gsap.to(window, {
+//             scrollTo: {
+//               y: "+=" + slider.getBoundingClientRect().left,
+//             },
+//             duration: 0.5,
+//           });
+//         };
+//       }
+//     });
+  
+//   });
+  
+//   // Scroll to video function
+//   function scrollToVideo() {
+//     // let hash = "";
+ 
+//     const video = document.querySelector(`[data-hashnav="${hash}"]`);
+//     if (video) {
+//       const slider = video.closest('.panel-wide');
+//       if (slider) {
+//         gsap.to(window, {
+//           scrollTo: {
+//             y: "+=" + slider.getBoundingClientRect().left,
+//           },
+//           duration: 0.5,
+//           onComplete: () => {
+//             ScrollTrigger.refresh();
+//           }
+//         });
+//       }
+//     }
+//   }
+  
+//   // Hash navigation setup
+//   function setupHashNav() {
+//     if (window.location.hash) {
+//     //   const hash = window.location.hash.replace('#', '');
+//       scrollToVideo(hash);
+//     }
+  
+//     const thumbnails = document.querySelectorAll('.thumbs a');
+//     thumbnails.forEach(thumb => {
+//       thumb.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         const hash = e.target.getAttribute('href').replace('#', '');
+//         scrollToVideo(hash);
+//         window.location.hash = hash;
+//       });
+//     });
+  
+//     window.addEventListener('hashchange', () => {
+//       const hash = window.location.hash.replace('#', '');
+//       scrollToVideo(hash);
+//     });
+//   }
+  
+//   // Additional function to handle links from other pages
+//   function handleExternalLinks() {
+//     if (window.location.hash) {
+//       const hash = window.location.hash.replace('#', '');
+//       scrollToVideo(hash);
+//     }
+//   }
+  
+//   document.addEventListener('DOMContentLoaded', () => {
+//     setupHashNav();
+//     handleExternalLinks();
+//     gsap.fromTo("body", { opacity: 0 }, { opacity: 1, duration: 0.5 });
+//   });
+  
+//   document.addEventListener('change', (e) => {
+//     if (AnimationEvent) {
+//       // stopOverscroll(".sticky-element");
+//     }
+//   });
+// document.addEventListener("scroll", scrollInit);
+// scrollInit();
+
+// LoadMe();
+// function LoadMe() {
+//   var loadedCount = 0; // current number
+//   var videosToLoad = ('.video--figure').length; // number of videos
+//   var loadingProgress = 0; // TL progress - starts at 0
+//   loadProgress();
+
+//   if (!(document.querySelector('.loader-wrapper'))) {
+//       for (let i = 0; i < videosToLoad; i++) {
+//           loadedCount++;
+//           console.log(loadedCount);
+//       }
+//   }
+
+//   function loadProgress() {
+//       // one more image has been loaded
+//       loadedCount++;
+//       loadingProgress = (loadedCount / videosToLoad);
+
+//       if (document.querySelector('.loader-wrapper')) {
+//           gsap.timeline()
+//               .to(".loader-wrapper", { duration: 3, opacity: 0, autoAlpha: 0, ease: Power4.easeIn, delay: 0.5 })
+//               .set(('#site-loader'), { className: 'is-hidden' })
+//               .then(loadComplete)
+//               .finally(replenishMe);
+//       }
+//   }
+
+//   function loadComplete() {
+//       if (document.querySelector('.loader-wrapper')) {
+//           gsap.timeline()
+//               .set(('#site-loader'), { className: 'is-loaded' })
+//               .set(('.loader-wrapper'), { className: 'is-loaded' })
+//               .set(('.loader-wrapper'), { className: 'is-hidden' })
+//               .set(('.mr--texterton__wrapper'), { className: 'is-hidden' })
+//               .set(('.mr--bloberton__wrapper'), { className: 'is-hidden' })
+          
+//               .from("#site-loader", { duration: 3, opacity:0, autoAlpha: 1, ease: Power4.easeInOut, delay: 0.5 });
+//       }
+//   }
+
+//   function replenishMe() {
+//       if (!(document.querySelector('.loader-wrapper'))) {
+//           gsap.timeline().kill();
+//           console.log("no loader");
+//       }
 //   }
 // }
 
-// window.addEventListener('load', () => {
-//   const app = new App()
-//   // console.log('Loaded')
-// })
+// function fitPositionAbsoluteElements() {
+//   const smileyWrapper = document.querySelector('.central--smile__wrapper') as HTMLElement;
+//   //k add
+
+//   function getDomSize() {
+//     //this is a "getter"
+//     //get height
+//     smileyWrapper.style.getPropertyValue('--adjust-height');
+//     getComputedStyle(smileyWrapper).getPropertyValue('--adjust-height');
+//     // get width
+//     smileyWrapper.style.getPropertyValue('--adjust-width');
+//     getComputedStyle(smileyWrapper).getPropertyValue('--adjust-width');
+//   }
+//   if (smileyWrapper) {
+//       function updateSize() {
+//         getDomSize(); // we are getting these values from this func
+        
+//         //let's reset the values of our var, or leave them
+//         let width = window.innerWidth.toString();
+//         let height = window.innerHeight.toString();
+//         smileyWrapper.style.setProperty('--adjust-width', width);
+//         smileyWrapper.style.setProperty('--adjust-height', height);
+//           //old frog
+//           // let width = window.innerWidth;
+//           // let height = window.innerHeight;
+//           // videoGridElement.style.width = `${width} + px`;
+//           // videoGridElement.style.height = `${height}px`;
+//       }
+//       updateSize();
+//       window.addEventListener('resize', updateSize);
+//   } else {
+//       console.error('Element with class .video--placement--grid not found.');
+//   }
+// }
+
+// fitPositionAbsoluteElements();
+
+
+// if(reload) {
+// reload.addEventListener("click", () => {
+//   log.textContent = "";
+//   setTimeout(() => {
+//     window.location.reload(true);
+//   }, 200);
+// });
+// }
+
+// window.addEventListener("load", (event) => {
+//   console.log( "load\n");
+// });
+
+// document.addEventListener("readystatechange", (event) => {
+//   console.log(`readystate: ${document.readyState}\n`);
+//   loadingPage.style.display = "none";
+//   setTimeout(() => {
+//     // window.location.reload();
+//     LoadMe();
+//   }, 200);
+// });
+
+// document.addEventListener("DOMContentLoaded", (event) => {
+//   console.log( `DOMContentLoaded\n`);
+
+//   // await new Promise((resolve) => {
+//   //   setTimeout(() => {
+//   //    LoadMe();
+//   //   })
+//   //   console.log("gsap loader loaded")
+//   // })
+
+// });
+
+
+
+
+const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
+if (canvasElement) {
+  const canvas = new Canvas(canvasElement);
+  window.addEventListener('beforeunload', () => {
+    canvas.dispose();
+  });
+}
+
+//   const gridElement = document.querySelector('.video--placement--grid') as HTMLElement;
+//   const gridItems = gsap.utils.toArray(gridElement.querySelectorAll('.video--figure'));
+//   const gridItemsShuffled = gsap.utils.shuffle(gridItems);
+//   const fullscreenElement = document.querySelector('.fullscreen--scale') as HTMLElement;
+//   const maskingLayer = document.querySelector('.masking--element') as HTMLElement;
+//   // Map to store the initial state of each video
+//   let currentFullscreenVideo: HTMLElement | null = null;
+// // Map to store the initial state of each video
+// const originalStates = new Map<Element, { parent: Element, index: number, position: { top: number, left: number, width: number, height: number } }>();
+//   // Flag to track fullscreen mode
+// let isFullscreen = false;
+
+
+
+//   // Pause all videos except the one in fullscreen
+// const pauseOtherVideos = (excludeVideo: HTMLVideoElement) => {
+//     gridItems.forEach((item: HTMLElement) => {
+//       const video = item.querySelector('.video--item') as HTMLVideoElement;
+//       if (video && video !== excludeVideo && !video.paused) {
+//         video.pause();
+//       }
+//     });
+//   };
+  
+//   // Play the fullscreen video
+// const playFullscreenVideo = (video: HTMLVideoElement) => {
+//     if (video.paused) {
+//       video.play();
+//     }
+//   };
+
+
+
+
+
+// // Event listener for DOMContentLoaded
+// document.addEventListener('DOMContentLoaded', () => {
+
+
+
+
+//   console.log('slider page loaded')
+// //  .then(() => {
+// //     initEvents();
+// //     animateLogo();
+// //   })
+
+// });
+
+
+
+
+// // Selecting DOM elements
+// const gridElement = document.querySelector('.video--placement--grid') as HTMLElement;
+// // let gridItems = gridElement.querySelectorAll('.video--figure').gsap.utils.toArray();
+// let gridItems = gsap.utils.toArray(gridElement.querySelectorAll('.video--figure'));
+// // const gridItems = Array.from(gridElement.querySelectorAll('.video--figure')); // Convert NodeList to Array
+// const gridVideo = gridElement.querySelectorAll('.video--item');
+// const fullscreenElement = document.querySelector('.fullscreen--scale');
+// const maskingLayer = document.querySelector('.masking--element');
+
+// // Flag to track fullscreen mode
+// let isFullscreen = false;
+
+// // Animation defaults
+// const animationDefaults = { duration: 1, ease: 'expo.inOut' };
+
+// // // Function to flip the clicked image and animate its movement
+// // const flipImage = (gridItem, gridVideo) => {
+// //   gsap.set(gridItem, { zIndex: 99 });
+// //   const state = Flip.getState(gridVideo, { props: 'borderRadius' });
+// //   if (isFullscreen) {
+// //     gridItem.appendChild(gridVideo);
+// //   } else {
+// //     fullscreenElement!.appendChild(gridVideo);
+// //   }
+
+// //   Flip.from(state, {
+// //     ...animationDefaults,
+// //     absolute: true,
+// //     prune: true,
+// //     onComplete: () => {
+// //       if (isFullscreen) {
+// //         gsap.set(gridItem, { zIndex: 'auto' });
+// //       }
+// //       isFullscreen = !isFullscreen;
+// //     }
+// //   });
+// // };
+
+// // newFunction();
+
+// const flipVideo = (gridItem: Element, gridVideo: Element) => {    
+//     gsap.set(gridItem, { zIndex: 1 });
+//     gsap.set(maskingLayer, { zIndex: 0});
+//     gsap.to(maskingLayer, {animationDefaults, opacity: .85 });
+//     const state = Flip.getState(gridVideo, { props: 'borderRadius' });
+  
+//     if (isFullscreen) {
+//       gridItem.appendChild(gridVideo);
+//       fullscreenElement.innerHTML = '<p class="project-name-revealed">text</p>';
+
+
+//     } else {
+//       fullscreenElement?.appendChild(gridVideo);
+//     }
+  
+//     Flip.from(state, {
+//       ...animationDefaults,
+//       scale: true,
+//       prune: true,
+  
+
+//       onStart: () => {},
+//       onLeave: () => { 
+//         // let gridItems = gsap.utils.toArray(gridItems);
+
+//         gsap.fromTo(gridItem, {opacity: 1}, {opacity: 0}) },
+//       onComplete: () => {
+//         if (isFullscreen) {
+//           gsap.set(gridItem, { zIndex: 'unset' });
+//         // gridItem.setAttribute('class', 'greyed-out');
+//         }
+//         isFullscreen = !isFullscreen;
+//       },
+//     //   onReverseComplete () => {}
+//         });
+//   };
+
+// // Function to determine the position class based on the item and clicked item positions
+// const determinePositionClass = (itemRect, clickedRect) => {
+//   if (itemRect.bottom < clickedRect.top) {
+//     return POSITION_CLASSES.NORTH;
+//   } else if (itemRect.top > clickedRect.bottom) {
+//     return POSITION_CLASSES.SOUTH;
+//   } else if (itemRect.right < clickedRect.left) {
+//     return POSITION_CLASSES.WEST;
+//   } else if (itemRect.left > clickedRect.right) {
+//     return POSITION_CLASSES.EAST;
+//   }
+//   return '';
+// //   console.log(itemRect, clickedRect);
+// };
+
+// // Function to move other items based on their position relative to the clicked item
+// // const moveOtherItems = (gridItem, gridVideo) => {
+// //     const clickedRect = gridItem.getBoundingClientRect();
+  
+// //     // For the remaining stuff
+// //     const otherGridItems = gridItems.filter(item => item !== gridItem);
+// //     const state = Flip.getState(otherGridItems);
+  
+// //     otherGridItems.forEach(item => {
+// //       const itemRect = item.getBoundingClientRect();
+// //       const classname = determinePositionClass(itemRect, clickedRect);
+// //       if (classname) {
+// //         item.classList.toggle(classname, !isFullscreen);
+// //         // item.classList.toggle('video-figure', !isFullscreen);
+
+// //       }
+// //     });
+  
+// //     Flip.from(state, {
+// //       ...animationDefaults,
+// //       toggleClass: 'greyed-out',
+// //       scale: true,
+// //     //   prune: true
+// //     });
+// //   };
+  
+// const moveOtherItemsBack = (gridItem: Element, gridVideo: Element) => {
+//     const clickedRect = gridItem.getBoundingClientRect();
+
+//     for (let i = 0; i < gridItems.length; i++) {
+//         const gridItem = gridItems[i];
+//         // gridItem.classList.remove('pos-north', 'pos-south', 'pos-west', 'pos-east');
+//     //    if (fullscreenElement.contains(gridItem.classList.value)) {
+//     //     console.log('full screen detected');
+
+//     //    }
+   
+
+//         // if (gridElement.contains(fullscreenElement)) {
+//         //     console.log('full screen detected');
+//         // }
+
+
+//         // gridItem.appendChild(gridVideo);
+
+//         const index = parseInt(gridVideo.dataset.index || '0', 10);
+//         // addListeners(gridItem, gridVideo);
+
+
+//         }
+//         addListeners(gridItem, gridVideo);
+//         function addListeners(gridItem: Element, gridVideo: Element) {
+//             gridElement.addEventListener('click', (e) => {
+//                console.log(e.target + 'clicked');
+//                let videoFigure = document.querySelector('.video--figure') as HTMLElement;
+//              e.stopPropagation();
+//                if (isFullscreen) {
+//                 e.preventDefault();
+//                 // killFlips(gridItem, gridVideo);
+//                 // gridItem.killFlips();
+//                 const fullState = Flip.getState(videoFigure, () => {
+//                     console.log(gridVideo + ' removed');
+
+//                 }
+// );
+//                 Flip.from(fullState, {
+//                     ...animationDefaults,
+//                     duration: 1,
+//                     stagger: 0.4,
+//                     onComplete: () => {
+//                         appendVidBack();
+                    
+
+//                     }
+
+
+
+//                 })
+
+
+//                     function appendVidBack () {   
+
+//                         videoFigure.appendChild(gridVideo.cloneNode(true));
+//                         fullState.clear();
+
+//                        console.log(gridVideo + ' cloned');
+//                    }
+//                 }
+
+
+//             })
+
+//         }
+
+
+
+// }
+
+
+// // Click event handler for the grid
+// const toggleVideo = (e: Event) => {
+//     const gridVideo = e.target as HTMLElement;
+//     const index = parseInt(gridVideo.dataset.index || '0', 10);
+//     const gridItem = gridItems[index];
+    
+//     flipVideo(gridItem, gridVideo);
+//     moveOtherItemsBack(gridItem, gridVideo);
+//   };
+  
+//   function animateLogo() {
+//     let originPoint = '239.9 434.7 239.9 405.5 217.5 405.5 188.4 405.5 162.6 405.5 162.6 433.9 162.6 459.9 162.6 487.9 162.6 522.1 162.6 563.4 201.2 564.1 239.9 563.9 239.9 535.2 239.9 499.8 239.9 458.1 239.9 434.7';
+//     let endPoint = '301.1 417.1 231.3 438.7 231.9 364.9 165.7 364.9 165.7 438.7 95.8 417.1 74.5 475.4 145.1 496.6 100.2 554.8 152.9 592 198.7 530.5 244.6 592 297.3 554.7 251.9 496.5 322.4 475.4 301.1 417.1';
+
+//     anime({
+//         targets: '#rectangle',
+//         points: [
+//             { value: originPoint },
+//             { value: endPoint },
+//             { value: originPoint }
+//         ],
+//         easing: 'easeOutQuad',
+//         duration: 2000,
+//         loop: false
+//     });
+// }
+//   // Function to initialize event listeners for grid
+//   const initEvents = () => {
+//     gridVideo.forEach((gridVideo, position) => {
+//       // Save the index of the video
+//       gridVideo.dataset.index = position.toString();
+      
+//       // Add click event listener to the video
+//       gridVideo.addEventListener('click', toggleVideo);
+//     });
+//   };
+// document.addEventListener('DOMContentLoaded', initEvents);
+// document.addEventListener('DOMContentLoaded', animateLogo);
+
+
+
+
+
+
+
+
+
+// // Constants for class names
+// const POSITION_CLASSES = {
+//   NORTH: 'pos-north',
+//   SOUTH: 'pos-south',
+//   WEST: 'pos-west',
+//   EAST: 'pos-east',
+// };
+
+// // Selecting DOM elements
+// const gridElement = document.querySelector('.video--placement--grid') as HTMLElement;
+// const gridItems = Array.from(gridElement.querySelectorAll('.video--figure')) as HTMLElement[]; // Convert NodeList to Array
+// const gridVideo = Array.from(gridElement.querySelectorAll('.video--item')) as HTMLElement[];
+// const fullscreenElement = document.querySelector('.fullscreen--scale');
+// const clickedRect = gridItems.find(item => item.classList.contains('fullscreen--scale'))?.getBoundingClientRect();
+
+
+// // Flag to track fullscreen mode
+// let isFullscreen = false;
+
+// // Animation defaults
+// const animationDefaults = { duration: 1.5, ease: 'expo.inOut' };
+
+// // // Function to flip the clicked image and animate its movement
+// // const flipImage = (gridItem, gridVideo) => {
+// //   gsap.set(gridItem, { zIndex: 99 });
+// //   const state = Flip.getState(gridVideo, { props: 'borderRadius' });
+// //   if (isFullscreen) {
+// //     gridItem.appendChild(gridVideo);
+// //   } else {
+// //     fullscreenElement!.appendChild(gridVideo);
+// //   }
+
+// //   Flip.from(state, {
+// //     ...animationDefaults,
+// //     absolute: true,
+// //     prune: true,
+// //     onComplete: () => {
+// //       if (isFullscreen) {
+// //         gsap.set(gridItem, { zIndex: 'auto' });
+// //       }
+// //       isFullscreen = !isFullscreen;
+// //     }
+// //   });
+// // };
+
+// let currentFullscreenItem: Element | null = null;
+// const maskingLayer = document.querySelector('.masking--element');
+// const flipVideo = (gridItem: Element, gridVideo: Element) => {
+//     gsap.set(gridItem, { zIndex: 1 });
+//     gsap.set(maskingLayer, { zIndex: 0});
+//     gsap.to(maskingLayer, {animationDefaults, opacity: .85 });
+//     // const state = Flip.getState(gridVideo, { props: 'borderRadius' });
+// // gsap.set(gridItem, { zIndex: 99 });
+// //   gsap.set(gridItem, { zIndex: 1 });
+// //   gsap.set(maskingLayer, { zIndex: 0, pointerEvents: 'none' });
+
+//   const state = Flip.getState(gridVideo, { props: 'borderRadius' });
+
+//   if (isFullscreen) {
+//     if (currentFullscreenItem) {
+//       currentFullscreenItem.appendChild(gridVideo);
+//       currentFullscreenItem = null;
+//     }
+//   } else {
+//     fullscreenElement?.appendChild(gridVideo);
+//     currentFullscreenItem = gridItem;
+//   }
+
+//   Flip.from(state, {
+//     ...animationDefaults,
+//     scale: true,
+//     prune: true,
+//     toggleClass: 'flip-video',
+//     onStart: () => {
+//         if (currentFullscreenItem) {
+//             currentFullscreenItem.appendChild(gridVideo);
+//             currentFullscreenItem = null;
+//           }
+         
+//         else {
+//           fullscreenElement?.appendChild(gridVideo);
+//           currentFullscreenItem = gridItem;
+//         }
+//     },
+//     onComplete: () => {}
+
+
+//     //   .then(() => {
+
+//     //   })
+
+
+    
+// });
+// function getBoundingRect(itemRect: DOMRect, clickedRect: DOMRect) {
+//     const fullscreenVideo = fullscreenElement?.querySelector('.fullscreen--scale');
+//     // Select the element with the given class name
+//     const element = fullscreenVideo?.querySelector(`.${'.fullscreenVideo'}`);
+    
+//     // Check if the element exists
+//     if (element) {
+//       // Get the bounding rectangle of the element
+//       return element.getBoundingClientRect();
+//     } else {
+//       // Return null if the element does not exist
+//       return null;
+//     }
+//   }
+  
+
+
+
+
+
+// Function to move other items based on their position relative to the clicked item
+// const moveOtherItems = (gridItem: Element, gridVideo: Element) => {
+    
+
+  
+//     // For the remaining stuff
+//     const otherGridItems = gridItems.filter(item => item !== gridItem);
+//     // gridItems.reduce
+//     const state = Flip.getState(otherGridItems);
+//     // const clickedRect = gridItem.getBoundingClientRect();
+//     // const clickedRect = gridItems.find(item => item.classList.contains('fullscreen--scale'))?.getBoundingClientRect();
+   
+//     otherGridItems.forEach(item => {
+//         Flip.from(state, {
+//             ...animationDefaults,
+//        scale: true,
+
+//           isVisible: false,
+      
+//             prune: true,
+//             stagger: {
+//               each: 0.1,
+//               from: 'start'
+//             }
+//           });
+
+
+    //   const itemRect = item.getBoundingClientRect();
+     
+    //   if (itemRect.bottom < itemRect.top) {}
+
+          // Function to determine the position class based on the item and clicked item positions
+// const determinePositionClass = () => {
+//     //   const itemRect = gridItems.find(item => item.classList.contains('fullscreen--scale'))?.getBoundingClientRect();
+//     //   const clickedRectFind = gridItems.find(item => item.classList.contains('fullscreen--scale'))?.getBoundingClientRect();
+//     //     const clickedRect = clickedRectFind.position;
+//     const clickedRect = gridItem.getBoundingClientRect();
+
+//         // const clickedRect = gridItem.getBoundingClientRect();
+//       if (itemRect.bottom < clickedRect.top) {
+//         return POSITION_CLASSES.NORTH;
+//       } else if (itemRect.top > clickedRect.bottom) {
+//         return POSITION_CLASSES.SOUTH;
+//       } else if (itemRect.right < clickedRect.left) {
+//         return POSITION_CLASSES.WEST;
+//       } else if (itemRect.left > clickedRect.right) {
+//         return POSITION_CLASSES.EAST;
+//       }
+//       return '';
+//     //   console.log(itemRect, clickedRect);
+//     };
+//     const classname = determinePositionClass();
+//     if (classname) {
+//       item.classList.toggle(classname, !isFullscreen);
+//       item.classList.toggle('greyed-out', !isFullscreen);
+//       // item.classList.toggle('filler-space'  , !isFullscreen  );
+//       // item.classList.toggle('video-figure', !isFullscreen);
+
+//     }
+//     });
+  
+//     Flip.from(state, {
+//       ...animationDefaults,
+//     //   scale: 0.5,
+//     isVisible: false,
+
+//       prune: true,
+//       stagger: {
+//         each: 0.1,
+//         from: 'start'
+//       }
+
+
+//     });
+//   };
+
+
+// // Click event handler for the grid
+// const toggleVideo = (e: Event) => {
+//     const gridVideo = e.currentTarget as HTMLElement;
+//     const index = parseInt(gridVideo.dataset.index || '0', 10);
+//     const gridItem = gridItems[index];
+//     const flipState = Flip.getState(gridVideo, {  });
+//     console.log("flipState", flipState);
+//     // if (!gridItem) {
+//     //     console.error('Grid item not found');
+//     //     return;
+//     // }
+// //     for (let i = 0;) {
+// //     flipVideo(gridItem, gridVideo);
+// //  moveOtherItems(gridItem, gridVideo);
+// //     }
+// //  const boundingRect = clickedRect ? getBoundingRect(new DOMRect, clickedRect) : null;
+
+      
+// //  if (boundingRect) {
+// //    console.log('Bounding Rectangle:', boundingRect);
+// //  } else {
+// //    console.log('Element not found');
+// //  }
+
+//   };
+  
+//   // Function to initialize event listeners for grid
+//   const initEvents = () => {
+//    document.addEventListener('click', toggleVideo);
+//     // gridVideo.forEach((videoElement) => {
+//     //     (videoElement as HTMLElement).addEventListener('click', toggleVideo);
+//     // //   if (gridItems[index]) {
+//     // //     (videoElement as HTMLElement).dataset.index = index.toString(); // Cast to HTMLElement
+//     // //     (videoElement as HTMLElement).addEventListener('click', toggleVideo);
+//     // //   } else {
+//     // //     console.error('Index out of bounds:', index);
+//     // //   }
+//     // });
+//   };
+// //   const initEvents = () => {
+// //     gridVideo.forEach((gridVideo, position) => {
+
+// //         let position = Array.from(gridItems).indexOf(gridItems[position]);
+
+
+// //       // Save the index of the video
+// //     //   let gridItemPos = gridItems[position].dataset.index.position.toString();
+// //     //  gridVideo.dataset.index = position.toString();
+      
+// //       // Add click event listener to the video
+// //       gridVideo.addEventListener('click', toggleVideo);
+// //     // document.addEventListener('click', (e: Event) => {
+// //     //     if (isFullscreen && e.target !== fullscreenElement && !fullscreenElement?.contains(e.target as Node)) {
+// //     //       const fullscreenVideo = fullscreenElement?.querySelector('.video--item');
+// //     //       if (fullscreenVideo && currentFullscreenItem) {
+// //     //         flipVideo(currentFullscreenItem, fullscreenVideo);
+// //     //         moveOtherItems(currentFullscreenItem, fullscreenVideo);
+// //     //       }
+// //     //     }
+ 
+      
+// //     });
+// //   };
+
+
+// document.addEventListener('DOMContentLoaded', initEvents);
+
+
+// preload but. not workee yet
+// preloadImages('.video--item').then(() => {
+//   // Remove the loading class from the body
+//   document.body.classList.remove('loading');
+//   // Initialize event listeners
+//   initEvents();
+// });
+
+
+// function sortVideoGrid {
+//         // these are chained functions to illustrate map / toString / split / push but wrote selectors below. 
+//          // const videoFigures = Array.from(gridContainer.querySelectorAll('.video--figure')).map(figure => figure.querySelector('video'));
+//         // const videos = Array.from(gridContainer?.children || []).push(gridContainer) .toString().split(',');
+
+//         let videoFigure = document.querySelector('.video--figure') as HTMLElement; // as singular element
+//         let videoFigures = document.querySelectorAll('.video--figure') as any; // as array
+
+
+
+//        let currentBoundRect =  videoFigure.getBoundingClientRect();
+//         // let currentRect = videoFigure.getClientRects(); //sometimmes this can compute better. 
+//         const fillers = videoFigure.hasAttribute("filler-space");
+
+
+//         // filter out the filler classes
+//        const filterVideos = videoFigures.filter(fillers).toArray(); // put this in its own array
+//        filterVideos.forEach(videoFigure => {})
+//             //assign a class or sort these diff from your regular function
+// }
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const gridContainer = document.querySelector('.video--placement--grid') as HTMLElement;
+//     const videoItems = Array.from(gridContainer.querySelectorAll('.video--item'));
+//     const videoFigures = Array.from(gridContainer.querySelectorAll('.video--figure')).map(figure => figure.querySelector('video'));
+
+//     const videos = Array.from(gridContainer?.children || []).push(gridContainer) .toString().split(',');
+
+
+
+//     const totalCells = 20; // Total number of cells in the grid (5 columns * 4 rows)
+//     const minWidth = 100; // Minimum width in pixels
+//     const maxWidth = 300; // Maximum width in pixels
+
+//     function isCellOccupied(startRow: number, startColumn: number, endRow: any, endColumn: any) {
+//         return videoFigures.some(video => {
+
+//             // videoStartRow = parseInt(videoItems.style.gridRowStart, 10) - 1;
+
+//             const videoStartRow = parseInt(video!.style.gridRowStart, 10) - 1;
+//             const videoStartColumn = parseInt(video!.style.gridColumnStart, 10) - 1;
+//             const videoEndRow = parseInt(video!.style.gridRowEnd, 10) - 1;
+//             const videoEndColumn = parseInt(video!.style.gridColumnEnd, 10) - 1;
+//             return startRow >= videoStartRow && startRow <= videoEndRow &&
+//                    startColumn >= videoStartColumn && startColumn <= videoEndColumn;
+//         });
+//     }
+
+//     videoItems.forEach(video => {
+//         let startRow, startColumn, endRow, endColumn;
+//         //untested methods that you might use
+        
+
+
+
+//         // do {
+           
+//         // } while (isCellOccupied(startRow, startColumn, endRow, endColumn));
+
+//         // Generate random start and end positions within the grid
+//         startRow = Math.floor(Math.random() * numOfRows); // Random starting row
+//         startColumn = Math.floor(Math.random() * numOfColumns); // Random starting column
+//         endRow = startRow + Math.floor(Math.random() * numOfRows); // Random ending row
+//         endColumn = startColumn + Math.floor(Math.random() * numOfColumns); // Random ending column
+
+//         // Ensure the video fits within the grid bounds
+//         if (endRow >= numOfRows || endColumn >= numOfColumns) {
+//             endRow = Math.min(endRow, numOfRows - 1);
+//             endColumn = Math.min(endColumn, numOfColumns - 1);
+//         }
+
+//         // Generate a random size between minWidth and maxWidth
+//         let randomSize = Math.floor(minWidth + Math.random() * (maxWidth - minWidth));
+
+//         // Apply grid placement and random size
+//         video.style.gridColumnStart = startColumn + 1;
+//         video.style.gridRowStart = startRow + 1;
+//         video.style.gridColumnEnd = endColumn + 1;
+//         video.style.gridRowEnd = endRow + 1;
+//         video.style.width = `${randomSize} + px`; // Set the width of the video
+//         // Optionally, set the height based on aspect ratio or other criteria
+//     });
+// });
+
+
+// window.addEventListener("load", () => {
+//     // track the mouse positions to send it to the shaders
+//     const mousePosition = new Vec2();
+//     // we will keep track of the last position in order to calculate the movement strength/delta
+//     const mouseLastPosition = new Vec2();
+
+//     const deltas = {
+//         max: 0,
+//         applied: 0,
+//     };
+
+//     // set up our WebGL context and append the canvas to our wrapper
+//     const curtains = new Curtains({
+//         container: "canvas",
+//         watchScroll: false, // no need to listen for the scroll in this example
+//         pixelRatio: Math.min(1.5, window.devicePixelRatio) // limit pixel ratio for performance
+//     });
+
+//     // handling errors
+//     curtains.onError(() => {
+//         // we will add a class to the document body to display original video
+//         document.body.classList.add("no-curtains", "curtains-ready");
+
+//         // handle video
+//         document.getElementById("enter-site").addEventListener("click", () => {
+//             // display canvas and hide the button
+//             document.body.classList.add("video-started");
+
+//             planeElements[0].getElementsByTagName("video")[0].play();
+//         }, false);
+//     }).onContextLost(() => {
+//         // on context lost, try to restore the context
+//         curtains.restoreContext();
+//     });
+
+//     // get our plane element
+//     const planeElements = document.getElementsByClassName("curtain");
+
+
+//     const vs = `
+//         precision mediump float;
+
+//         // default mandatory variables
+//         attribute vec3 aVertexPosition;
+//         attribute vec2 aTextureCoord;
+
+//         uniform mat4 uMVMatrix;
+//         uniform mat4 uPMatrix;
+        
+//         // our texture matrix uniform
+//         uniform mat4 simplePlaneVideoTextureMatrix;
+
+//         // custom variables
+//         varying vec3 vVertexPosition;
+//         varying vec2 vTextureCoord;
+
+//         uniform float uTime;
+//         uniform vec2 uResolution;
+//         uniform vec2 uMousePosition;
+//         uniform float uMouseMoveStrength;
+
+
+//         void main() {
+
+//             vec3 vertexPosition = aVertexPosition;
+
+//             // get the distance between our vertex and the mouse position
+//             float distanceFromMouse = distance(uMousePosition, vec2(vertexPosition.x, vertexPosition.y));
+
+//             // calculate our wave effect
+//             float waveSinusoid = cos(5.0 * (distanceFromMouse - (uTime / 75.0)));
+
+//             // attenuate the effect based on mouse distance
+//             float distanceStrength = (0.4 / (distanceFromMouse + 0.4));
+
+//             // calculate our distortion effect
+//             float distortionEffect = distanceStrength * waveSinusoid * uMouseMoveStrength;
+
+//             // apply it to our vertex position
+//             vertexPosition.z +=  distortionEffect / 30.0;
+//             vertexPosition.x +=  (distortionEffect / 30.0 * (uResolution.x / uResolution.y) * (uMousePosition.x - vertexPosition.x));
+//             vertexPosition.y +=  distortionEffect / 30.0 * (uMousePosition.y - vertexPosition.y);
+
+//             gl_Position = uPMatrix * uMVMatrix * vec4(vertexPosition, 1.0);
+
+//             // varyings
+//             vTextureCoord = (simplePlaneVideoTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
+//             vVertexPosition = vertexPosition;
+//         }
+//     `;
+
+//     const fs = `
+//         precision mediump float;
+
+//         varying vec3 vVertexPosition;
+//         varying vec2 vTextureCoord;
+
+//         uniform sampler2D simplePlaneVideoTexture;
+
+//         void main() {
+//             // apply our texture
+//             vec4 finalColor = texture2D(simplePlaneVideoTexture, vTextureCoord);
+
+//             // fake shadows based on vertex position along Z axis
+//             finalColor.rgb -= clamp(-vVertexPosition.z, 0.0, 1.0);
+//             // fake lights based on vertex position along Z axis
+//             finalColor.rgb += clamp(vVertexPosition.z, 0.0, 1.0);
+
+//             // handling premultiplied alpha (useful if we were using a png with transparency)
+//             finalColor = vec4(finalColor.rgb * finalColor.a, finalColor.a);
+
+//             gl_FragColor = finalColor;
+//         }
+//     `;
+
+//     // some basic parameters
+//     const params = {
+//         vertexShader: vs,
+//         fragmentShader: fs,
+//         widthSegments: 20,
+//         heightSegments: 20,
+//         uniforms: {
+//             resolution: { // resolution of our plane
+//                 name: "uResolution",
+//                 type: "2f", // notice this is an length 2 array of floats
+//                 value: [planeElements[0].clientWidth, planeElements[0].clientHeight],
+//             },
+//             time: { // time uniform that will be updated at each draw call
+//                 name: "uTime",
+//                 type: "1f",
+//                 value: 0,
+//             },
+//             mousePosition: { // our mouse position
+//                 name: "uMousePosition",
+//                 type: "2f", // again an array of floats
+//                 value: mousePosition,
+//             },
+//             mouseMoveStrength: { // the mouse move strength
+//                 name: "uMouseMoveStrength",
+//                 type: "1f",
+//                 value: 0,
+//             }
+//         },
+//     };
+
+//     // create our plane
+//     const simplePlane = new Plane(curtains, planeElements[0], params);
+
+//     simplePlane.onReady(() => {
+//         // display the button
+//         document.body.classList.add("curtains-ready");
+
+//         // set a fov of 35 to reduce perspective (we could have used the fov init parameter)
+//         simplePlane.setPerspective(35);
+
+//         // now that our plane is ready we can listen to mouse move event
+//         const wrapper = document.getElementById("page-wrap");
+
+//         wrapper.addEventListener("mousemove", (e) => {
+//             handleMovement(e, simplePlane);
+//         });
+
+//         wrapper.addEventListener("touchmove", (e) => {
+//             handleMovement(e, simplePlane);
+//         }, {
+//             passive: true
+//         });
+
+//         // click to play the videos
+//         document.getElementById("enter-site").addEventListener("click", () => {
+//             // display canvas and hide the button
+//             document.body.classList.add("video-started");
+
+//             // apply a little effect once everything is ready
+//             deltas.max = 2;
+
+//             simplePlane.playVideos();
+//         }, false);
+
+
+//     }).onRender(() => {
+//         // increment our time uniform
+//         simplePlane.uniforms.time.value++;
+
+//         // decrease both deltas by damping : if the user doesn't move the mouse, effect will fade away
+//         deltas.applied += (deltas.max - deltas.applied) * 0.02;
+//         deltas.max += (0 - deltas.max) * 0.01;
+
+//         // send the new mouse move strength value
+//         simplePlane.uniforms.mouseMoveStrength.value = deltas.applied;
+
+//     }).onAfterResize(() => {
+//         const planeBoundingRect = simplePlane.getBoundingRect();
+//         simplePlane.uniforms.resolution.value = [planeBoundingRect.width, planeBoundingRect.height];
+//     }).onError(() => {
+//         // we will add a class to the document body to display original video
+//         document.body.classList.add("no-curtains", "curtains-ready");
+
+//         // handle video
+//         document.getElementById("enter-site").addEventListener("click", () => {
+//             // display canvas and hide the button
+//             document.body.classList.add("video-started");
+
+//             planeElements[0].getElementsByTagName("video")[0].play();
+//         }, false);
+//     });
+
+//     // handle the mouse move event
+//     function handleMovement(e, plane) {
+//         // update mouse last pos
+//         mouseLastPosition.copy(mousePosition);
+
+//         const mouse = new Vec2();
+
+//         // touch event
+//         if(e.targetTouches) {
+//             mouse.set(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+//         }
+//         // mouse event
+//         else {
+//             mouse.set(e.clientX, e.clientY);
+//         }
+
+//         // lerp the mouse position a bit to smoothen the overall effect
+//         mousePosition.set(
+//             curtains.lerp(mousePosition.x, mouse.x, 0.3),
+//             curtains.lerp(mousePosition.y, mouse.y, 0.3)
+//         );
+
+//         // convert our mouse/touch position to coordinates relative to the vertices of the plane and update our uniform
+//         plane.uniforms.mousePosition.value = plane.mouseToPlaneCoords(mousePosition);
+
+//         // calculate the mouse move strength
+//         if(mouseLastPosition.x && mouseLastPosition.y) {
+//             let delta = Math.sqrt(Math.pow(mousePosition.x - mouseLastPosition.x, 2) + Math.pow(mousePosition.y - mouseLastPosition.y, 2)) / 30;
+//             delta = Math.min(4, delta);
+//             // update max delta only if it increased
+//             if(delta >= deltas.max) {
+//                 deltas.max = delta;
+//             }
+//         }
+//     }
+// });
+
+
