@@ -17,7 +17,7 @@ import {videoScreenChange} from "./videohandlers";
 // import {modal} from "./modal"
 import { initEvents,callAfterResize } from './flipvideos';
 import { LoadVideoAssets } from './videohandlers';
-// import { scrollInit}  from './scrollhandler';
+// import { scrollInit}  from './project-showcase';
 import { Canvas } from './Canvas'
 
 const navigation = new Navigation();
@@ -71,6 +71,7 @@ const onDOMContentLoaded = () => {
     LoadVideoAssets();
     listenForFlip();
     loadCanvas();
+    // initShadowGrid();
 
 };
 
