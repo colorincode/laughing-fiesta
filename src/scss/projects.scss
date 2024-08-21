@@ -1,15 +1,44 @@
-@forward './style.scss';
-@use './style.scss' as *;
-// @use './helpers.scss' as *;
-
-@forward '../../node_modules/@splidejs/splide/dist/css/splide-core.min.css';
-@use '../../node_modules/@splidejs/splide/dist/css/splide-core.min.css' as *;
-@forward 'node_modules/@splidejs/splide-extension-video/dist/css/splide-extension-video.min.css';
-@use 'node_modules/@splidejs/splide-extension-video/dist/css/splide-extension-video.min.css' as *;
+// @forward './style.scss';
+// @use './style.scss' as *;
+@use './helpers.scss' as *;
 
 
+.topbar--global {
+  // background: black;
+    position: fixed;
+    top:0;
+    left:15px;
+    z-index: 999;
+}
+.topbar--svg {
+  width: 150px;
+  height: 125px;
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 105px;
+  }
+}
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
 :root {
-    --set-margin: calc((100vw - 62.5rem) / 2);
+    --set-margin: calc((100vw - 70rem) / 2);
     --set-width: auto;
     --set-gap: 2rem;
   }
@@ -29,7 +58,7 @@
 
 
 
-  canvas {
+  .webgl-canvas {
     width: 100%;
     height:100%;
     display: grid;
@@ -65,12 +94,14 @@
   
   .panel-wide {
     position: relative;
-    width: 100%;
+    // width: 100%;
     // aspect-ratio: 16 / 9;
-     width: 80vw;
+    //  width: 80vw;
+    width: 70vw;
     height: 100%;
     overflow: hidden;
     flex: 0 0 auto;
+    mix-blend-mode: difference;
     span {
       display: flex;
       align-items: center;
@@ -78,12 +109,12 @@
       width: 100%;
       height: 100%;
       position: absolute;
-      inset: 0;
-      font-size: 3rem;
+      // inset: 0;
+      font-size: 4rem;
       font-weight: 700;
-      mix-blend-mode: difference;
+      // mix-blend-mode: difference;
       z-index: 10;
-      transform: translateY(10.24rem);
+      // transform: translateY(10.24rem);
       font-family: "Manrope", sans-serif;
 
     }
@@ -180,7 +211,7 @@
   }
 // start new
 .thumbtext {
-  // mix-blend-mode: difference;
+ mix-blend-mode: difference;
   // justify-content: center;
   // align-items: center;
   // width: 100%;
@@ -195,6 +226,11 @@
   // display: flex;
   // position: absolute;
   // inset: 0;
+  // mask-repeat: no-repeat;
+  // mask-size: 100%;
+
+  // background: white;
+  // mask-image: url('../../assets/masks/wave01.jpg'), radial-gradient(transparent 50%, black);
 }
 
 // newwww

@@ -62,7 +62,7 @@ ul.sidenav__text>li>a {
     position: absolute;
     z-index: 79;
     cursor: pointer;
-    transform: translateY(-50px);
+    // transform: translateY(-50px);
 }
 .xmark--closer {
     color: #fff;
@@ -172,6 +172,7 @@ ul.sidenav__text>li>a {
     bottom: 0;
     right: 0;
     transform: translateY(5%);
+   
     // transition: all 0.9s ease-in-out;
     display: flex;
     height: 100vh;
@@ -193,7 +194,8 @@ ul.sidenav__text>li>a {
 // start toggle button
 .navigation .toggle-wrapper {
     border-left: none;
-    height: 52px;
+    // height: 52px;
+    height: 75px;
     width: 60px;
     pointer-events: all;
     overflow: hidden;
@@ -207,7 +209,8 @@ ul.sidenav__text>li>a {
 
 .navigation .toggle-wrapper span {
     width: 60px;
-    height: 50px;
+    // height: 50px;
+    height: 75px;
     line-height: 50px;
     text-align: center;
     background-color: transparent;

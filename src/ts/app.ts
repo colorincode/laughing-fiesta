@@ -9,7 +9,7 @@ gsap.registerPlugin(EasePack);
 
 // component deps
 import "./shared/header";
-import {Navigation, AnimationHandler} from "./shared/nav";
+import {Navigation} from "./shared/nav";
 // import {scrollEvent} from "./scrollhandler";
 import { listenForFlip, killFlip, initSize} from "./grid";
 import {EventDispatcher} from "./shared/eventdispatch";
@@ -21,7 +21,7 @@ import { LoadVideoAssets } from './videohandlers';
 import { Canvas } from './Canvas'
 
 const navigation = new Navigation();
-const animationHandler = new AnimationHandler();
+// const animationHandler = new AnimationHandler();
 
 
 // const scroll = new scrollEvent();
@@ -57,7 +57,7 @@ function smoothLinkClick(e: MouseEvent) {
 const eventDispatcher = new EventDispatcher();
 const onClick = () => {
     // console.log("click fired from app");
-    animationHandler.setupGSAPtl();
+    // animationHandler.setupGSAPtl();
     navigation.checkforAnimation();
     listenForFlip();
     initEvents();

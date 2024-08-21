@@ -87,6 +87,7 @@
         "gsap": "^3.12.5",
         "hsl-to-hex": "^1.0.0",
         "http-proxy-middleware": "^3.0.0",
+        "jquery": "^3.7.0",
         "lenis": "^1.1.9",
         "lil-gui": "^0.19.2",
         "posthtml": "^0.16.6",

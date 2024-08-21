@@ -201,7 +201,7 @@ const flipVideo = (video: HTMLVideoElement) => {
     }
       // Modify video attributes when in fullscreen
       video.controls = true; // Show controls
-      video.muted = false; // Unmute the video
+      video.muted = true; // Unmute the video
     //   video.playbackRate = 1.5; // Increase playback rate
     // Set video to fullscreen
     gsap.set(video, {
