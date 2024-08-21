@@ -1,187 +1,262 @@
 
 //gsap modules
-import gsap from 'gsap'
-import { Flip } from 'gsap/Flip';
-import Draggable from 'gsap/Draggable';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-import ScrollToPlugin from 'gsap/ScrollToPlugin';
-import EasePack from 'gsap/EasePack';
-import { Power4 } from 'gsap/gsap-core';
-import Observer from 'gsap/Observer';
-import SplitText from 'gsap/SplitText';
-import Timeline from 'gsap/all';
-import  Tween  from 'gsap/src/all';
+// import gsap from 'gsap'
+// import { Flip } from 'gsap/Flip';
+// import Draggable from 'gsap/Draggable';
+// import ScrollTrigger from 'gsap/ScrollTrigger';
+// import ScrollToPlugin from 'gsap/ScrollToPlugin';
+// import EasePack from 'gsap/EasePack';
+// import { Power4 } from 'gsap/gsap-core';
+// import Observer from 'gsap/Observer';
+// import SplitText from 'gsap/SplitText';
+// import Timeline from 'gsap/all';
+// import  Tween  from 'gsap/src/all';
 
+
+
+import Splide from "@splidejs/splide";
+import { Video } from '@splidejs/splide-extension-video';
+import { URLHash } from '@splidejs/splide-extension-url-hash';
+// import '@splidejs/splide/css/core';
 //others
-import curtainsjs, { Curtains, Plane, Vec2 } from './vendors/curtains/index';
-import Lenis from 'lenis';
+// import curtainsjs, { Curtains, Plane, Vec2 } from './vendors/curtains/index';
+// import Lenis from 'lenis';
 import {EventDispatcher} from "./shared/eventdispatch";
-// import { Canvas } from './Canvas'
-// import fragment from './shader/fragment.glsl'
-// import vertex from './shader/screen.vert'
-// import videojs from 'video.js';
-
+import { Canvas } from './Canvas'
+import {Navigation, AnimationHandler} from "./shared/nav";
+const navigation = new Navigation();
 console.log("slider module loaded");
+
+const smallVideoAssets = [
+  { src: '../../assets/videos/lenovo-thinkpad-mountain.mp4' },
+  { src: '../../assets/optimized/y3000casefilmH.264.mp4' },
+  { src: '../../assets/optimized/voicesofgalaxyH.264.mp4' },
+  { src: '../../assets/optimized/galaxyfold4launchH.264.mp4' },
+  { src: '../../assets/optimized/food_moodH.264.mp4' },
+  { src: '../../assets/voices-of-galaxy.mp4' },
+  { src: '../../assets/optimized/samsungtinytypeH.264.mp4' },
+  { src: '../../assets/videos/hrblock-life-uncertainties.mp4' },
+  { src: '../../assets/optimized/flip_&_fold_launchH.264.mp4' },
+  { src: '../../assets/optimized/selfie_by_flipH.264.mp4' },
+
+
+  
+];
+// do it again, set up the src of the video assets - big version
+const largeVideoAssets = [
+{ src: '../../assets/videos/lenovo-thinkpad-mountain.mp4' },
+{ src: '../../assets/optimized/y3000casefilmH.264.mp4' },
+{ src: '../../assets/optimized/voicesofgalaxyH.264.mp4' },
+{ src: '../../assets/optimized/galaxyfold4launchH.264.mp4' },
+{ src: '../../assets/optimized/food_moodH.264.mp4' },
+{ src: '../../assets/voices-of-galaxy.mp4' },
+{ src: '../../assets/optimized/samsungtinytypeH.264.mp4' },
+{ src: '../../assets/videos/hrblock-life-uncertainties.mp4' },
+{ src: '../../assets/optimized/flip_&_fold_launchH.264.mp4' },
+{ src: '../../assets/optimized/selfie_by_flipH.264.mp4' },
+
+
+
+];
+
+largeVideoAssets.map(asset => {
+  asset.src = `../../assets/${asset.src}`;
+console.log('asset array map loaded');
+
+
+})
+
+const splide = new Splide( '.splide', {
+  heightRatio: 0.5625,
+  cover      : true,
+  rewind    : true,
+  arrows    : false,
+
+  video      : {
+    loop: true,
+    autoplay: false,
+    playerOptions: {
+      htmlVideo: {
+        playsInline: false
+      }
+    }
+
+
+
+
+  },
+} );
+
+splide.mount( { Video , URLHash} );
+
+splide.on( 'isActive', () => {
+  console.log( 'slide is active' );
+} );
+
+splide.on( 'video:pause', () => {
+  console.log( 'pause' );
+} );
+
+splide.on( 'video:ended', () => {
+  console.log( 'ended' );
+} );
+
+// splide.Components.Slides.forEach((slide) => {
+//   const video = slide.querySelector(".slider-video") as HTMLVideoElement;
+
+// console.log(splide.index)
+
+
+// })
 
 //locals
 // import { scrollEvent, scrollInit } from './scrollhandler';
 
 
-gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
+// gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
 
-// const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
-// if (canvasElement) {
-//   const canvas = new Canvas(canvasElement);
-//   window.addEventListener('beforeunload', () => {
-//     canvas.dispose();
-//   });
+// const sections = gsap.utils.toArray(".sticky-element");
+// const images = gsap.utils.toArray(".track").reverse();
+// const slideImages = gsap.utils.toArray(".slider-video");
+// const outerWrappers = gsap.utils.toArray(".track-flex");
+// const innerWrappers = gsap.utils.toArray(".panel-wide");
+// const count = document.querySelector(".count");
+// const wrap = gsap.utils.wrap(0, sections.length);
+// let animating;
+// let currentIndex = 0;
+
+// gsap.set(outerWrappers, { xPercent: 100 });
+// gsap.set(innerWrappers, { xPercent: -100 });
+// gsap.set(".slide:nth-of-type(1) .slide__outer", { xPercent: 0 });
+// gsap.set(".slide:nth-of-type(1) .slide__inner", { xPercent: 0 });
+
+// function gotoSection(index, direction) {
+//  animating = true;
+//  index = wrap(index);
+
+//  let tl = gsap.timeline({
+//   defaults: { duration: 1, ease: "expo.inOut" },
+//   onComplete: () => {
+//    animating = false;
+//   }
+//  });
+
+//  let currentSection = sections[currentIndex];
+//  let heading = currentSection.querySelector(".panel-overlay-text");
+//  let nextSection = sections[index];
+//  let nextHeading = nextSection.querySelector(".panel-overlay-text");
+
+//  gsap.set([sections, images], { zIndex: 0, autoAlpha: 0 });
+//  gsap.set([sections[currentIndex], images[index]], { zIndex: 1, autoAlpha: 1 });
+//  gsap.set([sections[index], images[currentIndex]], { zIndex: 2, autoAlpha: 1 });
+
+//  tl
+//   .set(count, { text: index + 1 }, 0.32)
+//   .fromTo(
+//    outerWrappers[index],
+//    {
+//     xPercent: 100 * direction
+//    },
+//    { xPercent: 0 },
+//    0
+//   )
+//   .fromTo(
+//    innerWrappers[index],
+//    {
+//     xPercent: -100 * direction
+//    },
+//    { xPercent: 0 },
+//    0
+//   )
+//   .to(
+//    heading,
+//    {
+//     "--width": 800,
+//     xPercent: 30 * direction
+//    },
+//    0
+//   )
+//   .fromTo(
+//    nextHeading,
+//    {
+//     "--width": 800,
+//     xPercent: -30 * direction
+//    },
+//    {
+//     "--width": 200,
+//     xPercent: 0
+//    },
+//    0
+//   )
+//   .fromTo(
+//    images[index],
+//    {
+//     xPercent: 125 * direction,
+//     scaleX: 1.5,
+//     scaleY: 1.3
+//    },
+//    { xPercent: 0, scaleX: 1, scaleY: 1, duration: 1 },
+//    0
+//   )
+//   .fromTo(
+//    images[currentIndex],
+//    { xPercent: 0, scaleX: 1, scaleY: 1 },
+//    {
+//     xPercent: -125 * direction,
+//     scaleX: 1.5,
+//     scaleY: 1.3
+//    },
+//    0
+//   )
+//   .fromTo(
+//    slideImages[index],
+//    {
+//     scale: 2
+//    },
+//    { scale: 1 },
+//    0
+//   )
+//   .timeScale(0.8);
+
+//  currentIndex = index;
 // }
 
- function scrollInit() {
-  const hash = window.location.hash.replace('#', '');
+// Observer.create({
+//  type: "wheel,touch,pointer",
+//  preventDefault: true,
+//  wheelSpeed: -1,
+//  onUp: () => {
+//   console.log("down");
+//   if (animating) return;
+//   gotoSection(currentIndex + 1, +1);
+//  },
+//  onDown: () => {
+//   console.log("up");
+//   if (animating) return;
+//   gotoSection(currentIndex - 1, -1);
+//  },
+//  tolerance: 10
+// });
 
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smooth: true,
-  });
+// document.addEventListener("keydown", logKey);
 
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
+// function logKey(e) {
+//  console.log(e.code);
+//  if ((e.code === "ArrowUp" || e.code === "ArrowLeft") && !animating) {
+//   gotoSection(currentIndex - 1, -1);
+//  }
+//  if (
+//   (e.code === "ArrowDown" ||
+//    e.code === "ArrowRight" ||
+//    e.code === "Space" ||
+//    e.code === "Enter") &&
+//   !animating
+//  ) {
+//   gotoSection(currentIndex + 1, 1);
+//  }
+// }
 
-  requestAnimationFrame(raf);
 
-  lenis.on('scroll', (e: any) => {
-    console.log('is scrolling');
-  });
-
-  lenis.on('scroll', ScrollTrigger.update);
-
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-
-  gsap.ticker.lagSmoothing(0);
-
-  const select = (e) => document.querySelector(e);
-  const selectAll = (e) => document.querySelectorAll(e);
-
-  const tracks = selectAll(".sticky-element");
-
-  tracks.forEach((track, i) => {
-    const trackWrapper = track.querySelectorAll(".track");
-    const trackFlex = track.querySelectorAll(".track-flex");
-    const allImgs = track.querySelectorAll(".slider-video");
-    const progress = track.querySelectorAll(".progress--bar-total");
-
-    const sliders = gsap.utils.toArray(".panel-wide");
-    const thumbs = gsap.utils.toArray(".thumbs");
-    const visible = gsap.utils.toArray(".visible");
-
-    const trackWrapperWidth = () => {
-      let width = 0;
-      trackWrapper.forEach((el) => (width += el.offsetWidth));
-      return width;
-    };
-
-    const trackFlexWidth = () => {
-      let width = 0;
-      trackFlex.forEach((el) => (width += el.offsetWidth));
-      return width;
-    };
-
-    ScrollTrigger.defaults({});
-
-    gsap.defaults({
-      ease: "none",
-    });
-
-    const scrollTween = gsap.to(trackWrapper, {
-      x: () => -trackWrapperWidth() + window.innerWidth,
-      scrollTrigger: {
-        trigger: track,
-        pin: true,
-        anticipatePin: 1,
-        scrub: 1,
-        start: "center center",
-        end: () => "+=" + (track.scrollWidth - window.innerWidth),
-        onRefresh: (self) => self.getTween().resetTo("totalProgress", 0),
-        invalidateOnRefresh: true,
-      },
-    });
-
-    allImgs.forEach((img, i) => {
-      gsap.fromTo(
-        img,
-        { x: "-45vw" },
-        {
-          x: "45vw",
-          scrollTrigger: {
-            trigger: img.parentNode,
-            containerAnimation: scrollTween,
-            start: "left right",
-            end: "right left",
-            scrub: true,
-            invalidateOnRefresh: true,
-            onRefresh: (self) => {
-              if (self.start < 0) {
-                self.animation.progress(gsap.utils.mapRange(self.start, self.end, 0, 1, 0));
-              }
-            },
-          },
-        }
-      );
-    });
-
-    const progressBar = gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: trackWrapper,
-          containerAnimation: scrollTween,
-          start: "left left",
-          end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-          scrub: true,
-        },
-      })
-      .to(progress, {
-        width: "100%",
-        ease: "none",
-      });
-
-    sliders.forEach((slider, i) => {
-      const anim = gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: slider,
-            containerAnimation: scrollTween,
-            start: "left right",
-            end: "right right",
-            scrub: true,
-          },
-        })
-        .to(visible, {
-          width: "100%",
-          backgroundColor: "#000000",
-          ease: "none",
-        });
-    });
-
-    sliders.forEach((slider, i) => {
-      if (thumbs[i]) {
-        thumbs[i].onclick = () => {
-          gsap.to(window, {
-            scrollTo: {
-              y: "+=" + slider.getBoundingClientRect().left,
-            },
-            duration: 0.5,
-          });
-        };
-      }
-    });
-  });
-}
 
 function scrollToVideo() {
   const video = document.querySelector(`[data-hashnav="${hash}"]`);
@@ -235,15 +310,184 @@ function handleExternalLinks() {
 // });
 
 const onScroll = () => {
-  //  scrollInit();
+
   
   
   }
+
+  const onDOMContentLoaded = () => {
+    console.log("dom content loaded")
+  }
+
+  const onClick = () => { 
+    console.log("clicked");
+
+  }
+  const eventDispatcher = new EventDispatcher();
 // use the dispatcher, this should not need editing 
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
-eventDispatcher.addEventListener("fullscreenchange",onChange);
-eventDispatcher.addEventListener("resize",onResize);
+eventDispatcher.addEventListener("scroll", onScroll);
+
+
+
+// let time = 0;
+
+// // const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
+// // if (canvasElement) {
+// //   const canvas = new Canvas(canvasElement);
+// //   window.addEventListener('beforeunload', () => {
+// //     canvas.dispose();
+// //   });
+// // }
+
+//  function scrollInit() {
+//   const hash = window.location.hash.replace('#', '');
+
+//   // const lenis = new Lenis({
+//   //   duration: 1.2,
+//   //   easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+//   //   smooth: true,
+//   // });
+
+//   // function raf(time) {
+//   //   lenis.raf(time);
+//   //   requestAnimationFrame(raf);
+//   // }
+
+//   // let raf = requestAnimationFrame();
+
+//   // lenis.on('scroll', (e: any) => {
+//   //   console.log('is scrolling');
+//   // });
+
+//   // lenis.on('scroll', scrollInit);
+
+//   gsap.ticker.add((time) => {
+//     gsap.ticker.lagSmoothing(0);
+//   });
+
+
+
+//   const select = (e) => document.querySelector(e);
+//   const selectAll = (e) => document.querySelectorAll(e);
+
+//   const tracks = selectAll(".sticky-element");
+
+//   tracks.forEach((track, i) => {
+//     const trackWrapper = track.querySelectorAll(".track");
+//     const trackFlex = track.querySelectorAll(".track-flex");
+//     const allImgs = track.querySelectorAll(".slider-video");
+//     const progress = track.querySelectorAll(".progress--bar-total");
+
+//     const sliders = gsap.utils.toArray(".panel-wide");
+//     const thumbs = gsap.utils.toArray(".thumbs");
+//     const visible = gsap.utils.toArray(".visible");
+
+//     const trackWrapperWidth = () => {
+//       let width = 0;
+//       trackWrapper.forEach((el) => (width += el.offsetWidth));
+//       return width;
+//     };
+
+//     const trackFlexWidth = () => {
+//       let width = 0;
+//       trackFlex.forEach((el) => (width += el.offsetWidth));
+//       return width;
+//     };
+
+//     ScrollTrigger.defaults({});
+
+//     gsap.defaults({
+//       ease: "none",
+//     });
+
+//     const scrollTween = gsap.to(trackWrapper, {
+//       x: () => -trackWrapperWidth() + window.innerWidth,
+//       scrollTrigger: {
+//         trigger: track,
+//         pin: true,
+//         anticipatePin: 1,
+//         scrub: 1,
+//         start: "center center",
+//         end: () => "+=" + (track.scrollWidth - window.innerWidth),
+//         onRefresh: (self) => self.getTween().resetTo("totalProgress", 0),
+//         invalidateOnRefresh: true,
+//       },
+//     });
+
+//     allImgs.forEach((img, i) => {
+//       gsap.fromTo(
+//         img,
+//         { x: "-45vw" },
+//         {
+//           x: "45vw",
+//           scrollTrigger: {
+//             trigger: img.parentNode,
+//             containerAnimation: scrollTween,
+//             start: "left right",
+//             end: "right left",
+//             scrub: true,
+//             invalidateOnRefresh: true,
+//             onRefresh: (self) => {
+//               if (self.start < 0) {
+//                 self.animation.progress(gsap.utils.mapRange(self.start, self.end, 0, 1, 0));
+//               }
+//             },
+//           },
+//         }
+//       );
+//     });
+
+//     const progressBar = gsap
+//       .timeline({
+//         scrollTrigger: {
+//           trigger: trackWrapper,
+//           containerAnimation: scrollTween,
+//           start: "left left",
+//           end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
+//           scrub: true,
+//         },
+//       })
+//       .to(progress, {
+//         width: "100%",
+//         ease: "none",
+//       });
+
+//     sliders.forEach((slider, i) => {
+//       const anim = gsap
+//         .timeline({
+//           scrollTrigger: {
+//             trigger: slider,
+//             containerAnimation: scrollTween,
+//             start: "left right",
+//             end: "right right",
+//             scrub: true,
+//           },
+//         })
+//         .to(visible, {
+//           width: "100%",
+//           backgroundColor: "#000000",
+//           ease: "none",
+//         });
+//     });
+
+//     sliders.forEach((slider, i) => {
+//       if (thumbs[i]) {
+//         thumbs[i].onclick = () => {
+//           gsap.to(window, {
+//             scrollTo: {
+//               y: "+=" + slider.getBoundingClientRect().left,
+//             },
+//             duration: 0.5,
+//           });
+//         };
+//       }
+//     });
+//   });
+// }
+// eventDispatcher.addEventListener("fullscreenchange",onChange);
+// eventDispatcher.addEventListener("resize",onResize);
 // document.addEventListener("scroll", scrollInit);
 // scrollInit();
 

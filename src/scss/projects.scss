@@ -1,6 +1,11 @@
 @forward './style.scss';
 @use './style.scss' as *;
-@use './helpers.scss' as *;
+// @use './helpers.scss' as *;
+
+@forward '../../node_modules/@splidejs/splide/dist/css/splide-core.min.css';
+@use '../../node_modules/@splidejs/splide/dist/css/splide-core.min.css' as *;
+@forward 'node_modules/@splidejs/splide-extension-video/dist/css/splide-extension-video.min.css';
+@use 'node_modules/@splidejs/splide-extension-video/dist/css/splide-extension-video.min.css' as *;
 
 
 :root {
@@ -55,6 +60,7 @@
     align-items: center;
     height: 65vh;
     margin-inline: var(--set-margin);
+    z-index: 9;
   }
   
   .panel-wide {
@@ -76,6 +82,7 @@
       font-size: 3rem;
       font-weight: 700;
       mix-blend-mode: difference;
+      z-index: 10;
       transform: translateY(10.24rem);
       font-family: "Manrope", sans-serif;
 

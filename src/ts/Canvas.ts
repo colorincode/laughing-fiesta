@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import vertexShader from './shader/screen.vert'
 import fragmentShader from './shader/screen.frag'
-import { Three } from './vendors/Three'
+import { Three } from './core/Three'
 import { Simulator } from './Simulator'
 import { gui } from './Gui'
 // import { resolveObjectURL } from 'buffer'
@@ -30,8 +30,6 @@ export class Canvas extends Three {
     // loader.setPath(import.meta.env.BASE_URL)
     // loader.serviceWorker.register(new URL("../service-worker.js"))
     let img = document.createElement('img')
-    //  let src = new URL("../../assets/image03.jpg?as=webp", import.meta.url).href
-    //  let src = new URL("../../assets/waterwave.jpg?as=webp", import.meta.url).href
      let src = new URL("../../assets/images/theatre.jpg?as=webp", import.meta.url).href
     img.src = src.toString()
 
@@ -64,11 +62,11 @@ export class Canvas extends Three {
     const mesh = new THREE.Mesh(geometry, material)
     this.scene.add(mesh)
 
-    const obj = {
-      color: () => (material.uniforms.uMode.value = 1),
-      normal: () => (material.uniforms.uMode.value = 2),
-      height: () => (material.uniforms.uMode.value = 3),
-    }
+    // const obj = {
+    //   color: () => (material.uniforms.uMode.value = 1),
+    //   normal: () => (material.uniforms.uMode.value = 2),
+    //   height: () => (material.uniforms.uMode.value = 3),
+    // }
     // gui.add(obj, 'color')
     // gui.add(obj, 'normal')
     // gui.add(obj, 'height')
