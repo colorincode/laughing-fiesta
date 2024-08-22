@@ -26,16 +26,18 @@ export class Navigation {
 
     tweenNav = gsap.to(".navigation", {
       // y:0,
-      ease: Power4.easeIn,
+      // ease: Power4.easeIn,
       duration: 0.75,
       autoAlpha: 1,
+      fade: true,
+
       // stagger: 0.2,
       paused: true,
       // transformOrigin:"0% 100%",
   });
   tweenWrap =  gsap.to(".show", {
 
-    y:40,
+    // y:40,
     ease: Power4.easeOut,
     duration: 0.75,
     autoAlpha: 1,

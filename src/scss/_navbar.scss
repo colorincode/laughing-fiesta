@@ -171,7 +171,7 @@ ul.sidenav__text>li>a {
     z-index: 998;
     bottom: 0;
     right: 0;
-    transform: translateY(5%);
+    // transform: translateY(5%);
    
     // transition: all 0.9s ease-in-out;
     display: flex;
@@ -210,8 +210,8 @@ ul.sidenav__text>li>a {
 .navigation .toggle-wrapper span {
     width: 60px;
     // height: 50px;
-    height: 75px;
-    line-height: 50px;
+    height: 70px;
+    line-height: 80px;
     text-align: center;
     background-color: transparent;
     color: inherit;
@@ -221,6 +221,7 @@ ul.sidenav__text>li>a {
     left: 0;
     // transition: all 0.25s ease;
     text-transform: uppercase;
+    // transform: translateY(2%);
 }
 
 .navigation .toggle-wrapper .show {
