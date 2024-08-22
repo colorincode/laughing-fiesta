@@ -8,7 +8,17 @@ gsap.registerPlugin(Power4);
 gsap.registerPlugin(EasePack);
 gsap.registerPlugin(Timeline);
 
-
+// gsap.registerEffect({
+//   name: "fade",
+//   effect: (targets: gsap.TweenTarget, config: { duration: any; }) => {
+//     return gsap.to(targets, {
+//       duration: config.duration,
+//       opacity: 0
+//     });
+//   },
+//   defaults: {duration: 2},
+//   extendTimeline: true
+// });
 
 export class Navigation {
    tl = gsap.timeline({})
@@ -23,18 +33,21 @@ export class Navigation {
 
       window.onresize = () => this.logWindowSize(); // Use arrow function
     }
+    // gsap.effect.fade(this.navigation, { duration: 0.5 });
 
     tweenNav = gsap.to(".navigation", {
       // y:0,
-      // ease: Power4.easeIn,
-      duration: 0.75,
+      ease: Power2.easeIn,
+      duration: 1.25,
       autoAlpha: 1,
-      fade: true,
+      backgroundColor: "rgba(0, 0, 0, 0.76)",
+
 
       // stagger: 0.2,
       paused: true,
       // transformOrigin:"0% 100%",
   });
+  // tl.fade(0.5)
   tweenWrap =  gsap.to(".show", {
 
     // y:40,

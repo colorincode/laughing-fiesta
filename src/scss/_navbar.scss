@@ -177,7 +177,7 @@ ul.sidenav__text>li>a {
     display: flex;
     height: 100vh;
     flex-direction: column;
-    background: rgba(0, 0, 0, 0.76);
+    // background: rgba(0, 0, 0, 0.76);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     // animation: fade-in-top 0.7s cubic-bezier(0.445, 0.050, 0.550, 0.950) forwards;
@@ -200,7 +200,7 @@ ul.sidenav__text>li>a {
     pointer-events: all;
     overflow: hidden;
     position: absolute;
-    top: -30px;
+    // top: -30px;
     left: calc(0px - 75px);
     background: transparent;
     backdrop-filter: blur(18px);
