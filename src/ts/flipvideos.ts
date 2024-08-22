@@ -200,7 +200,7 @@ const flipVideo = (video: HTMLVideoElement) => {
       playFullscreenVideo(video); // Ensure fullscreen video plays
     }
       // Modify video attributes when in fullscreen
-      video.controls = true; // Show controls
+      video.controls = false; // Show controls
       video.muted = true; // Unmute the video
     //   video.playbackRate = 1.5; // Increase playback rate
     // Set video to fullscreen

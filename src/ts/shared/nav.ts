@@ -24,7 +24,7 @@ export class Navigation {
       window.onresize = () => this.logWindowSize(); // Use arrow function
     }
 
-    tweenNav = this.tl.to(".navigation", {
+    tweenNav = gsap.to(".navigation", {
       y:0,
       ease: Power4.easeIn,
       duration: 0.75,
@@ -33,7 +33,7 @@ export class Navigation {
       paused: true,
       // transformOrigin:"0% 100%",
   });
-  tweenWrap =  this.tl.to(".show", {
+  tweenWrap =  gsap.to(".show", {
 
     y:40,
     ease: Power4.easeOut,
