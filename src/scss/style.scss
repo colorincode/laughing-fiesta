@@ -180,8 +180,10 @@
   #center-logo {
     grid-area: 3 / 6 / span 3 / 8;
     place-self: center;
-    width: var( --adjust-width);
-    height: var(--adjust-height);
+    // width: var( --adjust-width);
+    // height: var(--adjust-height);
+    width: 100%;
+    height: 100%;
     background: transparent;
     pointer-events: none;
     scale:1.25;
@@ -192,7 +194,7 @@
     
     @media (max-width: 768px) {
       position: fixed;
-      scale:0.65;
+      scale:0.885;
     }
   }
   
@@ -856,8 +858,23 @@
 	// display: flex;
 	// justify-content: center;
 	// align-items: center;
-	width: 100%;
-	height: 100%;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // right: 0;
+  // bottom: 0;
+// width: 75%;
+// height: 75%;
+// pointer-events: all;
+width: 100vw;
+height: 100vh;
+// background: rgba(0,0,0,0.2);
+// display: grid;
+// z-index: 8;
+// position: absolute;
+// pointer-events: none;
+	// width: 100%;
+	// height: 100%;
 	// position: absolute;
 	// backdrop-filter: blur(5px);
 	// background: rgba(0,0,0,0.5);
@@ -879,6 +896,11 @@
 .active-overlay {
   backdrop-filter: blur(5px);
 	background: rgba(0,0,0,0.5);
+  @media screen and (min-width: 3680px) and (max-width: 8024px) and (min-resolution: 2dppx) {
+
+
+    
+  }
 }
 //   .grid__item.modal-active {
 //     position: fixed;

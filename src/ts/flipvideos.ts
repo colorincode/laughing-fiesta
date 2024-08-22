@@ -206,12 +206,12 @@ const flipVideo = (video: HTMLVideoElement) => {
     // Set video to fullscreen
     gsap.set(video, {
       position: 'fixed',
-      top: 0,
-      left: 0,
-      right:0,
-      bottom:0,
-      width: '100vw',
-      height: '90vh',
+      top: '15%',
+      left: '15%',
+      right:'15%',
+      bottom:'15%',
+      width: '70vw',
+      height: '70vh',
       zIndex: 9999,
       maxWidth: 'unset',
       maxHeight: 'unset',

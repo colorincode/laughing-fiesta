@@ -25,7 +25,7 @@ export class Navigation {
     }
 
     tweenNav = gsap.to(".navigation", {
-      y:0,
+      // y:0,
       ease: Power4.easeIn,
       duration: 0.75,
       autoAlpha: 1,
@@ -44,10 +44,6 @@ export class Navigation {
     // transformOrigin:"0% 100%",
     onStart: () => {
     // this.navigation?.clientTop = 90;
-
-
-
-
     }
 
   });
