@@ -145,26 +145,38 @@
     --columns:6;
     //  overflow-y: scroll;
     overflow: visible;
+    width: 200vh;
+    overflow-x: scroll;
     grid-template: 
-    "     .      .      .      .      .      .      ." 7.5%
-    "     .      .      .      . video1 video1 video1" 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "video2 video2 video2      .      .      .      ." 17.5%
-    "     .      .      .      .      .      .      ." 12%
-    "     .      .      .      . video3 video3 video3" 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "video4 video4 video4      .      .      .      ." 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "     .      .      .      . video5 video5 video5" 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "video6 video6 video6      .      .      .      ." 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "     .      .      .      . video7 video7 video7" 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "video8 video8 video8      .      .      .      ." 17.5%
-    "     .      .      .      .      .      .      ." 1.5%
-    "     .      .      .      . video9 video9 video9" 17.5%
-    "     .      .      .      .      .      .      ." 30% / 16.25% 16.25% 16.25% 2.5% 16.25% 16.25% 16.25%
+    "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
+    "     . video2 video2 video2      .      .     .      .      . video3 video3      ." 12.5%
+    "     . video2 video2 video2      .      .     . video5 video5 video5      .      ." 12.5%
+    "     .      .      . video9 video9 video9     . video5 video5 video5 video8 video8" 12.5%
+    "video6 video6      . video9 video9 video9     . video5 video5 video5 video8 video8" 12.5%
+    "video6 video6      . video9 video9 video9     . video7 video7 video7      .      ." 12.5%
+    "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5%
+    "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
+    ;
+    // grid-template: 
+    // "     .      .      .      .      .      .      ." 7.5%
+    // "     .      .      .      . video1 video1 video1" 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "video2 video2 video2      .      .      .      ." 17.5%
+    // "     .      .      .      .      .      .      ." 12%
+    // "     .      .      .      . video3 video3 video3" 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "video4 video4 video4      .      .      .      ." 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "     .      .      .      . video5 video5 video5" 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "video6 video6 video6      .      .      .      ." 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "     .      .      .      . video7 video7 video7" 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "video8 video8 video8      .      .      .      ." 17.5%
+    // "     .      .      .      .      .      .      ." 1.5%
+    // "     .      .      .      . video9 video9 video9" 17.5%
+    // "     .      .      .      .      .      .      ." 30% / 16.25% 16.25% 16.25% 2.5% 16.25% 16.25% 16.25%
     ;
   }
   @media (max-width: 480px) {}
