@@ -44,6 +44,8 @@
     }
   }
   body {
+       margin: 0;
+    padding: 0;
     // background-color: transparent;
     background: url('../../assets/images/theatre.jpg') no-repeat;
     background-attachment: fixed;
@@ -54,14 +56,19 @@
     font-family: "Manrope", sans-serif;
     font-display: swap;
     @media (max-width: 768px) {
-        overflow-y: scroll;
-        overflow-x: hidden;
+        overflow-y: auto;
+        overflow-x: auto;
+        scroll-snap-align:start;
     }
   }
-  canvas {
+  .webgl-canvas {
     width: 100%;
-    min-height: 100vh;
-    height:100%;
+	  height: 100%;
+  }
+  canvas {
+    // width: 100%;
+    // min-height: 100vh;
+    // height:100%;
     display: grid;
     z-index: 2;
     pointer-events: none;

@@ -25,11 +25,11 @@ export class Navigation {
     tweenNav = gsap.to(".navigation", {
       // y:0,
       ease: 'power2.in',
-      duration: 1,
+      duration: 1.25,
       autoAlpha: 1,
       backgroundColor: "rgba(0, 0, 0, 0.80)",
       paused: true,
-      clearProps: "all",
+      // clearProps: "all",
     //  onComplete: () => {
     //   clearProps: "all",
     //  }
@@ -48,6 +48,20 @@ export class Navigation {
     }
 
   });
+  tweenX = gsap.to(".xmark--closer__span", {
+    ease: 'power2.in',
+    autoAlpha: 0.75,
+    duration:0.75,
+    stagger:0.2,
+
+  })
+  tweenText = gsap.to('.navigation .toggle-wrapper .show', {
+    ease: 'power2.in',
+    autoAlpha: 1,
+    duration:0.75,
+    stagger:0.2,
+    paused: true,
+  })
 
     setupNavigationEvents(): void {
       const showButton = document.querySelector('.navigation .toggle-wrapper .show');
@@ -62,16 +76,22 @@ export class Navigation {
         // console.log('Show button clicked');
         this.toggleNavigation(true);
         this.tweenWrap.play();
+        this.tweenX.play();
+
         e.stopPropagation();
       });
   
       hideButton?.addEventListener('click', (e) => {
         this.toggleNavigation(false);
+        this.tweenText.play();
+
         e.stopPropagation();
       });
   
       xMarkSpan?.addEventListener('click', (e) => {
         this.xMarksSpot();
+        this.tweenX.reverse();
+
         // this.tweenWrap.play();
 
         e.stopPropagation();
@@ -79,7 +99,7 @@ export class Navigation {
   
       navigation?.addEventListener('click', (e) => {
         this.toggleNavigation(false);
-       this.tweenNav.reverse();
+        this.tweenNav.reverse();
 
         e.stopPropagation();
       });
@@ -88,6 +108,7 @@ export class Navigation {
       toggleWrapper?.addEventListener('click', (e) => {
         this.toggleNavigation(true);
         this.tweenNav.restart();
+        this.tweenX.restart();
         this.tweenWrap.restart();
 
         e.stopPropagation();

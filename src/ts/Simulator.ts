@@ -21,9 +21,9 @@ export class Simulator {
 
   private createGPUComputationRenderer(gl: THREE.WebGLRenderer, width: number, height: number) {
     const gpuCompute = new GPUComputationRenderer(width, height, gl)
-    if (gl.capabilities.isWebGL2 === false) {
-      this.gpuCompute.setDataType(THREE.HalfFloatType)
-    }
+    // if (gl.capabilities.isWebGL2 === false) {
+    //   this.gpuCompute.setDataType(THREE.HalfFloatType)
+    // }
     return gpuCompute
   }
 

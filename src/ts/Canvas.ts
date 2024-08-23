@@ -41,7 +41,8 @@ export class Canvas extends Three {
     // );
     // loader.setPath("../assets/")
     const texture = await loader.loadAsync(img.src)
-    texture.userData.aspect = texture.source.data.width / texture.source.data.height
+    // texture.userData.aspect = texture.source.data.width / texture.source.data.height
+    texture.userData.aspect = window.innerWidth / window.innerHeight
     return texture
   }
 
@@ -74,11 +75,13 @@ export class Canvas extends Three {
     return mesh
   }
 
-  private resize() {
+  resize() {
     this.simulator.resize(this.size.aspect)
 
     const uniforms = this.screen.material.uniforms
-    uniforms.uCoveredScale.value = this.coveredScale(uniforms.tImage.value.userData.aspect)
+    // this.uniforms
+
+    // this.createScreen.uniforms.uCoveredScale.value = this.coveredScale(uniforms.tImage.value.userData.aspect)
   }
 
   private anime() {
