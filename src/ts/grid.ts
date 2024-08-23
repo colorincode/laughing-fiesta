@@ -41,7 +41,7 @@ const GRID_AREAS = {
 
   
 const gsapDefaults = {
-     overwrite: true 
+    //  overwrite: true 
      
 }
 interface FlipBatchActionSelf {
@@ -118,7 +118,7 @@ interface FlipBatchActionSelf {
       timeline: timeline,
       kill: () => {
         timeline.kill();
-        actions.length = 0;
+        // actions.length = 0;
         if (cleanupDelayedCall) {
           cleanupDelayedCall.kill();
         }
@@ -151,59 +151,59 @@ interface FlipBatchActionSelf {
     };
   };
   
-  // batch and add action
-  const initializeSizesBatch: FlipBatchAction = {
-    self: { state: {} as Flip.FlipState },
-    getState(self) {
-      return Flip.getState(".grid__item");
-    },
-    setState(self) {
-        const sizes = ['small', 'medium', 'large'];
-        const contentItems = items.filter(item => !item.classList.contains('fixed-item'));
-        const availableAreas = getAvailableGridAreas();
-        return contentItems;
-      },
-      animate(self) {
-        Flip.from(self.state, {
-          duration: 0.8,
-          ease: "power4.inOut",
-          absolute: true,
-          stagger: 0.05,
-          onComplete: () => {
-            console.log("Initial layout animation completed");
-          }
-        });
-      },
-      onStart(self) {
-        console.log("Initializing grid item sizes and positions");
-      },
-      onComplete(self) {
-        console.log("Grid item sizes and positions initialized");
-      },
-      once: true
-    };
+  // // batch and add action
+  // const initializeSizesBatch: FlipBatchAction = {
+  //   self: { state: {} as Flip.FlipState },
+  //   getState(self) {
+  //     return Flip.getState(".grid__item");
+  //   },
+  //   setState(self) {
+  //       const sizes = ['small', 'medium', 'large'];
+  //       const contentItems = items.filter(item => !item.classList.contains('fixed-item'));
+  //       const availableAreas = getAvailableGridAreas();
+  //       return contentItems;
+  //     },
+  //     animate(self) {
+  //       Flip.from(self.state, {
+  //         duration: 0.8,
+  //         ease: "power4.inOut",
+  //         absolute: true,
+  //         stagger: 0.05,
+  //         onComplete: () => {
+  //           console.log("Initial layout animation completed");
+  //         }
+  //       });
+  //     },
+  //     onStart(self) {
+  //       console.log("Initializing grid item sizes and positions");
+  //     },
+  //     onComplete(self) {
+  //       console.log("Grid item sizes and positions initialized");
+  //     },
+  //     once: true
+  //   };
 
 
-    function getAvailableGridAreas() {
-      const areas = [];
-      for (let row = 1; row <= 12; row++) {
-        for (let col = 1; col <= 12; col++) {
-          // exclude top-left, top-right, center, and content areas
-          if (!((row >= 1 && row <= 4 && col >= 1 && col <= 4) ||
-                (row >= 1 && row <= 3 && col >= 9 && col <= 12) ||
-                (row >= 4 && row <= 6 && col >= 5 && col <= 8) ||
-                (row >= 7 && row <= 12 && col >= 1 && col <= 12))) {
-            areas.push(`${row}/${col}`);
-          }
-        }
-      }
-      return gsap.utils.shuffle(areas);
-    }
+    // function getAvailableGridAreas() {
+    //   const areas = [];
+    //   for (let row = 1; row <= 12; row++) {
+    //     for (let col = 1; col <= 12; col++) {
+    //       // exclude top-left, top-right, center, and content areas
+    //       if (!((row >= 1 && row <= 4 && col >= 1 && col <= 4) ||
+    //             (row >= 1 && row <= 3 && col >= 9 && col <= 12) ||
+    //             (row >= 4 && row <= 6 && col >= 5 && col <= 8) ||
+    //             (row >= 7 && row <= 12 && col >= 1 && col <= 12))) {
+    //         areas.push(`${row}/${col}`);
+    //       }
+    //     }
+    //   }
+    //   return gsap.utils.shuffle(areas);
+    // }
 
   //function invocation and ex ports
   const flipBatch = createFlipBatch();
-  const initBatch = createFlipBatch();
-  initBatch.add(initializeSizesBatch);
+  // const initBatch = createFlipBatch();
+  // initBatch.add(initializeSizesBatch);
   // flipBatch.add(galleryModalBatch);
 
 
@@ -245,12 +245,12 @@ interface FlipBatchActionSelf {
   // };
   
 // exports
-export function initSize () {
-    window.addEventListener('load', () => {
-    initBatch.start();
-  });
+// export function initSize () {
+//     window.addEventListener('load', () => {
+//     initBatch.start();
+//   });
   
-}
+// }
 
 export function listenForFlip() {
     items.forEach(item => {

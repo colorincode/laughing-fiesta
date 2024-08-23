@@ -2,24 +2,12 @@ console.log("nav loaded");
 //import libs 
 import gsap from 'gsap';
 import EasePack from 'gsap/EasePack';
-import { Power4 } from 'gsap/gsap-core';
+import { Power4 , Power2} from 'gsap/gsap-core';
 import Timeline from 'gsap/all';
 gsap.registerPlugin(Power4);
 gsap.registerPlugin(EasePack);
 gsap.registerPlugin(Timeline);
-
-// gsap.registerEffect({
-//   name: "fade",
-//   effect: (targets: gsap.TweenTarget, config: { duration: any; }) => {
-//     return gsap.to(targets, {
-//       duration: config.duration,
-//       opacity: 0
-//     });
-//   },
-//   defaults: {duration: 2},
-//   extendTimeline: true
-// });
-
+gsap.registerPlugin(Power2);
 export class Navigation {
    tl = gsap.timeline({})
 ;
@@ -33,30 +21,28 @@ export class Navigation {
 
       window.onresize = () => this.logWindowSize(); // Use arrow function
     }
-    // gsap.effect.fade(this.navigation, { duration: 0.5 });
 
     tweenNav = gsap.to(".navigation", {
       // y:0,
-      ease: Power2.easeIn,
-      duration: 1.25,
+      ease: 'power2.in',
+      duration: 1,
       autoAlpha: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.76)",
-
-
-      // stagger: 0.2,
+      backgroundColor: "rgba(0, 0, 0, 0.80)",
       paused: true,
-      // transformOrigin:"0% 100%",
-  });
-  // tl.fade(0.5)
-  tweenWrap =  gsap.to(".show", {
+      clearProps: "all",
+    //  onComplete: () => {
+    //   clearProps: "all",
+    //  }
 
-    // y:40,
-    ease: Power4.easeOut,
+
+
+  });
+  tweenWrap =  gsap.to(".show", {
+    ease: 'power2.in',
     duration: 0.75,
     autoAlpha: 1,
     stagger: 0.2,
     paused: true,
-    // transformOrigin:"0% 100%",
     onStart: () => {
     // this.navigation?.clientTop = 90;
     }
@@ -75,15 +61,12 @@ export class Navigation {
       showButton?.addEventListener('click', (e) => {
         // console.log('Show button clicked');
         this.toggleNavigation(true);
-        // this.tweenNav.play();
         this.tweenWrap.play();
-
         e.stopPropagation();
       });
   
       hideButton?.addEventListener('click', (e) => {
         this.toggleNavigation(false);
-
         e.stopPropagation();
       });
   
@@ -119,7 +102,6 @@ export class Navigation {
      
       if (isOpen) {
         navigation?.classList.add('open');
-        // this.tweenSet.play();
         this.tweenNav.play();
         this.tweenNav.restart(); // this to fix an issue where tween only fired once
 
@@ -140,13 +122,6 @@ export class Navigation {
 
       xMarkSpan?.classList.toggle('visible');
       navigation?.classList.remove('open');
-      // gsap.to(navigation, {
-      //   yPercent:5,
-      //   ease: Power4.easeIn,
-      //   duration: 0.224,
-      //   autoAlpha: 1,
-
-      // })
     }
   
    isClassActive(className: string): boolean {
@@ -175,28 +150,3 @@ export class Navigation {
 
     }
 
-
-  
-//   export class AnimationHandler {
-//    tl: gsap.core.Timeline;
-// //    navigation = document.querySelector(".navigation");
-//     constructor() {
-//       this.tl = this.setupGSAPtl();
-//     //   this.playTl();
-//     }
-   
-//     setupGSAPtl(): gsap.core.Timeline {
-//       return gsap.timeline({
-//         paused: true,
-//         defaults: { 
-//             duration: 0.8, 
-//             ease: "Power4.ease" 
-            
-//         },
-//       })
-
-
-//     }
-  
-
-//   }

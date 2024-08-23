@@ -11,7 +11,7 @@ gsap.registerPlugin(EasePack);
 import "./shared/header";
 import {Navigation} from "./shared/nav";
 // import {scrollEvent} from "./scrollhandler";
-import { listenForFlip, killFlip, initSize} from "./grid";
+import { listenForFlip, killFlip} from "./grid";
 import {EventDispatcher} from "./shared/eventdispatch";
 import {videoScreenChange} from "./videohandlers";
 // import {modal} from "./modal"

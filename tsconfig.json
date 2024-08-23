@@ -18,14 +18,13 @@
       "noUncheckedIndexedAccess": true,
       "baseUrl": "./",
       "paths": {
-        "~/*": ["./src/*" , "./src/ts/*", "./src/ts/components/*" , "./src/ts/vendors/*"]
+        "~/*": ["./src/*" , "./src/ts/*", ]
       }
     },
     "exclude": [
         "node_modules",
         "working-files",
         ".parcel-cache",
-        "dist",
         "production"
     ]
   }
