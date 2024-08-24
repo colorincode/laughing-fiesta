@@ -22,10 +22,10 @@ export class Navigation {
       window.onresize = () => this.logWindowSize(); // Use arrow function
     }
 
-    tweenNav = gsap.to(".navigation", {
+    tweenNav = gsap.to(".navigation ", {
       // y:0,
       ease: 'power2.in',
-      delay: 0.5,
+      // delay: 0.5,
       duration: 1.25,
       autoAlpha: 1,
       backgroundColor: "rgba(0, 0, 0, 0.80)",

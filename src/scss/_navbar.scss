@@ -215,7 +215,7 @@ ul.sidenav__text>li>a {
     bottom: 0;
     right: 0;
     // transform: translateY(5%);   
-    // transition: all 0.9s ease-in-out;
+    transition: all 0.9s ease-in-out;
     display: flex;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.76);
@@ -225,6 +225,7 @@ ul.sidenav__text>li>a {
 }
 .navigation.open {
     // transform: translateY(-5%);
+    transition: all 0.9s ease-in-out;
 }
 .toggle-wrapper {
     position: fixed; 

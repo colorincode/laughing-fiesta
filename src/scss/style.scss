@@ -942,10 +942,10 @@ width: 100%;
 // end link styles
       
 .fullscreen--scale {
-
-// pointer-events: all;
-width: 100vw;
-height: 100vh;
+position: fixed;
+pointer-events: all;
+// width: 100vw;
+// height: 100vh;
 
 }
 .fullscreen--scale:focus-visible, :focus-within {
