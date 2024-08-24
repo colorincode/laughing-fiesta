@@ -72,7 +72,7 @@ const onDOMContentLoaded = () => {
     listenForFlip();
     loadCanvas();
     // initShadowGrid();
-
+    document.body.style.visibility = 'visible';
 };
 
 const onChange = () => {

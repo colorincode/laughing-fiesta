@@ -25,6 +25,7 @@ export class Navigation {
     tweenNav = gsap.to(".navigation", {
       // y:0,
       ease: 'power2.in',
+      delay: 0.5,
       duration: 1.25,
       autoAlpha: 1,
       backgroundColor: "rgba(0, 0, 0, 0.80)",

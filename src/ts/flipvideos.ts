@@ -32,16 +32,12 @@ let currentFullscreenVideo: HTMLElement | null = null;
 const originalStates = new Map<Element, { parent: Element, index: number, position: { top: number, left: number, width: number, height: number } }>();
 let isFullscreen = false;
 
-// const linkWrapper = document.createElement('div') as HTMLDivElement; 
-// const gridSelector = document.querySelector('.video--placement--grid');
-// linkWrapper.className = 'shadow-inner-grid';
-// linkWrapper.style.display = 'none'; // Initially hidden
-// gridSelector!.appendChild(linkWrapper);
-// begin create the link elements
 const shadowGrid = document.createElement('div') as HTMLDivElement;
 shadowGrid.className = 'shadow-inner-grid';
 const companyName = document.createElement('div');
 companyName.className = 'company-name';
+const playIconAtag = document.createElement('a');
+playIconAtag.className = 'play--icon__wrapper';
 const projectName = document.createElement('div');
 projectName.className = 'project-name';
 
@@ -53,16 +49,16 @@ function initShadowGrid() {
         videoPlacementGrid!.appendChild(shadowGrid);
         // console.log('element has been created');
         shadowGrid.appendChild(companyName);
+        shadowGrid.appendChild(playIconAtag);
         shadowGrid.appendChild(projectName);
         // console.log('children of shadow grid');
     } else {
-        setTimeout(checkForElement, 100);
+        setTimeout(checkForElement, 3000);
     }
   };
   checkForElement();
 }
 document.addEventListener('DOMContentLoaded', initShadowGrid);
-
 function videoLinksVisible(video: HTMLVideoElement) {
   console.log(video);
   // shadowGrid.innerHTML = `<div class="shadow-inner-grid">` + companyName + projectName + `</div>`;
@@ -72,20 +68,47 @@ function videoLinksVisible(video: HTMLVideoElement) {
   let setprojectLink = '/projects.html' + '#' + getprojectLink;
 
   let companyId = video.getAttribute('data-company');
-  let getCompanyLink =  video.getAttribute('data-company-link')?.substring(1) ;
-  let setCompanyLink = '/projects.html' + '#' + getCompanyLink;
+  // let getCompanyLink =  video.getAttribute('data-company-link')?.substring(1) ;
+  // let setCompanyLink = '/projects.html' + '#' + getCompanyLink;
+  // <a class="company-name-revealed" href='${setCompanyLink}' onclick="smoothLinkClick(e)" >${companyId}</a>
+  // <a class="project-name-revealed" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>
 
-  if (!projectId) return;
-  projectName.innerHTML = `
-    <a class="project-name-revealed" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>
-    
-    `;
+  // function smoothLinkClick(e: MouseEvent) {
+
+  //   e.preventDefault();
+  
+  //  let targetUrl = e.currentTarget.getAttribute('href');
+  //   // Create GSAP animation
+  //   gsap.to("body", {
+  //       opacity: 0,
+  //       duration: 0.5,
+  //       onComplete: () => {
+  //           window.location.href = targetUrl;
+  //           // e.stopImmediatePropagation();
+
+  //       }
+  //   });
+  
+  // }
+  
   if (!companyId) return;
-  companyName.innerHTML = `
-    <a class="company-name-revealed" href='${setCompanyLink}' onclick="smoothLinkClick(e)" >${companyId}</a>
+    companyName.innerHTML = `
+      <div class="company-name-revealed" >${companyId}</div>
+      `;
+  if (!playIconAtag) return;
+    playIconAtag.href = setprojectLink;
+    playIconAtag.innerHTML = `
+      <i class="fa-duotone fa-solid fa-circle-play fa-fw play--icon" onclick="smoothLinkClick(e)"></i>
     `;
+  if (!projectId) return;
+    projectName.innerHTML = `
+      <div class="project-name-revealed" >${projectId}</div>
+      `;
     shadowGrid.style.display = "grid";
 }
+
+
+// end create the link elements
 function hideVideoLinks() {
   // console.log('Hiding video links');
   shadowGrid.style.display = "none";
@@ -93,12 +116,6 @@ function hideVideoLinks() {
   companyName.innerHTML = '';
 }
 
-
-
-// end create the link elements
-
-
-// document.body.appendChild(projectName);
 // defaults
 const animationDefaults = { duration: 0.7, ease: 'expo.inOut' };
 
