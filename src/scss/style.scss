@@ -94,16 +94,16 @@ h1,h2,h3,h4,h5,h6 {
 //   background-color: var(--grey);
 // }
 
-.containerpoop {
-max-width: 800px;
-margin: auto;
-width: 100%;
-line-height: 0;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-wrap: wrap;
-}
+// .containerpoop {
+// max-width: 800px;
+// margin: auto;
+// width: 100%;
+// line-height: 0;
+// display: flex;
+// align-items: center;
+// justify-content: center;
+// flex-wrap: wrap;
+// }
 
 .topbar--global {
     // background: black;
@@ -152,25 +152,61 @@ flex-wrap: wrap;
     position: absolute;
     top: 0;
 }
+  // .outer__wrapper {
+  //   display: grid;
+  //   min-height: 100vh;
+  //   width: 100%;
+  //   pointer-events: all;
+  //   grid-row: auto;
+  //   position: relative;
+  //   @media (max-width: 768px) {
+  //     // overflow-y: scroll;
+  //     // overflow-x: hidden;
+  // }
+  // }
   .outer__wrapper {
-    display: grid;
-    min-height: 100vh;
-width: 100%;
+    // display: grid; //affects nav
+    height: 100vh;
     pointer-events: all;
     grid-row: auto;
-    position: relative;
-    @media (max-width: 768px) {
-      overflow-y: scroll;
-      overflow-x: hidden;
-  }
-  }
+
+    }
+    .homegrid__wrapper {
+      height: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+//   .scroll-section {
+//   	--padding: 10vmin;
+// 		position: relative;
+// 		padding: var(--padding);
+// 		--pad2: calc(var(--padding) * 2);
+// 		width: calc(100vw - var(--pad2));
+// 		height: calc(100vh - var(--pad2));
+// 		// min-height: 400px;
+// 		margin: 0 auto;
+// 		z-index: 2;
+
+// }
+
 
 .homegrid__container {
 	--cgap: 5%;
 	--rgap: 5%;
 	--rows: 8;
 	--columns: 12;
-  position: absolute;
+  width: 100%;
+  // height: auto;
+  box-sizing: border-box;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  // overflow: visible;
+  // // width: 200vh;
+  // // overflow-x: scroll;
+  // overflow-x: auto;
+  // white-space: nowrap;
+  // width: 100vw;
+  // position: absolute;
   display: grid;
 	grid-template: 
 	"     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
@@ -183,15 +219,16 @@ width: 100%;
 	"     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
 	;
     // grid-auto-flow: dense;
-    width: 100%;
+    // width: 100%;
     height: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
+    // box-sizing: border-box;
+    // overflow: hidden;
   @media (min-width: 1624px) {
     
 
   }
   @media (max-width: 1024px) {
+    width:150vw;
     grid-template: 
 	"     .      .      .      .      . video5 video5 video5      .      .      .      ." 8.33%
 	"     . video1 video1 video1      .      .      .      .      . video3 video3 video3" 8.33%
@@ -211,9 +248,9 @@ width: 100%;
     --rows:4;
     --columns:6;
     //  overflow-y: scroll;
-    overflow: visible;
-    width: 200vh;
-    overflow-x: scroll;
+    // overflow: visible;
+    // width: 200vh;
+    // overflow-x: scroll;
     grid-template: 
     "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
     "     . video2 video2 video2      .      .     .      .      . video3 video3      ." 12.5%
@@ -244,7 +281,7 @@ width: 100%;
     // "     .      .      .      .      .      .      ." 1.5%
     // "     .      .      .      . video9 video9 video9" 17.5%
     // "     .      .      .      .      .      .      ." 30% / 16.25% 16.25% 16.25% 2.5% 16.25% 16.25% 16.25%
-    ;
+    // ;
   }
   @media (max-width: 480px) {}
 }
@@ -978,4 +1015,150 @@ pointer-events: all;
     top: 10px;
     right: 10px;
     cursor: pointer;
+  }
+  .section,
+.scroll-section {
+
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+}
+//   .section {
+//     // padding-top:100vw;
+//     // // scroll-padding: 100vw;
+
+//     // border: 1px solid aliceblue;
+//     // height: 100%;
+//     // overflow-x: auto;
+//     // // overflow-y: hidden;
+//     // position:relative;
+//     // width: 100vw;
+//     width: calc(100vw );
+// 		height: calc(100vh );
+// 		// min-height: 400px;
+// 		// margin: 0 auto;
+// 		z-index: 2;
+//     right:-100vw;
+//     overflow-x: auto;
+//     white-space: nowrap;
+//     // width: 100vw;
+//     position: absolute;
+//   }
+//   .scroll-section {
+//   	// --padding: 1vmin;
+// 		// position: relative;
+// 		// padding: var(--padding);
+// 		// --pad2: calc(var(--padding) * 2);
+// 		width: calc(100vw );
+// 		height: calc(100vh );
+// 		// min-height: 400px;
+// 		// margin: 0 auto;
+// 		z-index: 2;
+//     right:-100vw;
+//     overflow-x: auto;
+//     white-space: nowrap;
+//     // width: 100vw;
+//     position: absolute;
+// }
+.secondgrid_wrapper {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position:relative;
+  width: 100vw;
+}
+  .homegrid__container-new {
+    // --cgap: 5%;
+    // --rgap: 5%;
+    // --rows: 8;
+    // --columns: 12;
+    // overflow: visible;
+    // width: 200vh;
+    // overflow-x: scroll;
+    // position:absolute;
+    // right:-100vw;
+    // overflow-x: auto;
+    // white-space: nowrap;
+    // width: 100vw;
+    // position: absolute;
+    // position:relative;
+    display: grid;
+    grid-template: 
+    "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
+    "     . video2 video2 video2      .      .     .      .      . video3 video3      ." 12.5%
+    "     . video2 video2 video2      .      .     . video5 video5 video5      .      ." 12.5%
+    "     .      .      . video9 video9 video9     . video5 video5 video5 video8 video8" 12.5%
+    "video6 video6      . video9 video9 video9     . video5 video5 video5 video8 video8" 12.5%
+    "video6 video6      . video9 video9 video9     . video7 video7 video7      .      ." 12.5%
+    "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5%
+    "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
+    ;
+      // grid-auto-flow: dense;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      // overflow: hidden;
+    @media (min-width: 1624px) {
+      
+  
+    }
+    @media (max-width: 1024px) {
+      width:150vw;
+      grid-template: 
+    "     .      .      .      .      . video5 video5 video5      .      .      .      ." 8.33%
+    "     . video1 video1 video1      .      .      .      .      . video3 video3 video3" 8.33%
+    "     . video1 video1 video1      .      .      .      .      . video3 video3 video3" 8.33%
+    "     .      .      .      .      . video2 video2 video2      . video3 video3 video3" 8.33%
+    "video6 video6 video6 video6      . video2 video2 video2      .      .      .      ." 8.33%
+    "video6 video6 video6 video6      . video2 video2 video2      .      .      .      ." 8.33%
+    "video6 video6 video6 video6      . video2 video2 video2 video8 video8 video8 video8" 8.33%
+    "     .      . video9 video9 video9 video9      .      . video8 video8 video8 video8" 8.33%
+    "     .      . video9 video9 video9 video9      .      . video8 video8 video8 video8" 8.33%
+    "     .      . video9 video9 video9 video9      . video7 video7 video7 video7      ." 8.33%
+    "     . video4 video4 video4 video4 video4      . video7 video7 video7 video7      ." 8.33%
+    "     . video4 video4 video4 video4 video4      . video7 video7 video7 video7      ." 8.33% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
+    ;
+    }
+    @media (max-width: 768px) {
+      --rows:4;
+      --columns:6;
+      //  overflow-y: scroll;
+      // overflow: visible;
+      // width: 200vh;
+      // overflow-x: scroll;
+      grid-template: 
+      "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
+      "     . video2 video2 video2      .      .     .      .      . video3 video3      ." 12.5%
+      "     . video2 video2 video2      .      .     . video5 video5 video5      .      ." 12.5%
+      "     .      .      . video9 video9 video9     . video5 video5 video5 video8 video8" 12.5%
+      "video6 video6      . video9 video9 video9     . video5 video5 video5 video8 video8" 12.5%
+      "video6 video6      . video9 video9 video9     . video7 video7 video7      .      ." 12.5%
+      "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5%
+      "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
+      ;
+      // grid-template: 
+      // "     .      .      .      .      .      .      ." 7.5%
+      // "     .      .      .      . video1 video1 video1" 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "video2 video2 video2      .      .      .      ." 17.5%
+      // "     .      .      .      .      .      .      ." 12%
+      // "     .      .      .      . video3 video3 video3" 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "video4 video4 video4      .      .      .      ." 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "     .      .      .      . video5 video5 video5" 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "video6 video6 video6      .      .      .      ." 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "     .      .      .      . video7 video7 video7" 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "video8 video8 video8      .      .      .      ." 17.5%
+      // "     .      .      .      .      .      .      ." 1.5%
+      // "     .      .      .      . video9 video9 video9" 17.5%
+      // "     .      .      .      .      .      .      ." 30% / 16.25% 16.25% 16.25% 2.5% 16.25% 16.25% 16.25%
+      // ;
+    }
+    @media (max-width: 480px) {}
   }

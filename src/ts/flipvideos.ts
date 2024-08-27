@@ -28,7 +28,7 @@ const gridItems = gsap.utils.toArray(gridElement.querySelectorAll('.video--figur
 const gridItemsShuffled = gsap.utils.shuffle(gridItems);
 const fullscreenElement = document.querySelector('.fullscreen--scale') as HTMLElement;
 const maskingLayer = document.querySelector('.masking--element') as HTMLElement;
-let currentFullscreenVideo: HTMLElement | null = null;
+let currentFullscreenVideo: HTMLVideoElement | null = null;
 const originalStates = new Map<Element, { parent: Element, index: number, position: { top: number, left: number, width: number, height: number } }>();
 let isFullscreen = false;
 
@@ -198,15 +198,15 @@ const flipVideo = (video: HTMLVideoElement) => {
       
     if (fullscreenElement.contains(video)) {
       fullscreenElement.removeChild(video);
-      // parent.insertBefore(videoFigure, video); //this may need work
-      videoFigure.appendChild(video);
 
-      parent.appendChild(video);
-      // parent.removeChild(video);
+      videoFigure.appendChild(video); // video back inside the figure
+      parent.appendChild(videoFigure); // append the figure (with video inside) back to the parent
+      // parent.appendChild(videoFigure);
+      // videoFigure.appendChild(video);
+      // parent.appendChild(video);
     } else {
       
       parent.appendChild(video);
-      
       fullscreenElement.appendChild(video);
       // parent.appendChild(insertShadowGrid());
       // parent.appendChild(companyName);

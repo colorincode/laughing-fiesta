@@ -83,7 +83,7 @@ const onResize = () => {
     callAfterResize();
     killFlip();
     listenForFlip();
-    LoadVideoAssets();
+    // LoadVideoAssets();
     console.clear();
 }
 
