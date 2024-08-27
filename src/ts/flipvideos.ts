@@ -9,6 +9,7 @@ import Observer from 'gsap/Observer';
 import Timeline from 'gsap/all';
 import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from './shared/eventdispatch';
+import { relative } from 'path';
 
 gsap.registerPlugin(EasePack);
 gsap.registerPlugin(Tween);
@@ -182,6 +183,8 @@ const flipVideo = (video: HTMLVideoElement) => {
         }
         cleanupDelayedCall = gsap.delayedCall(3, () => {
           if (!isAnimating) {
+        
+          
             gsap.killTweensOf(video);
             timeline.clear();
             eventDispatcher.dispose();
@@ -189,21 +192,18 @@ const flipVideo = (video: HTMLVideoElement) => {
           }
         });
       };
-    const state = Flip.getState(video, { props: 'borderRadius' });
+    const state = Flip.getState(video, { props: 'class' });
   
     gsap.set(parent, { zIndex: 1 });
     gsap.set(maskingLayer, { zIndex: 0 });
     gsap.to(maskingLayer, { ...animationDefaults, opacity: 0.85 });
-      let videoFigure = parent.querySelector('.video--figure') as HTMLElement;
-      
-    if (fullscreenElement.contains(video)) {
+      let videoFigure = document.querySelector('.video--figure') as HTMLElement;
+      if (fullscreenElement.contains(video)) {
+    // if (fullscreenElement.contains(video)) {
       fullscreenElement.removeChild(video);
-
-      videoFigure.appendChild(video); // video back inside the figure
-      parent.appendChild(videoFigure); // append the figure (with video inside) back to the parent
-      // parent.appendChild(videoFigure);
-      // videoFigure.appendChild(video);
-      // parent.appendChild(video);
+      // videoFigure.insertAdjacentElement("afterend" , parent); //insert figure tag b4 video
+       parent.insertBefore(videoFigure, video).appendChild(video); // video back inside the figure
+      //parent.appendChild(videoFigure); // append the figure (with video inside) back to the parent
     } else {
       
       parent.appendChild(video);
@@ -212,7 +212,6 @@ const flipVideo = (video: HTMLVideoElement) => {
       // parent.appendChild(companyName);
       // parent.appendChild(projectName);
 
-    //   addControlEventListeners(controlsElement); // Add event listeners to controls
       pauseOtherVideos(video); // Pause other videos
       playFullscreenVideo(video); // Ensure fullscreen video plays
     }
@@ -233,23 +232,13 @@ const flipVideo = (video: HTMLVideoElement) => {
       maxWidth: 'unset',
       maxHeight: 'unset',
     });
-    // show project and company names
-    
-    // insertProjectName(video);
-    // insertCompanyName(video);
-    // insertShadowGrid();
-    // controlsElement.style.display = 'block';
-    // projectName.style.display = 'block';
-    // linkWrapper.style.display = 'grid';
-    // insertShadowGrid.shadowGrid.style.display = "grid";
-    // companyName.style.display = 'block';
-    // projectName.style.display = 'block';
 
     Flip.from(state, {
       ...animationDefaults,
       scale: true,
       onComplete: () => {
         currentFullscreenVideo = fullscreenElement.contains(video) ? video : null;
+      //  gsap.set(video, {position:"relative"}) 
       },
       cleanup: () => {
         debouncedCleanup();
@@ -260,45 +249,44 @@ const flipVideo = (video: HTMLVideoElement) => {
   
   // Return video to original position
   const returnToOriginalPosition = (video: HTMLVideoElement) => {
+    let videoFigure = document.querySelector('.video--figure') as HTMLElement;
     const { parent, position } = originalStates.get(video) || { parent: null, position: null };
     if (!parent || !position) return; // Ensure parent and position are valid
   
     if (fullscreenElement.contains(video)) {
-      const state = Flip.getState(video, { props: 'borderRadius' });
+      const state = Flip.getState(video, { props: 'position' });
+      console.log(state);
+      // videoFigure.insertAdjacentElement("afterbegin" , parent); //insert figure tag b4 video
       fullscreenElement.removeChild(video);
-      parent.appendChild(video);
-
-      // if (companyName.parentElement) {
-      //   companyName.parentElement.removeChild(companyName);
-      // }
-      // if (projectName.parentElement) {
-      //   projectName.parentElement.removeChild(projectName);
-      // }
+       parent.appendChild(video);
+      //  video.classList.add('video-figure');
+      // parent.insertBefore(videoFigure, video).appendChild(video);
       hideVideoLinks();
       // revert video attributes
       video.controls = false; // Hide controls
       video.muted = true; // Mute the video
       video.playbackRate = 1; // Reset playback rate to normal speed
-      // Hide controls
-      // if (companyName) {
-      //   companyName.style.display = 'none';
-      // }
       //couldnt set a timer here, no good
       gsap.set(video, {
-        position: 'absolute',
-        top: position.top + 'px',
-        left: position.left + 'px',
+        position: 'relative',
+        top: 0 + 'px',
+        left: 0 + 'px',
+        bottom: 0 + 'px',
         width: position.width + 'px',
         height: position.height + 'px',
         zIndex: 'unset',
+        
     
       });
   
       Flip.from(state, {
         ...animationDefaults,
         scale: true,
+        absolute: true, 
+        duration:0.6,
         onComplete: () => {
-          gsap.set(parent, { zIndex: 'unset' });
+      
+          gsap.set(parent, { zIndex: 'unset', });
           gsap.killTweensOf(video);
           currentFullscreenVideo = null;
           // Resume playback of other videos

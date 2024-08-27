@@ -41,13 +41,18 @@ h1,h2,h3,h4,h5,h6 {
 :root {
   --adjust-height:calc(75% );
   --adjust-width:calc(75% );
+  --elem-width:calc(100%);
+  --elem-height:calc(100%);
   --half-column-distance: calc(100vw / 24);
 }
 .box {
-  // width: 31%;
+  width: 31%;
   // height: 15vh;
   // margin: 5px;
-  opacity: 0;
+  height: var(--elem-height);
+  width: var(--elem-width);
+  display: inline-grid; //gsap needs a display
+  // opacity: 0;
   will-change: transform;
 }
 .grid-track {
@@ -195,18 +200,11 @@ h1,h2,h3,h4,h5,h6 {
 	--rgap: 5%;
 	--rows: 8;
 	--columns: 12;
-  width: 100%;
-  // height: auto;
-  box-sizing: border-box;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  // overflow: visible;
-  // // width: 200vh;
-  // // overflow-x: scroll;
-  // overflow-x: auto;
-  // white-space: nowrap;
-  // width: 100vw;
-  // position: absolute;
+  width: 100%; // dunno
+  height: 100vh; //req for gsap
+  overflow-x: scroll; //req for gsap
+  overflow-y: hidden; //req for gsap
+  white-space: nowrap; //req for gsap
   display: grid;
 	grid-template: 
 	"     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
@@ -218,11 +216,7 @@ h1,h2,h3,h4,h5,h6 {
 	"     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5%
 	"     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
 	;
-    // grid-auto-flow: dense;
-    // width: 100%;
-    height: 100%;
-    // box-sizing: border-box;
-    // overflow: hidden;
+
   @media (min-width: 1624px) {
     
 
