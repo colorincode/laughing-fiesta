@@ -63,35 +63,10 @@ document.addEventListener('DOMContentLoaded', initShadowGrid);
 function videoLinksVisible(video: HTMLVideoElement) {
   console.log(video);
   // shadowGrid.innerHTML = `<div class="shadow-inner-grid">` + companyName + projectName + `</div>`;
-
   let projectId = video.getAttribute('data-project');
   let getprojectLink =  video.getAttribute('data-hashnav')?.substring(1) ;
   let setprojectLink = '/projects.html' + '#' + getprojectLink;
-
   let companyId = video.getAttribute('data-company');
-  // let getCompanyLink =  video.getAttribute('data-company-link')?.substring(1) ;
-  // let setCompanyLink = '/projects.html' + '#' + getCompanyLink;
-  // <a class="company-name-revealed" href='${setCompanyLink}' onclick="smoothLinkClick(e)" >${companyId}</a>
-  // <a class="project-name-revealed" href='${setprojectLink}' onclick="smoothLinkClick(e)" >${projectId}</a>
-
-  // function smoothLinkClick(e: MouseEvent) {
-
-  //   e.preventDefault();
-  
-  //  let targetUrl = e.currentTarget.getAttribute('href');
-  //   // Create GSAP animation
-  //   gsap.to("body", {
-  //       opacity: 0,
-  //       duration: 0.5,
-  //       onComplete: () => {
-  //           window.location.href = targetUrl;
-  //           // e.stopImmediatePropagation();
-
-  //       }
-  //   });
-  
-  // }
-  
   if (!companyId) return;
     companyName.innerHTML = `
       <div class="company-name-revealed" >${companyId}</div>
@@ -118,7 +93,7 @@ function hideVideoLinks() {
 }
 
 // defaults
-const animationDefaults = { duration: 0.7, ease: 'expo.inOut' };
+const animationDefaults = { duration: 0.7, ease: 'power4.inOut' };
 
 
 const saveInitialState = () => {
@@ -199,26 +174,18 @@ const flipVideo = (video: HTMLVideoElement) => {
     gsap.to(maskingLayer, { ...animationDefaults, opacity: 0.85 });
       let videoFigure = document.querySelector('.video--figure') as HTMLElement;
       if (fullscreenElement.contains(video)) {
-    // if (fullscreenElement.contains(video)) {
       fullscreenElement.removeChild(video);
-      // videoFigure.insertAdjacentElement("afterend" , parent); //insert figure tag b4 video
        parent.insertBefore(videoFigure, video).appendChild(video); // video back inside the figure
-      //parent.appendChild(videoFigure); // append the figure (with video inside) back to the parent
     } else {
       
       parent.appendChild(video);
       fullscreenElement.appendChild(video);
-      // parent.appendChild(insertShadowGrid());
-      // parent.appendChild(companyName);
-      // parent.appendChild(projectName);
-
-      pauseOtherVideos(video); // Pause other videos
-      playFullscreenVideo(video); // Ensure fullscreen video plays
+      pauseOtherVideos(video); //  other videos
+      playFullscreenVideo(video); //  fullscreen video plays
     }
-      // Modify video attributes when in fullscreen
+      // modify video attributes when in fullscreen
       video.controls = false; // Show controls
       video.muted = true; // Unmute the video
-    //   video.playbackRate = 1.5; // Increase playback rate
     // Set video to fullscreen
     gsap.set(video, {
       position: 'fixed',
@@ -255,11 +222,21 @@ const flipVideo = (video: HTMLVideoElement) => {
   
     if (fullscreenElement.contains(video)) {
       const state = Flip.getState(video, { props: 'position' });
-      console.log(state);
-      // videoFigure.insertAdjacentElement("afterbegin" , parent); //insert figure tag b4 video
+      // console.log(state);
       fullscreenElement.removeChild(video);
-       parent.appendChild(video);
-      //  video.classList.add('video-figure');
+    // trying to use fit method instead, since there is a video figure appendation problemo
+    Flip.fit(video, parent, {
+      // duration: 0.6,
+      ease: "power4.inOut", 
+      width: "100%", //resetting to match figure tag
+      height: "fit-content", //resetting to match figure tag
+      // Optional properties (consult GSAP documentation for details)
+      // scale: true, // Use scale instead of width/height (recommended for performance)
+      // absolute: true, // Use absolute positioning (might be helpful in some cases)
+    });
+      parent.appendChild(video);
+      // Insert video back inside the figure tag
+      // videoFigure.appendChild(video);
       // parent.insertBefore(videoFigure, video).appendChild(video);
       hideVideoLinks();
       // revert video attributes
@@ -271,24 +248,25 @@ const flipVideo = (video: HTMLVideoElement) => {
         position: 'relative',
         top: 0 + 'px',
         left: 0 + 'px',
-        bottom: 0 + 'px',
+        bottom: 0 + 'px',  
         width: position.width + 'px',
         height: position.height + 'px',
         zIndex: 'unset',
-        
+        transform: "unset",
     
       });
   
       Flip.from(state, {
         ...animationDefaults,
-        scale: true,
-        absolute: true, 
+        // scale: true,
+        // absolute: true, 
         duration:0.6,
+        // transform: "unset",
         onComplete: () => {
       
-          gsap.set(parent, { zIndex: 'unset', });
+          gsap.set(parent, { zIndex: 'unset'});
           gsap.killTweensOf(video);
-          currentFullscreenVideo = null;
+          // currentFullscreenVideo = null;
           // Resume playback of other videos
           gridItems.forEach((item: HTMLElement) => {
             const video = item.querySelector('.video--item') as HTMLVideoElement;
