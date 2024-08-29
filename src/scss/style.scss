@@ -235,9 +235,9 @@ h4,
     font-family: "Manrope", sans-serif;
     font-display: swap;
     @media (max-width: 768px) {
-        overflow-y: auto;
-        overflow-x: auto;
-        scroll-snap-align:start;
+      // overflow-y: hidden;
+      // overflow-x: scroll;
+      overflow: hidden;
     }
   }
   .webgl-canvas {
@@ -275,9 +275,16 @@ h4,
 
     }
     .homegrid__wrapper {
+      position: absolute;
       height: 100%;
+      width: 100vw;
+      overflow: hidden;
+      box-sizing: border-box;
+      @media (max-width: 768px) {
       overflow-x: auto;
       overflow-y: hidden;
+      }
+      
     }
 //   .scroll-section {
 //   	--padding: 10vmin;
@@ -301,10 +308,11 @@ h4,
   width: 100%; // dunno
   height: 100%;
   position: absolute; //dunno
+  box-sizing: border-box;
   // height: 100vh; //req for gsap
-  overflow-x: scroll; //req for gsap
-  overflow-y: hidden; //req for gsap
-  white-space: nowrap; //req for gsap
+  // overflow-x: scroll; //req for gsap
+  // overflow-y: hidden; //req for gsap
+  // white-space: nowrap; //req for gsap
   display: grid;
 	grid-template: 
 	"     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
