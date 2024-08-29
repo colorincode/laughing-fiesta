@@ -30,7 +30,7 @@ export class Canvas extends Three {
     // loader.setPath(import.meta.env.BASE_URL)
     // loader.serviceWorker.register(new URL("../service-worker.js"))
     let img = document.createElement('img')
-     let src = new URL("../../assets/images/theatre.jpg?as=webp", import.meta.url).href
+     let src = new URL("../../assets/images/theatre-2.jpg?as=webp", import.meta.url).href
     img.src = src.toString()
 
   

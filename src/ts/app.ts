@@ -60,7 +60,7 @@ const onClick = () => {
     // animationHandler.setupGSAPtl();
     navigation.checkforAnimation();
     listenForFlip();
-    initEvents();
+    // initEvents();
 
 
 
@@ -71,6 +71,7 @@ const onDOMContentLoaded = () => {
     LoadVideoAssets();
     listenForFlip();
     loadCanvas();
+    initEvents();
     // initShadowGrid();
     document.body.style.visibility = 'visible';
 };

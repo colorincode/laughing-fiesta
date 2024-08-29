@@ -9,7 +9,7 @@ import Observer from 'gsap/Observer';
 import Timeline from 'gsap/all';
 import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from './shared/eventdispatch';
-import { relative } from 'path';
+// import { relative } from 'path';
 
 gsap.registerPlugin(EasePack);
 gsap.registerPlugin(Tween);
@@ -39,6 +39,7 @@ const companyName = document.createElement('div');
 companyName.className = 'company-name';
 const playIconAtag = document.createElement('a');
 playIconAtag.className = 'play--icon__wrapper';
+playIconAtag.setAttribute("title", "Play");
 const projectName = document.createElement('div');
 projectName.className = 'project-name';
 
@@ -222,7 +223,7 @@ const flipVideo = (video: HTMLVideoElement) => {
   
     if (fullscreenElement.contains(video)) {
       const state = Flip.getState(video, { props: 'position' });
-      // console.log(state);
+     console.log(state);
       fullscreenElement.removeChild(video);
     // trying to use fit method instead, since there is a video figure appendation problemo
     Flip.fit(video, parent, {

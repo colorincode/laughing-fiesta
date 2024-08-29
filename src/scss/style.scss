@@ -268,9 +268,10 @@ h4,
   // }
   .outer__wrapper {
     // display: grid; //affects nav
-    height: 100vh;
+    // height: 100vh;
     pointer-events: all;
     grid-row: auto;
+    padding-top:100px;
 
     }
     .homegrid__wrapper {
@@ -298,7 +299,9 @@ h4,
 	--rows: 8;
 	--columns: 12;
   width: 100%; // dunno
-  height: 100vh; //req for gsap
+  height: 100%;
+  position: absolute; //dunno
+  // height: 100vh; //req for gsap
   overflow-x: scroll; //req for gsap
   overflow-y: hidden; //req for gsap
   white-space: nowrap; //req for gsap
@@ -319,7 +322,7 @@ h4,
 
   }
   @media (max-width: 1024px) {
-    width:150vw;
+    // width:150vw;
     grid-template: 
 	"     .      .      .      .      . video5 video5 video5      .      .      .      ." 8.33%
 	"     . video1 video1 video1      .      .      .      .      . video3 video3 video3" 8.33%
@@ -338,10 +341,12 @@ h4,
   @media (max-width: 768px) {
     --rows:4;
     --columns:6;
-    //  overflow-y: scroll;
+    //  overflow-y: hidden;
+     
     // overflow: visible;
-    // width: 200vh;
-    // overflow-x: scroll;
+    position: relative;
+    width: 300%;
+    overflow-x: scroll;
     grid-template: 
     "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
     "     . video2 video2 video2      .      .     .      .      . video3 video3      ." 12.5%
@@ -515,50 +520,11 @@ h4,
       align-items: center;
     }
   }
-
-//   .figure--wrapper--div,
-// .video--figure {
-//   position: relative;
-//   width: 100%;
-//   height: 0;
-//   padding-bottom: 56.25%; // 16:9 aspect ratio
-//   overflow: hidden;
-// }
-//   .video--figure {
-//     position: relative;
-//     align-items: center;
-//     width: 100%;
-//     margin: 0;
-//     display: grid;
-//     cursor: pointer;
-//     will-change: transform;
-//     box-sizing: content-box; 
-//     height: fit-content; //need for height to stay consistent
-//     @media (max-width: 768px) {
-//       aspect-ratio: 16 / 9;
-//       height: 100%;
-//       align-items: center;
-//     }
-// }
-// .video--item {
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   object-fit: cover; // Ensure the video fills the container
-// }
-.video--item {
+  .video--item {
     width: 100%;
     min-width: 1px;
     position: relative;
-    // position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    // object-fit: contain;
+    object-fit: contain;
     overflow-clip-margin: content-box;
     overflow: clip;
     box-sizing: content-box; 
@@ -962,7 +928,7 @@ h4,
 }
 .play--icon:hover {
   opacity: 1;
-  color:  #df2d2d;
+  color:  #bcbcbc;
 }
 
 .project-name {

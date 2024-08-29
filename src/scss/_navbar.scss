@@ -241,19 +241,36 @@ ul.sidenav__text>li>a {
     width: 60px;
     pointer-events: all;
     overflow: hidden;
-    position: absolute;
+    // position: absolute;
+    position: fixed;
     // top: -30px;
     left: calc(0px - 75px);
     background: transparent;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 }
-
+.navtext {
+    // width: 60px;
+    // // height: 50px;
+    // height: 70px;
+    line-height: 80px;
+    text-align: center;
+    background-color: transparent;
+    color: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+    // transform: translateY(2%);
+}
 .navigation .toggle-wrapper span {
     width: 60px;
     // height: 50px;
-    height: 70px;
-    line-height: 80px;
+    min-height: 70px;
+    // line-height: 80px;
     text-align: center;
     background-color: transparent;
     color: inherit;
@@ -262,7 +279,7 @@ ul.sidenav__text>li>a {
     top: 0;
     left: 0;
     // transition: all 0.25s ease;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     // transform: translateY(2%);
 }
 
