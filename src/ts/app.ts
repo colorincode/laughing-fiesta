@@ -2,11 +2,11 @@
 import gsap from 'gsap';
 import EasePack from 'gsap/EasePack';
 import { Power4 } from 'gsap/gsap-core';
-
+import Observer from 'gsap/Observer';
 //gsap registration, global scope
 gsap.registerPlugin(Power4);
 gsap.registerPlugin(EasePack);
-
+gsap.registerPlugin(Observer);
 // component deps
 import "./shared/header";
 import {Navigation} from "./shared/nav";
@@ -59,7 +59,7 @@ const onClick = () => {
     // console.log("click fired from app");
     // animationHandler.setupGSAPtl();
     navigation.checkforAnimation();
-    listenForFlip();
+    // listenForFlip();
     // initEvents();
 
 
@@ -74,6 +74,7 @@ const onDOMContentLoaded = () => {
     initEvents();
     // initShadowGrid();
     document.body.style.visibility = 'visible';
+
 };
 
 const onChange = () => {
@@ -90,7 +91,23 @@ const onResize = () => {
 
 const onScroll = () => {
 //  scrollInit();
+// let homegridObserve = document.querySelector("homegrid__container");
+// if (homegridObserve) {
+// Observer.create({
+//   type: 'wheel,touch,pointer',
+//   preventDefault: true,
+//   wheelSpeed: -1,
+//   onChange: function(e) {
+//   console.log("scroll change");
+//   },
+//   onStop: () => {
+//     console.log('scroll stopped');
+//     // listenForFlip();
+//   },
+// });
 
+// // ScrollTrigger.normalizeScroll(true);
+// }
 
 }
 

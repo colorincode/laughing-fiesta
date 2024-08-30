@@ -111,19 +111,34 @@ const gridVideoItems = {
 // });
 // end video randomization functions
 
- 
 export function LoadVideoAssets() {
-   
+  
   function processFigures() {
-    figures.forEach((figure, index) => {
-      const posClass = `pos-${index + 1}`;
-      const videoPosClass = `video--item${index + 1}`;
+    const figures = document.querySelectorAll('.grid__item');
+    const filteredFigures = Array.from(figures).filter(figure => !figure.classList.contains('fixed-item'));
+    // console.log(filteredFigures.length);
+    let visibleElements = 9;
+    let hiddenElements = filteredFigures.length - visibleElements;
+  
+    for (let i = 0; i < visibleElements; i++) {
+      const posClass = `pos-${i + 1}`;
+      const videoPosClass = `video--item${i + 1}`;
       let arrayInfo = {
         figurePos: posClass,
         videoPos: videoPosClass
       };
       videoPlacementArray.push(arrayInfo);
-    })
+    }
+    for (let i = 0; i < hiddenElements; i++) {
+      const posClass = `hidden--figurewrapper--div`;
+      const videoPosClass = `hidden--video`;
+      let arrayInfo = {
+        figurePos: posClass,
+        videoPos: videoPosClass
+      };
+      videoPlacementArray.push(arrayInfo);
+    }
+    // console.log(videoPlacementArray);
     shuffleArray(videoPlacementArray);
   }
   function shuffleArray(array: any) {
@@ -131,7 +146,7 @@ export function LoadVideoAssets() {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
-    console.log("Shuffled array:", array);
+    // console.log("Shuffled array:", array);
     return array;
   }
   function replacePositioningClasses() {
@@ -141,10 +156,8 @@ export function LoadVideoAssets() {
 
     filteredFigures.forEach((figure, index) => {
 
-      // if (figures[index].classList.contains("fixed-item")){
-      //   figure.classList.remove(...figure.classList);
 
-      // }
+      
       if (index < videoPlacementArray.length ) {
         
 
