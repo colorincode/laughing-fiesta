@@ -28,16 +28,51 @@ import { Canvas } from './Canvas'
 const navigation = new Navigation();
 
 
-const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
-if (canvasElement) {
-  const canvas = new Canvas(canvasElement);
-  window.addEventListener('beforeunload', () => {
-    canvas.dispose();
-  });
-}
+// const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
+// if (canvasElement) {
+//   const canvas = new Canvas(canvasElement);
+//   window.addEventListener('beforeunload', () => {
+//     canvas.dispose();
+//   });
+// }
+let isMaskingAnimationRunning = true;
+      function projectmaskingAnimationTransition() {
+        // isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
+  
+        let tl = gsap.timeline();
+  
+        tl.to(".maskingintro--element ", {
+          y: "100%",
+          opacity: 0,
+          duration: 4.25,
+          ease: "power1.out",
+          stagger: {
+            amount: 0.5,
+            from: "random",
+          },
+        }, 0) // animation starts at beginning of timeline
+        .then(() => {
+          setTimeout(() => {
+            isMaskingAnimationRunning = false;
+           setupHashNav();
+          }, 500);
+        });
+      }
+  
+//   const preloaderTl = gsap.timeline({
+//     defaults: { ease: "ease-out-quart", delay: .5 }
+// });
+// preloaderTl
+// .fromTo(".loaded", 
+//   { yPercent: 0, autoAlpha: 0, duration: 2.6, ease: "custom" }, 
 
+// {
+//   yPercent: 60, autoAlpha: 1, duration: 2.6, ease: "custom" 
+// })
+  // const canvas = new Canvas(page);
+  // window.addEventListener("onread    ", () => {})
 
-
+// window.addEventListener("DOMContentLoaded", pageInReveal);
 gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
 
 const sections = gsap.utils.toArray(".sticky-element");
@@ -108,8 +143,9 @@ Observer.create({
  onStop: () => {
   console.log("stopped");
   let animating = false;
+  let playPromise = Promise.resolve();
   videos.forEach(video => {
-   
+ 
     (video as HTMLVideoElement).play();
     (video as HTMLVideoElement).controls = true;
     (video as HTMLVideoElement).autoplay = true;
@@ -160,7 +196,10 @@ const lenis = new Lenis({
   duration: 1.3,
   easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   smooth: true,
-  // infinite: true,
+  smoothWheel: true,
+  syncTouchLerp: true,
+  syncTouch: true,
+  infinite: true,
 	syncTouch: true,
   prevent: (node) => node.id === 'noscroll-logo',
 
@@ -242,7 +281,7 @@ tracks.forEach((track, i) => {
 
   sliders.forEach((slider, i) => {
    
-
+// slider = gsap.utils.selector('.slider') as any;
   
     let anim = gsap.timeline({
       scrollTrigger: {
@@ -316,9 +355,11 @@ const onScroll = () => {
   }
 
   const onDOMContentLoaded = () => {
+    projectmaskingAnimationTransition() 
+    handleExternalLinks();
+   if (animating = true ) {
 
-      document.body.style.visibility = 'visible';
-      handleExternalLinks();
+   }
 }
   
 

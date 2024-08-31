@@ -9,6 +9,8 @@ import Observer from 'gsap/Observer';
 import Timeline from 'gsap/all';
 import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from './shared/eventdispatch';
+import _Observer from 'gsap/Observer';
+import { event } from 'jquery';
 // import { relative } from 'path';
 
 gsap.registerPlugin(EasePack);
@@ -43,28 +45,6 @@ playIconAtag.setAttribute("title", "Play");
 const projectName = document.createElement('div');
 projectName.className = 'project-name';
 
-function setupUnifiedEventHandler(video: HTMLVideoElement, eventDispatcher: EventDispatcher) {
-  Observer.create({
-    target: video,
-    type: "pointer,touch,mouse",
-    onClick: (self) => handleEvent(self, "click", video, eventDispatcher),
-    onDrag: (self) => handleEvent(self, "drag", video, eventDispatcher),
-    onPress: (self) => handleEvent(self, "press", video, eventDispatcher),
-    onRelease: (self) => handleEvent(self, "release", video, eventDispatcher),
-    tolerance: 10,
-    preventDefault: false 
-  });
-}
-
-function handleEvent(self: any, eventType: string, video: HTMLVideoElement, eventDispatcher: EventDispatcher) {
-  const event = new CustomEvent(eventType, {
-    detail: {
-      originalEvent: self.event,
-      video: video
-    }
-  });
-  document.dispatchEvent(event);
-}
 
 function initShadowGrid() {
   const checkForElement = () => {
@@ -85,10 +65,10 @@ function initShadowGrid() {
 }
 document.addEventListener('DOMContentLoaded', initShadowGrid);
 function videoLinksVisible(video: HTMLVideoElement) {
-  // console.log(video);
-  // shadowGrid.innerHTML = `<div class="shadow-inner-grid">` + companyName + projectName + `</div>`;
+  let isMaskingAnimationRunning = false;
+
   let projectId = video.getAttribute('data-project');
-  let getprojectLink =  video.getAttribute('data-hashnav')?.substring(1) ;
+  let getprojectLink =  video.getAttribute('data-hashnav')?.substring(1);
   let setprojectLink = '/projects.html' + '#' + getprojectLink;
   let companyId = video.getAttribute('data-company');
   if (!companyId) return;
@@ -98,13 +78,49 @@ function videoLinksVisible(video: HTMLVideoElement) {
   if (!playIconAtag) return;
     playIconAtag.href = setprojectLink;
     playIconAtag.innerHTML = `
-      <i class="fa-duotone fa-solid fa-circle-play fa-fw play--icon" onclick="smoothLinkClick(e)"></i>
+      <i class="fa-duotone fa-solid fa-circle-play fa-fw play--icon"></i>
     `;
   if (!projectId) return;
     projectName.innerHTML = `
       <div class="project-name-revealed" >${projectId}</div>
       `;
     shadowGrid.style.display = "grid";
+    playIconAtag.addEventListener('click', handlePlayIconClick);
+
+    function handlePlayIconClick(e: MouseEvent) {
+      e.preventDefault(); // Prevent the default navigation
+      e.stopPropagation();
+      if (!isMaskingAnimationRunning) {
+        maskingAnimationTransition();
+      }
+    }
+    function maskingAnimationTransition() {
+      isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
+
+      let tl = gsap.timeline();
+
+      tl.to(".shadow-inner-grid", {
+        opacity: 0,
+        duration: 1.25,
+        ease: "power1.in",
+        delay: 1,
+      }, 0) // animation starts at beginning of timeline
+      .to(".masking--element", {
+        y: "0%",
+        opacity: 1,
+        duration: 1.25,
+        ease: "power1.out",
+        stagger: {
+          amount: 0.5,
+          from: "random",
+        },
+      }, 0) // animation starts at beginning of timeline
+      .then(() => {
+        setTimeout(() => {
+          window.location.href = playIconAtag.href;
+        }, 500);
+      });
+    }
 }
 
 
@@ -486,8 +502,8 @@ function handleDocumentClick(e: MouseEvent) {
     }
 }
   // Initialize event listeners for grid videos
-export const initEvents = () => {
-    saveInitialState(); // Save the initial state of videos
+// export const initEvents = () => {
+//     saveInitialState(); // Save the initial state of videos
     // initShadowGrid();
   //   gridItems.forEach((item: HTMLElement) => {
   //     const video = item.querySelector('.video--item') as HTMLElement;
@@ -498,32 +514,171 @@ export const initEvents = () => {
   //   document.addEventListener('click', handleDocumentClick);
   // };
 
-  gridItems.forEach((item) => {
-    const video = item.querySelector('.video--item') as HTMLVideoElement;
-    if (video) {
-      const eventDispatcher = new EventDispatcher();
+//   gridItems.forEach((item) => {
+//     const video = item.querySelector('.video--item') as HTMLVideoElement;
+//     if (video) {
+//       const eventDispatcher = new EventDispatcher();
       
+//       // Set up Observer for the video
+//       Observer.create({
+//         target: video,
+//         type: "pointer,touch,mouse",
+//         onClick: (self) => {
+//           toggleVideo({
+//             target: video,
+//             currentTarget: video,
+//             type: 'click'
+//           } as unknown as Event);
+//         },
+//         preventDefault: false
+//       });
+
+//       // Store the eventDispatcher on the video element for later cleanup
+//       (video as any).eventDispatcher = eventDispatcher;
+//     }
+//   });
+
+//   // Handle document-wide clicks
+//   Observer.create({
+//     target: document,
+//     type: "pointer,touch,mouse",
+//     onClick: (self) => {
+//       if (currentFullscreenVideo && !fullscreenElement.contains(self.event.target as Node)) {
+//         returnToOriginalPosition(currentFullscreenVideo);
+//       }
+//     },
+//     preventDefault: false
+//   });
+// };
+
+// function cleanup() {
+//   gridItems.forEach((item: HTMLElement) => {
+//     const video = item.querySelector('.video--item') as HTMLVideoElement;
+//     if (video && (video as any).eventDispatcher) {
+//       (video as any).eventDispatcher.dispose();
+//       delete (video as any).eventDispatcher;
+//     }
+//   });
+
+//   // Kill all GSAP animations and observers
+//   gsap.killTweensOf("*");
+//   Observer.getAll().forEach(observer => observer.kill());
+// }
+function setupUnifiedEventHandler(video: HTMLVideoElement, eventDispatcher: EventDispatcher) {
+  Observer.create({
+    target: video,
+    type: "pointer,touch,mouse",
+    onClick: (self) => handleEvent(self, "click", video, eventDispatcher),
+    onDrag: (self) => handleEvent(self, "drag", video, eventDispatcher),
+    onPress: (self) => handleEvent(self, "press", video, eventDispatcher),
+    onRelease: (self) => handleEvent(self, "release", video, eventDispatcher),
+    onChange: (self) => handleEvent(self, "change", video, eventDispatcher),
+    onStop: (self) => handleEvent(self,"stop", video, eventDispatcher),
+    tolerance: 10,
+    preventDefault: false 
+  });
+}
+
+function handleEvent(self: any, eventType: string, video: HTMLVideoElement, eventDispatcher: EventDispatcher) {
+  const event = new CustomEvent(eventType, {
+    detail: {
+      originalEvent: self.event,
+      video: video
+    }
+  });
+  document.dispatchEvent(event);
+}
+
+
+export const initEvents = () => {
+  saveInitialState(); // Save the initial state of videos
+    // initShadowGrid();
+  //   gridItems.forEach((item: HTMLElement) => {
+  //     const video = item.querySelector('.video--item') as HTMLElement;
+  //     if (video) {
+  //       video.addEventListener('click', toggleVideo);
+  //     }
+  //   });
+  //   document.addEventListener('click', handleDocumentClick);
+  // };
+  console.log('vid observer init trigger');
+  videosObserverCreate();
+
+};
+
+let clickEventDispatcher = new EventDispatcher;
+
+function videosObserverCreate() {
+  console.log('the video observers are being created');
+  const video = document.querySelectorAll('.video--item');
+  const videoEl = document.querySelector(".video--item") as HTMLVideoElement;
+  setupUnifiedEventHandler(videoEl, new EventDispatcher);
+  const filteredVideos = Array.from(video).filter(video => !video.classList.contains('hidden--video'));
+  console.log(filteredVideos);
+  filteredVideos.forEach((video) => {
+    // const video = item.querySelector('.video--item') as HTMLVideoElement;
+    if (video) {
+      setupUnifiedEventHandler(videoEl, new EventDispatcher);
+      // const eventDispatcher = new EventDispatcher();
       // Set up Observer for the video
-      Observer.create({
+
+    //   console.log('vid observer');
+      _Observer.create({
         target: video,
         type: "pointer,touch,mouse",
-        onClick: (self) => {
+        onClick: (event) => {
+          documentObserverCreate();
           toggleVideo({
             target: video,
             currentTarget: video,
             type: 'click'
           } as unknown as Event);
+          videoObserverKill();
         },
         preventDefault: false
       });
+    //   // Store the eventDispatcher on the video element for later cleanup
+    let getAll = _Observer.getAll();
+    console.log(getAll);
+    //   (video as any).clickEventDispatcher = clickEventDispatcher;
+    // }
+  // };
+}   //  
+ });
+}
+function videoObserverKill() {
+  const video = document.querySelectorAll('.video--item');
+  const filteredVideos = Array.from(video).filter(video => !video.classList.contains('hidden--video'));
+  console.log(filteredVideos);
+  filteredVideos.forEach((video) => {
+    // const video = item.querySelector('.video--item') as HTMLVideoElement;
+    if (video && (video as any).eventDispatcher) {
+      // console.log('disposing video observers');
+      // look for array of event observers created 
+      // let getAll = _Observer.getAll();
+      // console.log(getAll);
+      // (video as any).eventDispatcher.dispose();
+ 
 
-      // Store the eventDispatcher on the video element for later cleanup
-      (video as any).eventDispatcher = eventDispatcher;
+      // disable the observers (if we want them re enabled later)
+      // kill the observers (if we do not want them re enabled)
+           //dont need this, need to ready the observers for garbage collection here.
+      _Observer.getAll().forEach(o => o.kill()); 
+    // eventdispatcher
+      // clickEventDispatcher.removeEventListener(clickEventDispatcher.listeners['pointer,touch,mouse'][0]);
+      // delete (video as any).eventDispatcher;
+      console.log(video);
+      // delete (video as any).eventDispatcher;
     }
+    
   });
+}
 
-  // Handle document-wide clicks
-  Observer.create({
+// // Handle document-wide clicks
+function documentObserverCreate() {
+  console.log('document observer has been created');
+  const videoEl = document.querySelector(".video--item") as HTMLVideoElement;
+  _Observer.create({
     target: document,
     type: "pointer,touch,mouse",
     onClick: (self) => {
@@ -531,20 +686,15 @@ export const initEvents = () => {
         returnToOriginalPosition(currentFullscreenVideo);
       }
     },
+    onStop: () => {
+      if (currentFullscreenVideo && currentFullscreenVideo) {
+        setupUnifiedEventHandler(videoEl, new EventDispatcher);
+        setInterval (() => {
+          videoEl.removeEventListener("click", videoObserverKill);
+        }, 1)
+        console.log("cleanup completed on stop");
+      }
+    },
     preventDefault: false
   });
-};
-
-function cleanup() {
-  gridItems.forEach((item: HTMLElement) => {
-    const video = item.querySelector('.video--item') as HTMLVideoElement;
-    if (video && (video as any).eventDispatcher) {
-      (video as any).eventDispatcher.dispose();
-      delete (video as any).eventDispatcher;
-    }
-  });
-
-  // Kill all GSAP animations and observers
-  gsap.killTweensOf("*");
-  Observer.getAll().forEach(observer => observer.kill());
 }

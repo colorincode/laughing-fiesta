@@ -69,7 +69,7 @@ const onClick = () => {
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
     LoadVideoAssets();
-    listenForFlip();
+    // listenForFlip();
     loadCanvas();
     initEvents();
     // initShadowGrid();
@@ -84,7 +84,7 @@ const onChange = () => {
 const onResize = () => {
     callAfterResize();
     killFlip();
-    listenForFlip();
+    // listenForFlip();
     // LoadVideoAssets();
     console.clear();
 }
