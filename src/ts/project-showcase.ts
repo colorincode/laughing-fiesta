@@ -24,6 +24,7 @@ import Lenis from 'lenis';
 import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
+import { url } from 'inspector';
 
 const navigation = new Navigation();
 const eventDispatcher = new EventDispatcher();
@@ -242,14 +243,15 @@ gsap.ticker.lagSmoothing(0)
 
 
 
-const tracks = selectAll(".sticky-element");
+const tracks = gsap.utils.toArray(".sticky-element");
 
 
 tracks.forEach((track, i) => {
-  let trackWrapper = track.querySelectorAll(".track");
-  let trackFlex = track.querySelectorAll(".track-flex");
-  let allImgs = track.querySelectorAll(".image");
-  let progress = track.querySelectorAll(".progress--bar-total");
+  // let track = gsap.utils.selector( ".track");
+  let trackWrapper = document.querySelectorAll(".track");
+  let trackFlex = document.querySelectorAll(".track-flex");
+  let allImgs = document.querySelectorAll(".image");
+  let progress = document.querySelectorAll(".progress--bar-total");
 
   let sliders = gsap.utils.toArray(".panel-wide");
   let thumbs = gsap.utils.toArray(".thumbs");
@@ -284,8 +286,10 @@ tracks.forEach((track, i) => {
       anticipatePin: 1,
       scrub: 1,
       start: "center center",
-      
-      end: () => "+=" + (track.scrollWidth - window.innerWidth),
+      // onUpdate: () => {
+      //   console.log("scroller updated")
+      // },
+      end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
       // onRefresh: (self) => self.getTween().resetTo("totalProgress", 0),
       invalidateOnRefresh: true
     }
@@ -333,33 +337,59 @@ tracks.forEach((track, i) => {
 
 
 
-
-const hash = window.location.hash.replace('#', '') as any;
-function scrollToVideo(hash) {
-  const video = document.querySelector(`[data-hashnav="${hash}"]`);
+function scrollToVideo() {
+  const hash = window.location.hash.replace('#', '');
+  const video = document.querySelector(`[data-hashnav="#${hash}"]`);
+  let trackWrapper = document.querySelectorAll(".panel-wide");
   if (video) {
-    const slider = video.closest('.panel-wide');
+    const slider = document.querySelector(".slider-video") as HTMLElement;
+    
     if (slider) {
-      gsap.to(window, {
-        scrollTo: {
-          y: "+=" + slider.getBoundingClientRect().left,
+      console.log("scrolling to video:", video);
+      
+      gsap.to(slider, {
+        scrollTrigger: {
+          trigger: trackWrapper,
+          // containerAnimation: scrollTween,
+          start: "right right",
+          end: () => "+=" + (trackWrapper.length - window.innerWidth),
+          // visualViewport: slider,
         },
-        duration: 1,
+        scrollTo: {
+          x: video,
+          offsetX: 0,
+        },
+        duration: 0.5,
         onComplete: () => {
           ScrollTrigger.refresh();
-        },
+    
+                    // if (gsap.start < 0) {
+                    //   Animation.progress(gsap.utils.mapRange(self.start, self.end, 0, 1, 0));
+                    // }
+        }
       });
+    } else {
+      console.error("slide element not found oo");
     }
+  } else {
+    console.error("vidya element not found for hash:", hash);
   }
 }
 
 function setupHashNav() {
   if (window.location.hash) {
-    scrollToVideo(hash);
+    scrollToVideo();
   }
-  window.addEventListener('hashchange', () => {
-    scrollToVideo(hash);
-    handleExternalLinks();
+  
+  const thumbnails = document.querySelectorAll('.thumbtext');
+  thumbnails.forEach((thumb) => {
+    thumb.addEventListener('click', (e) => {
+      e.preventDefault();
+      const hash = e.target.getAttribute('href');
+      window.location.hash = hash;
+      // console.log("slider");
+      scrollToVideo();
+    });
   });
 }
 const onScroll = () => {
@@ -369,11 +399,12 @@ const onScroll = () => {
   }
 
   const onDOMContentLoaded = () => {
-    projectmaskingAnimationTransition() 
+    projectmaskingAnimationTransition() ;
+    setupHashNav();
     handleExternalLinks();
-   if (animating = true ) {
+  //  if (animating = true ) {
 
-   }
+  //  }
 }
   
 
@@ -387,7 +418,7 @@ const onScroll = () => {
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("scroll", onScroll);
-eventDispatcher.addEventListener("hashchange", setupHashNav);
+window.addEventListener('hashchange', scrollToVideo);
 
   // const thumbnails = document.querySelectorAll('.thumbs a');
   // thumbnails.forEach((thumb) => {
@@ -410,8 +441,7 @@ eventDispatcher.addEventListener("hashchange", setupHashNav);
 
 function handleExternalLinks() {
   if (window.location.hash) {
-
-    scrollToVideo(hash);
+    scrollToVideo();
   }
 }
 
@@ -427,7 +457,7 @@ function gotoSection(index, direction) {
    animating = false;
   }
  });
- currentIndex = index;
+//  currentIndex = index;
 }
 
  // // Scroll to video function
