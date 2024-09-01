@@ -26,7 +26,20 @@ import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
 
 const navigation = new Navigation();
+const eventDispatcher = new EventDispatcher();
+gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
 
+const sections = gsap.utils.toArray(".sticky-element");
+const images = gsap.utils.toArray(".track").reverse();
+const slideImages = gsap.utils.toArray(".slider-video");
+const outerWrappers = gsap.utils.toArray(".track-flex");
+const innerWrappers = gsap.utils.toArray(".panel-wide");
+const count = document.querySelector(".count");
+const wrap = gsap.utils.wrap(0, sections.length);
+const logo = document.querySelector(".topbar--global");
+const videos = gsap.utils.toArray(document.querySelectorAll('.slider-video')) ;
+let animating: boolean;
+let currentIndex = 0;
 
 // const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
 // if (canvasElement) {
@@ -73,19 +86,19 @@ let isMaskingAnimationRunning = true;
   // window.addEventListener("onread    ", () => {})
 
 // window.addEventListener("DOMContentLoaded", pageInReveal);
-gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
+// gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
 
-const sections = gsap.utils.toArray(".sticky-element");
-const images = gsap.utils.toArray(".track").reverse();
-const slideImages = gsap.utils.toArray(".slider-video");
-const outerWrappers = gsap.utils.toArray(".track-flex");
-const innerWrappers = gsap.utils.toArray(".panel-wide");
-const count = document.querySelector(".count");
-const wrap = gsap.utils.wrap(0, sections.length);
-const logo = document.querySelector(".topbar--global");
-const videos = gsap.utils.toArray(document.querySelectorAll('.slider-video')) ;
-let animating: boolean;
-let currentIndex = 0;
+// const sections = gsap.utils.toArray(".sticky-element");
+// const images = gsap.utils.toArray(".track").reverse();
+// const slideImages = gsap.utils.toArray(".slider-video");
+// const outerWrappers = gsap.utils.toArray(".track-flex");
+// const innerWrappers = gsap.utils.toArray(".panel-wide");
+// const count = document.querySelector(".count");
+// const wrap = gsap.utils.wrap(0, sections.length);
+// const logo = document.querySelector(".topbar--global");
+// const videos = gsap.utils.toArray(document.querySelectorAll('.slider-video')) ;
+// let animating: boolean;
+// let currentIndex = 0;
 
 // Create an Intersection Observer for video n text
 
@@ -144,6 +157,7 @@ Observer.create({
   console.log("stopped");
   let animating = false;
   let playPromise = Promise.resolve();
+ 
   videos.forEach(video => {
  
     (video as HTMLVideoElement).play();
@@ -153,7 +167,7 @@ Observer.create({
     thumbtextTl.restart();
 
     })
-
+  
  },
  onUp: () => {
   console.log("down");
@@ -368,15 +382,12 @@ const onScroll = () => {
 
   }
 
-  const eventDispatcher = new EventDispatcher();
+  // const eventDispatcher = new EventDispatcher();
 // use the dispatcher, this should not need editing 
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("scroll", onScroll);
-eventDispatcher.addEventListener("hashchange", () => {
-  // handleExternalLinks();
-  // scrollToVideo(hash);
-});
+eventDispatcher.addEventListener("hashchange", setupHashNav);
 
   // const thumbnails = document.querySelectorAll('.thumbs a');
   // thumbnails.forEach((thumb) => {

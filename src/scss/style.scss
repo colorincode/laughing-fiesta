@@ -118,7 +118,9 @@ a:focus-visible {
 h1,h2,h3,h4,h5,h6 {
     font-family: "Manrope";
 }
-
+*, *::before, *::after { 
+  box-sizing: border-box;
+}
 :root {
   --adjust-height:calc(75% );
   --adjust-width:calc(75% );
@@ -237,7 +239,7 @@ h4,
     }
   }
   body {
-       margin: 0;
+    margin: 0;
     padding: 0;
     // background-color: transparent;
     background: url('../../assets/images/theatre.jpg') no-repeat;
@@ -248,6 +250,7 @@ h4,
     font-size: 1.1em;
     font-family: "Manrope", sans-serif;
     font-display: swap;
+    overflow-y: hidden;
     @media (max-width: 768px) {
       // overflow-y: hidden;
       // overflow-x: scroll;
@@ -936,7 +939,7 @@ h4,
 .project-name {
   white-space: nowrap;
   font-family: "Manrope", sans-serif;
-  font-size: 3rem;
+  font-size: 2.5rem;
   line-height: 1.5;
   font-weight: 200;
   // grid-column: 2 / 2;
@@ -955,7 +958,7 @@ h4,
   border-bottom: 1px solid transparent;
   animation-name: links-fade-in;
   animation-duration: 2s;
-  transition: all 1s ease-in-out;
+  transition: all 0.8s ease-in-out;
   align-self: flex-start;
   @media (min-width: 2000px) {
     font-size: 5rem;
@@ -964,7 +967,7 @@ h4,
     font-size: 2.5rem;
   }
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-right: 10px;
   }
 }
@@ -1021,7 +1024,7 @@ h4,
     font-size: 2.5rem;
   }
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-left: 10px;
   }
 }
