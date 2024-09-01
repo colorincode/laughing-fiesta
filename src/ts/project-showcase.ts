@@ -427,6 +427,8 @@ function gotoSection(index, direction) {
    animating = false;
   }
  });
+ currentIndex = index;
+}
 
  // // Scroll to video function
 // function scrollToVideo(hash) {
@@ -577,8 +579,8 @@ function gotoSection(index, direction) {
 //   )
 //   .timeScale(0.8);
 
- currentIndex = index;
-}
+//  currentIndex = index;
+// }
 
 // const titleList = gsap.utils.toArray('#titleEffects li')
 // const titlesTl = gsap.timeline({repeat: -1})
