@@ -409,26 +409,20 @@ function scrollToVideo(hash: string) {
       //target position to scroll to (center the video)
       const targetPosition = scrollPosition - viewportCenter + (panel.offsetWidth / 2);
 
-      gsap.fromTo(track, {
+      gsap.to(track, {
         x: -targetPosition,
         duration: 1.2,
         ease: "power2.inOut",
         onStart: () => {
-          // console.log("scroll started:" + track.offsetWidth);
+          console.log("scroll started:" + track.offsetWidth);
               //  end: () => "+=" + (track.scrollWidth - window.innerWidth),
         },
         onComplete: () => {
           console.log("Scroll completed");
           // ScrollTrigger.refresh();
           // lenis.isStopped;
-        },
-        
-       }, {
-        // x: +targetPosition,
-        x: () => -targetPosition / window.innerWidth,
-        duration: 1.2,
-        ease: "power2.inOut",
-        });
+        }
+      });
 
       // Update the URL hash without triggering a scroll
       history.pushState(null, '', `#${hash}`);
@@ -487,6 +481,10 @@ window.addEventListener('DOMContentLoaded', () => {
   setupHashNav();
   handleInitialHash();
   setupVideoObservers();
+//might be overkill
+  if (window.location.hash) {
+    scrollToVideo(window.location.hash);
+  }
 });
 
 window.addEventListener('hashchange', () => {
