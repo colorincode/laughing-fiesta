@@ -87,10 +87,11 @@ html.lenis, html.lenis body {
   body {
     // background-color: transparent;
     // background: url('../../assets/images/theatre.jpg') top center no-repeat;
-    background-image: url('../../assets/images/layout.jpeg?as=webp') ;
+    background-image: url('../../assets/images/theatre.jpg?as=webp') ;
     // transform: scale(1.03);
     background-size: contain;
     background-position: top center;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     backdrop-filter: blur(10px);
     // background-size: cover;
@@ -124,6 +125,7 @@ html.lenis, html.lenis body {
 .sticky-element {
   overflow: visible; /* Changed from hidden to allow content to extend */
   position: relative;
+  margin-inline: var(--set-margin);
 
 }
 
@@ -133,7 +135,7 @@ html.lenis, html.lenis body {
   align-items: center;
   width: max-content;
   --velocity: 0;
- margin-inline: var(--set-margin);
+  // margin-inline: var(--set-margin);
   gap: var(--set-gap);
   height: 65vh; /* Matched with .track-flex */
   flex: 0 0 auto;

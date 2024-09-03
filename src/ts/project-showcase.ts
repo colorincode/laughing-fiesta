@@ -129,7 +129,7 @@ const videoObserver = new IntersectionObserver((entries, observer) => {
 videos.forEach(video => {
   
   videoObserver.observe(video as HTMLVideoElement);
-  // thumbtextTl.play();
+  thumbtextTl.play();
 
 
 });
