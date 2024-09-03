@@ -37,11 +37,11 @@
   position: absolute;">
   </canvas>
 </main>
-  <section class="sticky-element half-height">
+  <section class="sticky-element half-height" id="masterWrap">
 
-      <div class="track">
+      <div class="track" id="panelWrap">
       
-          <div class="panel-wide" data-box="elem1"   data-hashnav="#selfie-by-flip">
+          <div class="panel-wide" data-box="elem1"   data-hashnav="#selfie-by-flip" >
             <!-- <img src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/galaxy_3-2.jpg" alt=""> -->
             <video 
             class="slider-video"
@@ -63,7 +63,7 @@
             </video> 
           <!-- <img class="slider-img" src="../assets/masks/wave01.jpg" alt="" style="mix-blend-mode: screen;">  -->
             <!-- <span class="panel-overlay-text">SAMSUNG:</span><br> -->
-            <span class="panel-overlay-text">SELFIE BY FLIP</span>
+            <span class="panel-overlay-text title">SELFIE BY FLIP</span>
           </div>
           <div class="panel-wide" data-box="elem2"   data-hashnav="#food-mood">
               <video 
@@ -109,7 +109,7 @@
             <!-- <video  autoplay="" loop="" src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/tp_vid_clouds.mp4"></video> -->
             <!-- <img class="image" src="//preview.treethemes.com/hazel/demo9/wp-content/uploads/sites/19/revslider/manbw.jpg" alt="" style="mix-blend-mode: screen;"> 
             <span>SAMSUNG:</span><br> -->
-            <span class="panel-overlay-text">GALAXY FOLD 4 LAUNCH</span>
+            <span class="panel-overlay-text title">GALAXY FOLD 4 LAUNCH</span>
           </div>
           <div class="panel-wide" data-box="elem4"   data-hashnav="#coca-cola-y3000">
               <video 
@@ -301,15 +301,56 @@
 </div>
 
 </section>
+<!-- <div class="titleWrap">
+  <div class="title">
+    Samsung: Selfie By Flip
+  </div>
+  <div class="title">
+    Coca Cola: Food Mood
+  </div>
+  <div class="title">
+    Samsung: Galaxy 4 Launch
+  </div>
+  <div class="title">
+    Coca Cola: Y&colon;3000
+  </div>
+  <div class="title">
+    5. Sliders are useful
+  </div>
+  <div class="title">
+    6. Follow me on Twitter
+  </div>
+  <div class="title">
+    1. Controlling the slider
+  </div>
+  <div class="title">
+    2. Powered by GSAP
+  </div>
+  <div class="title">
+    3. Bottom dot animation
+  </div>
+  <div class="title">
+    4. Random dog
+  </div>
+  <div class="title">
+    5. Sliders are useful
+  </div>
+  <div class="title">
+    6. Follow me on Twitter
+  </div>
+  </div> -->
 <!-- <button class="prev">prev</button>
 <button class="next">next</button>
 <button class="toggle">toggle overflow</button> -->
     <div class="progress--bar-wrapper">
       <div class="progress--bar">
-        <div class="progress--bar-total"></div>
+        <div class="arrow">
+          <i class="fa-arrow" id="leftArrow"></i>
+          <i class="fa-arrow" id="rightArrow"></i>
+        </div>
       </div>
     </div> 
-    <div class="elements" data-lenis-prevent>
+    <div class="elements hideMe" data-lenis-prevent>
       <div class="thumbs">
           <div class="visible"><a class="thumbtext" href="#selfie-by-flip" >SAMSUNG: SELFIE BY FLIP</a></div>
       </div>
