@@ -60,7 +60,7 @@ h1,h2,h3,h4,h5,h6 {
   }
 }
 html.lenis, html.lenis body {
-  height: auto;
+  // height: auto;
 }
 
 .lenis.lenis-smooth {
@@ -68,7 +68,7 @@ html.lenis, html.lenis body {
 }
 
 .lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
+  // overscroll-behavior: contain;
 }
 
 .lenis.lenis-stopped {
@@ -82,15 +82,26 @@ html.lenis, html.lenis body {
     --set-margin: calc((100vw - 70rem) / 2);
     --set-width: auto;
     --set-gap: 2rem;
+    --velocity: 0;
   }
   body {
     // background-color: transparent;
-    background: url('../../assets/images/theatre.jpg') top center no-repeat;
-    background-size: cover;
+    // background: url('../../assets/images/theatre.jpg') top center no-repeat;
+    background-image: url('../../assets/images/layout.jpeg?as=webp') ;
+    // transform: scale(1.03);
+    background-size: contain;
+    background-position: center;
+    background-attachment: fixed;
+    backdrop-filter: blur(8px);
+    // background-size: cover;
     color: white;
     font-size: 1.1em;
     font-family: "Manrope", sans-serif;
     font-display: swap;
+    overflow-y: hidden;
+    margin: 0;
+    padding: 0;
+    // --velocity: 0;
     @media (max-width: 768px) {
         overflow-y: scroll;
         overflow-x: hidden;
@@ -110,40 +121,131 @@ html.lenis, html.lenis body {
 }
 
 
+.sticky-element {
+  overflow: visible; /* Changed from hidden to allow content to extend */
+  position: relative;
 
-  .sticky-element {
-    overflow: hidden;
-  }
+}
+
+.track {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: max-content;
+  --velocity: 0;
+  // margin-inline: var(--set-margin);
+  gap: var(--set-gap);
+  height: 65vh; /* Matched with .track-flex */
+  flex: 0 0 auto;
+}
+
+.track-flex {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 65vh;
+  margin-inline: var(--set-margin);
+  z-index: 9;
+}
+
+.panel-wide {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 69vw; 
+  height: 80%;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.slider-video {
+  aspect-ratio: 16 / 9;
+  position: absolute;
+  inset: 0; /* Changed from 5% to 0 */
+  // width: 100%;
+  // // margin: 0 auto;
+  // height: 70dvh;
+  // object-fit: cover; /* Ensures the video covers the entire container */
+  object-position: center;
+  z-index: 99;
+  pointer-events: all;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+//   .sticky-element {
+//     overflow: hidden;
+//   }
   
-  .track {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: fit-content;
-    height: 100vh;
-    flex: 0 0 auto;
-  }
+//   .track {
+//     display: flex;
+//     justify-content: flex-start;
+//     align-items: center;
+//     width: fit-content;
+//     // height: 100vh;
+//     height: 65vh;
+//     flex: 0 0 auto;
+//   }
   
-  .track-flex {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    height: 65vh;
-    margin-inline: var(--set-margin);
-    z-index: 9;
-  }
+//   .track-flex {
+//     display: flex;
+//     justify-content: flex-start;
+//     align-items: center;
+//     height: 65vh;
+//     margin-inline: var(--set-margin);
+//     z-index: 9;
+//   }
   
-  .panel-wide {
-    position: relative;
-    // width: 100%;
-    // aspect-ratio: 16 / 9;
-    //  width: 80vw;
-    width: 70vw;
-    height: 100%;
-    overflow: hidden;
-    flex: 0 0 auto;
-    mix-blend-mode: difference;
-    span {
+//   .panel-wide {
+//     position: relative;
+//     // width: 100%;
+//     // aspect-ratio: 16 / 9;
+//     //  width: 80vw;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     width: 70vw;
+//     height: 100%;
+//     overflow: hidden;
+//     flex: 0 0 auto;
+//     mix-blend-mode: difference;
+//     span {
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+//       width: 100%;
+//       height: 100%;
+//       position: absolute;
+//       // inset: 0;
+//       font-size: 2.5rem;
+//       font-weight: 700;
+//       // mix-blend-mode: difference;
+//       z-index: 10;
+//       // transform: translateY(10.24rem);
+//       font-family: "Manrope", sans-serif;
+
+//     }
+//   }
+  
+//  .slider-video {
+//     aspect-ratio: 16 / 9;
+//     position: absolute;
+//     inset: 5%;
+//     max-width: 100%;
+//     height: auto;
+//     // width: 100%;
+//     // height: 100%;
+//     // object-fit: cover;
+//     object-position: center;
+//     mix-blend-mode: overlay;
+//     z-index: 99;
+//     pointer-events: all;
+//   }
+  .panel-overlay-text {
+ 
       display: flex;
       align-items: center;
       justify-content: center;
@@ -151,29 +253,13 @@ html.lenis, html.lenis body {
       height: 100%;
       position: absolute;
       // inset: 0;
-      font-size: 4rem;
+      font-size: 2.5rem;
       font-weight: 700;
-      // mix-blend-mode: difference;
+      mix-blend-mode: difference;
       z-index: 10;
       // transform: translateY(10.24rem);
       font-family: "Manrope", sans-serif;
-
-    }
   }
-  
- .slider-video {
-    aspect-ratio: 16 / 9;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    mix-blend-mode: overlay;
-    z-index: 99;
-  pointer-events: all;
-  }
-  
   .slider-img {
     position: absolute;
     inset: 0;
@@ -211,11 +297,12 @@ html.lenis, html.lenis body {
   
   .elements {
     width: 62.5rem;
+    // width: calc(99.5vw / 10);
     display: flex;
     justify-content: center;
     gap: .25rem;
     position: absolute;
-    bottom: 4.5rem;
+    bottom: -4.5rem;
     margin: 0 auto;
     left: 50%;
     transform: translateX(-50%);
@@ -491,3 +578,5 @@ html.lenis, html.lenis body {
 //   pointer-events: none;
 // }
 
+/*! locomotive-scroll v3.1.5 | MIT License | https://github.com/locomotivemtl/locomotive-scroll */
+html.has-scroll-smooth{overflow:hidden}html.has-scroll-dragging{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.has-scroll-smooth body{overflow:hidden}.c-scrollbar{position:absolute;right:0;top:0;width:11px;height:100vh;transform-origin:center right;transition:transform .3s,opacity .3s;opacity:0}.c-scrollbar:hover{transform:scaleX(1.45)}.c-scrollbar:hover,.has-scroll-dragging .c-scrollbar,.has-scroll-scrolling .c-scrollbar{opacity:1}.c-scrollbar_thumb{position:absolute;top:0;right:0;background-color:#000;opacity:.5;width:7px;border-radius:10px;margin:2px;cursor:-webkit-grab;cursor:grab}.has-scroll-dragging .c-scrollbar_thumb{cursor:-webkit-grabbing;cursor:grabbing}

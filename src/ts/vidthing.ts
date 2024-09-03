@@ -1,14 +1,25 @@
 import { Curtains, Plane } from "./vendors/curtains"
 import fragment from "./shader/circlefrag.glsl";
 import vertex from "./shader/circlevertex.glsl";
-import gsap from "gsap";
-
+// import gsap from "gsap";
+import gsap, { SteppedEase} from 'gsap'
+import { Flip } from 'gsap/Flip';
+import Draggable from 'gsap/Draggable';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+import ScrollToPlugin from 'gsap/ScrollToPlugin';
+import EasePack from 'gsap/EasePack';
+import { Power4 } from 'gsap/gsap-core';
+import Observer from 'gsap/Observer';
+import Timeline from 'gsap/all';
+import  Tween  from 'gsap/src/all';
+import {EventDispatcher} from './shared/eventdispatch';
+import {Navigation} from "./shared/nav";
 let activeTexture = 0;
 let currentTexture = 0;
 let transitionTimer = 0;
 let timer = 0;
 let isRunning = 0;
-
+const navigation = new Navigation();
 window.addEventListener("load", () => {
   // set up our WebGL context and append the canvas to our wrapper
   const curtains = new Curtains({

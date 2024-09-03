@@ -10,7 +10,7 @@ import Timeline from 'gsap/all';
 import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from './shared/eventdispatch';
 import _Observer from 'gsap/Observer';
-import { event } from 'jquery';
+// import { event } from 'jquery';
 // import { relative } from 'path';
 
 gsap.registerPlugin(EasePack);
