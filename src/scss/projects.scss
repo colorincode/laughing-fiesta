@@ -33,6 +33,16 @@
 * {
 	box-sizing: border-box;
 }
+a {
+  text-decoration: none;
+  color: #fff;
+  outline: none;
+  -webkit-tap-highlight-color: none;
+}
+a:hover {
+  outline: none;
+  -webkit-tap-highlight-color: none;
+}
 a:focus {
   outline: none;
   background: lightgrey;
@@ -115,8 +125,9 @@ h1,h2,h3,h4,h5,h6 {
     background-color: #000 !important;
     // --velocity: 0;
     @media (max-width: 768px) {
-        // overflow-y: scroll;
-        // overflow-x: hidden;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        min-height: 50vh;
     }
   }
 
@@ -126,6 +137,11 @@ h1,h2,h3,h4,h5,h6 {
     left: 0;
     width: 100vw;
     height: 100vh;
+    @media (max-width: 768px) {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      max-height: 50dvh;
+  }
     // border: 2px solid blue;
   }
   .mr--maskerton {
@@ -466,6 +482,11 @@ h1,h2,h3,h4,h5,h6 {
       font-size: 4.5rem;
       text-wrap: pretty;
     }
+    @media screen and (max-width:414px) {
+      font-size: 1rem;
+      text-wrap: pretty;
+      line-height: 1.5;
+    }
   }
   
   // .elements {
@@ -527,7 +548,7 @@ h1,h2,h3,h4,h5,h6 {
 	height: 100vh;
 	overflow: hidden;
   @media screen and (max-width:768px) {
-    border:var(--set-dev-border-2);
+    // border:var(--set-dev-border-2);
   }
 }
 
@@ -552,7 +573,8 @@ h1,h2,h3,h4,h5,h6 {
   @media screen and (max-width:414px) {
     border:var(--set-dev-border-2);
     top: 13%;
-    left: 6%;
+    left: 14%;
+    
   }
   @media screen and (min-width:1568px) and (max-width:8000px) {
     left: 16.2525%;
@@ -579,19 +601,25 @@ h1,h2,h3,h4,h5,h6 {
 	border-radius: 0.1rem;
   @media screen and (min-width:769px) and (max-width:1567px) {
     // left: 4.2525%;
-    width: 33em;
-    height: 38rem;
+    // width: 33em;
+    // height: 38rem;
+    width: 37em;
+    height: 39rem;
+    // width: 21em;
+    // height: 23rem;
   }
   @media screen and (min-width:415px) and (max-width:768px) {
-    border:var(--set-dev-border);
+    // border:var(--set-dev-border);
     // width: 40.3rem;
     width: 34.3rem;
     height: 20rem;
   }
   @media screen and (max-width:414px) {
-    border:var(--set-dev-border);
+    // border:var(--set-dev-border);
     // width: 21.3rem;
-    width: 34rem;
+    // width: 34rem;
+    // height: 11rem;
+    width: 18.5rem;
     height: 11rem;
   }
   @media screen and (min-width:1568px) and (max-width:8000px) {

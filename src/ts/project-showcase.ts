@@ -1,6 +1,3 @@
-
-
-
 // //import jquery , will need this for build to compile correctly when using jquery
 // import * as jquery from 'jquery';
 // (window as any).$ = (window as any).jQuery = jquery;
@@ -24,8 +21,8 @@ import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
-import { time } from 'console';
-import { each } from 'jquery';
+// import { time } from 'console';
+// import { each } from 'jquery';
 import _ScrollTrigger from 'gsap/ScrollTrigger';
 // import { url } from 'inspector';
 
@@ -63,6 +60,7 @@ thumbtextTl.fromTo(thumbText,
 );
 let imagePlacementArray: any[] = [];
 
+mrScopertonShufflerton();
 function mrScopertonShufflerton() {
 
   function processImages() {
@@ -90,7 +88,7 @@ function mrScopertonShufflerton() {
       };
       imagePlacementArray.push(arrayInfo);
     }
-    console.log(imagePlacementArray);
+    // console.log(imagePlacementArray);
     shuffleArray(imagePlacementArray);
   }
   function shuffleArray(array: any) {
@@ -114,6 +112,7 @@ function mrScopertonShufflerton() {
       }
     });
   }
+
   processImages();
   projReplacePositioningClasses();
 }
@@ -138,8 +137,8 @@ function mrScopertonShufflerton() {
   
 const hash = window.location.hash.substring(1);
 const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
-    let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
-    let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
+let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
+let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
 let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
 
 function  seamlessLoopScroll() {
@@ -267,7 +266,7 @@ function buildSeamlessLoop(items, spacing) {
 		i, index, item;
 
 	// set initial state of items
-	// gsap.set(items, {xPercent: 400, opacity: 0,	scale: 0});
+	// gsap.set(items, {xPercent: 0, opacity: 0,	scale: 0});
 
 	// create all the animations in a staggered fashion. create EXTRA animations at the end 4 seamless looping.
 	for (i = 0; i < l; i++) {
@@ -275,7 +274,7 @@ function buildSeamlessLoop(items, spacing) {
 		item = items[index];
 		time = i * spacing;
 		rawSequence.fromTo(item, {scale: 0, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
-		           .fromTo(item, {xPercent: 400}, {xPercent: -400, duration: 1, ease: "none", immediateRender: true}, time);
+		           .fromTo(item, {xPercent: 400}, {xPercent: -400, duration: 1, ease: "none", immediateRender:true}, time);
 		i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
 // console.log("label" + i, time);
 	}
@@ -295,7 +294,7 @@ function buildSeamlessLoop(items, spacing) {
 	seamlessLoop.to(rawSequence, {
 		time: loopTime,
 		duration: loopTime - startTime,
-		ease: "none"
+		ease: "none",
 	}).fromTo(rawSequence, {time: overlap * spacing + 1}, {
 		time: startTime,
 		duration: startTime - (overlap * spacing + 1),
@@ -305,33 +304,103 @@ function buildSeamlessLoop(items, spacing) {
 	return seamlessLoop;
 }
 
-// function reconstructVideo () {
+// this is where I swap the hash video and the currently playing video
+// let videoUserIsOn;
+
+// function reconstructVideo (hash: string) {
 //   let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
-//   const state = Flip.getState(videos);
-//   function swapPosition() {
-//     var parent = box.parentElement === container1 ? container2 : container1;
-//     parent.appendChild(box);
+//   let videoMatchingBrowserHash = videos.find(video => video.dataset.hashnav === hash);
+//   let videoMatchingBrowserHashParent = videoMatchingBrowserHash?.parentElement;
+//   let videoUserIsOnParent = videoUserIsOn!.parentElement;
+ 
+//   // videos.forEach((video) => {
+//   // const hashNav = video.dataset.hashnav;
+//   // const currentVideo = video.querySelector('.slider-video.active') as HTMLElement;
+//   // const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+//   // const state = Flip.getState(targetVideo);
+
+//   // // if (currentVideo) {
+//   // //   console.log("current video");
+//   // // }
+//   // return {state, targetVideo,currentVideo, hashNav}
+//   // });
+//   if (videoMatchingBrowserHash ) {
+//     swapPosition( );
 //   }
-//   function flip(elements, changeFunc, vars) {
-//     elements = gsap.utils.toArray(elements);
-//     vars = vars || {};
-//     let tl = gsap.timeline({onComplete: vars.onComplete, delay: vars.delay || 0}),
-//         bounds = elements.map(el => el.getBoundingClientRect()),
-//         copy = {},
-//         p;
-//     elements.forEach(el => {
-//       el._flip && el._flip.progress(1);
-//       el._flip = tl;
-//     })
-//     changeFunc();
-//     for (p in vars) {
-//       p !== "onComplete" && p !== "delay" && (copy[p] = vars[p]);
-//     }
-//     copy.x = (i, element) => "+=" + (bounds[i].left - element.getBoundingClientRect().left);
-//     copy.y = (i, element) => "+=" + (bounds[i].top - element.getBoundingClientRect().top);
-//     return tl.from(elements, copy);
+
+//   function swapPosition( ) {
+//     let currentVideoEl =  videoUserIsOnParent as HTMLElement;
+//     let targetVideoEl = videoMatchingBrowserHashParent as HTMLElement;
+//     // const currentVideoParent = videoUserIsOnParent;
+//     // const targetVideoParent = targetVideo.parentElement;
+//   console.log( "current vidya is:", currentVideoEl,)
+//   console.log( "target vidya is", targetVideoEl )
+//   const state = Flip.getState(currentVideoEl);
+//   console.log(state)
+//     // currentVideoParent?.appendChild(targetVideo);
+//     // targetVideoParent?.appendChild(currentVideo);
+  
+//     // Flip.from(state, {
+//     //   duration: 1,
+//     //   ease: 'power1.inOut',
+//     //   onComplete: () => {
+//     //     currentVideoEl.classList.remove('active');
+//     //     targetVideo.classList.add('active');
+//     //     videoUserIsOn = targetVideoEl;
+//     //   }
+//     // });
 //   }
 // }
+let videoUserIsOn: HTMLVideoElement;
+
+function reconstructVideo(hash: string) {
+  let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+  let videoMatchingBrowserHash = videos.find(video => video.dataset.hashnav === hash);
+  let videoMatchingBrowserHashParent = videoMatchingBrowserHash?.parentElement;
+  let videoUserIsOnParent = videoUserIsOn?.parentElement;
+
+  if (videoMatchingBrowserHash && videoUserIsOnParent && videoMatchingBrowserHashParent) {
+    swapPosition(videoUserIsOnParent, videoMatchingBrowserHashParent);
+  }
+
+  function swapPosition(currentVideoEl: HTMLElement, targetVideoEl: HTMLElement) {
+    const state = Flip.getState(currentVideoEl);
+    const timeline = gsap.timeline();
+
+    timeline
+      .set(targetVideoEl, { opacity: 0 })
+      .add(Flip.from(state, {
+        duration: 1,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          currentVideoEl.classList.remove('active');
+          targetVideoEl.classList.add('active');
+          videoUserIsOn = targetVideoEl.querySelector('.slider-video') as HTMLVideoElement;
+        }
+      }))
+      .to(targetVideoEl, { opacity: 1, duration: 0.5 });
+  }
+}
+
+
+
+
+//  this is where I get the browser window hash
+
+function handleInitialHash() {
+  if (window.location.hash) {
+    // const hash = window.location.hash.replace('#', '');
+    // const hash = window.location.hash;
+    const hash = window.location.hash.substring(1);
+    console.log(hash);
+    reconstructVideo(hash);
+    // setupHashNav ();
+    // scrollToVideo(hash);
+  }
+}
+
+
+// this is where I get the currently playing video
 
  function setupVideos() {
   const videoSources: { [key: string]: string } = {
@@ -343,95 +412,98 @@ function buildSeamlessLoop(items, spacing) {
    
 };
 
-  let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
-    videos.forEach((video) => {
-       // Set initial visibility
-    // gsap.set(video, { autoAlpha: 0 }); // Start with all videos hidden
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.classList.add("playing");
-             // Swap the video source based on data-hashnav
-             const hashNav = video.dataset.hashnav;
-            //  console.log(hashNav);
-            // flip([box], swapPosition);
-              // const hash = video.getAttribute('data-hashnav')?.replace('#', '') || '';
-              // gsap.to(hash, { duration: 1, autoAlpha: 1, ease: 'power2.inOut' });
-              console.log(`hash nav matches and Video ${video.dataset.hashnav} is playing `);
-             
-            
-             
-            //  else {
-            //   console.log("hash nav dont match");
-            //  }
-          //    if (hashNav && hashNav in videoSources) {
-          //     // videos.push(videoSources[hashNav]);
-          //     // video.src = videoSources[hashNav];
-          // }
-            video.play();
-            thumbtextTl.restart();
-            thumbtextTl.play();
-            // console.log(`Video ${video} is playing`);
-       
-            // console.log(`Video ${video.dataset.hashnav} is playing`);
-          } else {
-            video.pause();
-            thumbtextTl.pause();
-            console.log(`Video ${video.dataset.hashnav} is paused`);
-          }
-        });
-      }, { threshold: 0.5 });
+let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+videos.forEach((video) => {
+  const hashNav = video.dataset.hashnav;
+  const currentVideo = video.querySelector('.slider-video.active') as HTMLElement;
+  const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  const state = Flip.getState(targetVideo);
   
-      observer.observe(video);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        video.classList.add('active');
+        // Swap the video source based on data-hashnav
+    
+        // targetVideo.classList.add('active');
+      //   if (hashNav === window.location.hash) {
+      //     Flip.to(state, {
+      //       duration: 1,
+      //       ease: 'power1.inOut',
+      //       onComplete: () => {
+      //         console.log('Flip animation completed');
+      //         // ScrollTrigger.refresh();
+      //       }
+      // });
+      //   }
+
+      //     history.pushState('', `#${hash}`, `#${hash}`);
+      //     console.log('URL hash updated to:', hash);
+        video.play();
+        thumbtextTl.restart();
+        thumbtextTl.play();
+        // console.log(`Video ${video} is playing`);
+        
+        // setTimeout(() => {
+          console.log(`Video ${video.dataset.hashnav} is playing`);
+          videoUserIsOn = video;
+        // }, 5000);
+        
+      } else {
+        video.pause();
+        thumbtextTl.pause();
+        video.classList.remove('active');
+        // console.log(`Video ${video.dataset.hashnav} is paused`);
+      }
     });
-  }
+  }, { threshold: 0.5 });
+
+  observer.observe(video);
+});
+}
+
   // function swapPlayingVideo () {
   //   const video = document.querySelector('.slider-video') as HTMLVideoElement;
   //   if (!video.isPlaying) {
   //   console.log(`Video ${video} is playing`);
   //   }
   // }
- function scrollToVideo(hash: string) {
-    console.log('Attempting to scroll to video with hash:', hash);
-    const currentVideo = document.querySelector('.playing') as HTMLElement;
-    const targetVideo = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
-  if (currentVideo && targetVideo) {
-    gsap.to(window, {
-            scrollTo: { y: videoArray.length }, // Adjust offset as needed
-            duration: 1,
-            ease: 'power2.inOut'
-          });
+//  function scrollToVideo(hash: string) {
+//     console.log('Attempting to scroll to video with hash:', hash);
+//     const currentVideo = document.querySelector('.playing') as HTMLElement;
+//     const targetVideo = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+//   if (currentVideo && targetVideo) {
+//     gsap.to(window, {
+//             scrollTo: { y: videoArray.length }, // Adjust offset as needed
+//             duration: 1,
+//             ease: 'power2.inOut'
+//           });
           
-    history.pushState('', `#${hash}`, `#${hash}`);
-    ScrollTrigger.refresh();
-    // _ScrollTrigger.
-  }
-    if (targetVideo) {
-      history.pushState('', `#${hash}`, `#${hash}`);
-      console.log('URL hash updated to:', hash);
-    } else {
-      console.log('Target video not found for hash:', hash);
-    }
-  }
-  function setupHashNav() {
-    const thumbnails = document.querySelectorAll('.thumbtext');
-    thumbnails.forEach((thumb) => {
-      thumb.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = e.currentTarget as HTMLAnchorElement;
-        const hash = target.getAttribute('href')?.replace('#', '') || '';
+//     history.pushState('', `#${hash}`, `#${hash}`);
+//     ScrollTrigger.refresh();
+//     // _ScrollTrigger.
+//   }
+//     if (targetVideo) {
+//       history.pushState('', `#${hash}`, `#${hash}`);
+//       console.log('URL hash updated to:', hash);
+//     } else {
+//       console.log('Target video not found for hash:', hash);
+//     }
+//   }
+//   function setupHashNav() {
+//     const thumbnails = document.querySelectorAll('.thumbtext');
+//     thumbnails.forEach((thumb) => {
+//       thumb.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         const target = e.currentTarget as HTMLAnchorElement;
+//         const hash = target.getAttribute('href')?.replace('#', '') || '';
         
-      });
-    });
-  }
+//       });
+//     });
+//   }
   
-  function handleInitialHash() {
-    if (window.location.hash) {
-      const hash = window.location.hash.replace('#', '');
-      setupHashNav ();
-      scrollToVideo(hash);
-    }
-  }
+
     // const slider = new SeamlessSlider('.gallery');
   
   // Event listeners
@@ -454,7 +526,7 @@ function buildSeamlessLoop(items, spacing) {
     .then(() => {
       setTimeout(() => {
         isMaskingAnimationRunning = false;
-        initScrollFunctionality(); // Call the scroll initialization function here
+        // initScrollFunctionality(); // Call the scroll initialization function here
         // if (window.location.hash) {
         //   const hash = window.location.hash.substring(1);
         //   slider.scrollToVideo(hash);
@@ -464,10 +536,14 @@ function buildSeamlessLoop(items, spacing) {
   }
   
   const onDOMContentLoaded = () => {
-  console.clear();
+  // console.clear();
     navigation.setupNavigationEvents();
     projectmaskingAnimationTransition();
     setupVideos();
+    
+    setTimeout(() => {
+      handleInitialHash();
+    }, 2000);
     // Remove the direct initialization of SeamlessSlider from here
   };
   

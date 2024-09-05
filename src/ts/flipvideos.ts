@@ -235,7 +235,7 @@ const playFullscreenVideo = (video: HTMLVideoElement) => {
 const flipVideo = (video: HTMLVideoElement) => {
     const { parent, position } = originalStates.get(video) || { parent: null, position: null };
     if (!parent || !position) return; // Ensure parent and position are valid
-  console.log(parent, position);
+  // console.log(parent, position);
     if (currentFullscreenVideo && currentFullscreenVideo !== video) {
       returnToOriginalPosition(video);
     }
@@ -293,7 +293,7 @@ const flipVideo = (video: HTMLVideoElement) => {
       },
       onComplete: () => {
         currentFullscreenVideo = fullscreenElement.contains(video) ? video : null;
-        gsap.set(video, {height: "auto", width: "90vw", autoAlpha:1,  ...animationDefaults,}); 
+        gsap.set(video, {height: "auto", width: "80vw", autoAlpha:1,  ...animationDefaults,}); 
         // let matchMedia= ;
         // if matchMedia ()
       },
