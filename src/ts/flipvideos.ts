@@ -101,19 +101,15 @@ function videoLinksVisible(video: HTMLVideoElement) {
 
       tl.to(".shadow-inner-grid", {
         opacity: 0,
-        duration: 1.25,
+        duration: .70,
         ease: "power1.in",
-        delay: 1,
+        delay: .6,
       }, 0) // animation starts at beginning of timeline
       .to(".masking--element", {
-        y: "0%",
+        // y: "0%",
         opacity: 1,
-        duration: 1.25,
+        duration: .70,
         ease: "power1.out",
-        stagger: {
-          amount: 0.5,
-          from: "random",
-        },
       }, 0) // animation starts at beginning of timeline
       .then(() => {
         setTimeout(() => {
@@ -297,7 +293,9 @@ const flipVideo = (video: HTMLVideoElement) => {
       },
       onComplete: () => {
         currentFullscreenVideo = fullscreenElement.contains(video) ? video : null;
-        gsap.set(video, {height: "auto", width: "80vw", autoAlpha:1,  ...animationDefaults,}); 
+        gsap.set(video, {height: "auto", width: "90vw", autoAlpha:1,  ...animationDefaults,}); 
+        // let matchMedia= ;
+        // if matchMedia ()
       },
       cleanup: () => {
         debouncedCleanup();

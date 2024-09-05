@@ -1,9 +1,9 @@
 
 
 
-//import jquery , will need this for build to compile correctly when using jquery
-import * as jquery from 'jquery';
-(window as any).$ = (window as any).jQuery = jquery;
+// //import jquery , will need this for build to compile correctly when using jquery
+// import * as jquery from 'jquery';
+// (window as any).$ = (window as any).jQuery = jquery;
 
 console.log("slider module loaded");
 //gsap modules
@@ -20,25 +20,28 @@ import SplitText from 'gsap/SplitText';
 import Timeline from 'gsap/all';
 import  Tween  from 'gsap/src/all';
 
-import Lenis from 'lenis';
+// import Lenis from 'lenis';
 import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
+import { time } from 'console';
+import { each } from 'jquery';
+import _ScrollTrigger from 'gsap/ScrollTrigger';
 // import { url } from 'inspector';
 
 const navigation = new Navigation();
 const eventDispatcher = new EventDispatcher();
 gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
 
-const sections = gsap.utils.toArray(".sticky-element");
-const images = gsap.utils.toArray(".track").reverse();
-const slideImages = gsap.utils.toArray(".slider-video");
-const outerWrappers = gsap.utils.toArray(".track-flex");
-const innerWrappers = gsap.utils.toArray(".panel-wide");
-const count = document.querySelector(".count");
-const wrap = gsap.utils.wrap(0, sections.length);
-const logo = document.querySelector(".topbar--global");
-const videos = gsap.utils.toArray(document.querySelectorAll('.slider-video')) ;
+// const sections = gsap.utils.toArray(".sticky-element");
+// const images = gsap.utils.toArray(".track").reverse();
+// const slideImages = gsap.utils.toArray(".slider-video");
+// const outerWrappers = gsap.utils.toArray(".track-flex");
+// const innerWrappers = gsap.utils.toArray(".panel-wide");
+// const count = document.querySelector(".count");
+// const wrap = gsap.utils.wrap(0, sections.length);
+// const logo = document.querySelector(".topbar--global");
+// const videos = gsap.utils.toArray(document.querySelectorAll('.slider-video')) ;
 let animating: boolean;
 let currentIndex = 0;
 
@@ -49,32 +52,6 @@ let currentIndex = 0;
 //     canvas.dispose();
 //   });
 // }
-let isMaskingAnimationRunning = true;
-      function projectmaskingAnimationTransition() {
-        // isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
-  
-        let tl = gsap.timeline();
-  
-        tl.to(".maskingintro--element ", {
-          y: "100%",
-          opacity: 0,
-          duration: 4.25,
-          ease: "power1.out",
-          stagger: {
-            amount: 0.5,
-            from: "random",
-          },
-        }, 0) // animation starts at beginning of timeline
-        .then(() => {
-          setTimeout(() => {
-            isMaskingAnimationRunning = false;
-          //  setupHashNav();
-          }, 500);
-        });
-      }
-  
-
-// Create an Intersection Observer for video n text
 
 let thumbText = gsap.utils.toArray(".panel-overlay-text");
 let thumbtextTl = gsap.timeline(); //create the timeline
@@ -84,1037 +61,824 @@ thumbtextTl.fromTo(thumbText,
  },
  
 );
+let imagePlacementArray: any[] = [];
 
-const videoObserver = new IntersectionObserver((entries, observer) => {
-  entries.forEach(entry => {
-    const video = entry.target as HTMLVideoElement;
-    const playPromise = video.play();
-    if (entry.isIntersecting) {
-      playPromise.then(_ => {
-        // Automatic playback started!
-        // Show playing UI.
-     
-  
-      video.play();
-      video.controls = true;
-      video.autoplay = true;
-      video.loop = true;
+function mrScopertonShufflerton() {
 
-      thumbtextTl.restart();
-      thumbtextTl.play();
-    })
-      .catch(error => {
-        // Auto-play was prevented
-        // Show paused UI.
-      });
+  function processImages() {
+    const wrappers = document.querySelectorAll('.proj--image--wrapper--div');
+    // const filteredFigures = Array.from(figures).filter(figure => !figure.classList.contains('fixed-item'));
+    // console.log(filteredFigures.length);
+    let visibleElements = 9;
+    let hiddenElements = wrappers.length - visibleElements;
 
-
-    } else {
-      playPromise.then(_ => {
-      video.pause();
-      video.controls = false;
-      video.autoplay = false;
-      video.muted = true;
-      video.loop = false;
-    })
-    .catch(error => {
-      // Auto-play was prevented
-      // Show paused UI.
-    });
-      // thumbtextTl.pause();
+    for (let i = 0; i < visibleElements; i++) {
+      const posClass = `image-pos-${i + 1}`;
+      const imagePosClass = `image--item${i + 1}`;
+      let arrayInfo = {
+        wrapperPos: posClass,
+        imagePos: imagePosClass
+      };
+      imagePlacementArray.push(arrayInfo);
     }
-  });
-}, { threshold: 0.5 });
-
-videos.forEach(video => {
-  
-  videoObserver.observe(video as HTMLVideoElement);
-  thumbtextTl.play();
-
-
-});
-// let select = (e) => document.querySelector(e);
-// let selectAll = (e) => document.querySelectorAll(e);
-
-
-Observer.create({
- type: "wheel,touch,pointer",
- preventDefault: true,
- wheelSpeed: -1,
- 
- onStop: () => {
-  console.log("stopped");
-  let animating = false;
-  let playPromise = Promise.resolve();
- 
-  videos.forEach(video => {
-    playPromise.then(_ => {
-    (video as HTMLVideoElement).play();
-    (video as HTMLVideoElement).controls = true;
-    (video as HTMLVideoElement).autoplay = true;
-
-    thumbtextTl.restart();
-
-   })
-    .catch(error => {
-      // Auto-play was prevented
-      // Show paused UI.
-    });
-  })
- },
- onUp: () => {
-  console.log("down");
-  if (animating) return;
-  // gotoSection(currentIndex + 1, +1);
-  if (animating) {
-    videos.forEach(video => {
-      (video as HTMLVideoElement).pause();
-      (video as HTMLVideoElement).controls = false;
-      (video as HTMLVideoElement).autoplay = false;
-      (video as HTMLVideoElement).muted = true;
-      thumbtextTl.reverse();
-    });
-}
-
-
- },
- onDown: () => {
-  console.log("up");
-  if (animating) return;
-  // gotoSection(currentIndex - 1, -1);
-  videos.forEach(video => {
-    (video as HTMLVideoElement).pause();
-    (video as HTMLVideoElement).controls = false;
-    (video as HTMLVideoElement).autoplay = false;
-    thumbtextTl.reverse();
-
-  });
- },
- onChange: () => {
-   if (animating) return;
-
-  
- },
- tolerance: 10
-});
-
-
-const lenis = new Lenis({
-  duration: 1.3,
-  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  smooth: true,
-  smoothWheel: true,
-  syncTouchLerp: true,
-  syncTouch: true,
-  // infinite: true,
-  mouseMultiplier: 1,
-  smoothTouch: false,
-  touchMultiplier: 2,
-  autoResize: true,
-  prevent: (node) => node.id === 'elements',
-
-});
-
-function raf(time: any) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
-}
-
-requestAnimationFrame(raf);
-
-// lenis.on('scroll', (e: any) => {
-//   // console.log(e)
-// })
-
-// lenis.on('scroll', ScrollTrigger.update)
-
-// gsap.ticker.add((time)=>{
-//   lenis.raf(time * 1000);
-  
-// })
-
-// gsap.ticker.lagSmoothing(0)
-
-const track = document.querySelector('.track') as HTMLElement;
-const panels = gsap.utils.toArray('.panel-wide');
-// const colorArray = [
-//   "#683A5E",
-//   "#262626",
-//   "#426F42",
-//   "#8B814C",
-//   "#36648B",
-//   "#36648B"
-// ];
-const slides = document.querySelectorAll(".panel-wide");
-const container = document.querySelector(".sticky-element");
-let dur = 0.5;
-let offsets = [];
-let oldSlide = 0;
-let activeSlide = 0;
-let dots = document.querySelector(".thumbs");
-let navDots = [];
-let iw = window.innerWidth;
-const mouseAnim = gsap.timeline({ repeat: -1, repeatDelay: 1 });
-const handAnim = gsap.timeline({ repeat: -1, repeatDelay: 1 });
-const cursorAnim = gsap.timeline({ repeat: -1, repeatDelay: 1 });
-const arrowAnim = gsap.timeline({ repeat: -1, repeatDelay: 1 });
-
-document.querySelector("#leftArrow").addEventListener("click", slideAnim);
-document.querySelector("#rightArrow").addEventListener("click", slideAnim);
-
-// set slides background colors and create the nav dots
-for (let i = 0; i < slides.length; i++) {
-  // gsap.set(slides[i], { backgroundColor: colorArray[i] });
-  let newDot = document.createElement("div");
-  newDot.className = "dot";
-  newDot.index = i;
-  navDots.push(newDot);
-  newDot.addEventListener("click", slideAnim);
-  dots.appendChild(newDot);
-}
-
-// icon animations for slide 1
-// mouseAnim.fromTo(
-//   "#mouseRings circle",
-//   { attr: { r: 10 } },
-//   { attr: { r: 40 }, duration: 0.8, stagger: 0.25 }
-// );
-// mouseAnim.fromTo(
-//   "#mouseRings circle",
-//   { opacity: 0 },
-//   { opacity: 1, duration: 0.4, stagger:0.25 },
-//   0
-// );
-// mouseAnim.fromTo(
-//   "#mouseRings circle",
-//   { opacity: 1 },
-//   { opacity: 0, duration: 0.4, stagger:0.25 },
-//   0.4
-// );
-
-// handAnim.to("#hand", { duration: 0.75, rotation: -10, transformOrigin: "center bottom" });
-// handAnim.to("#hand", { duration: 0.5, rotation: 14, ease: "power3.inOut" });
-// handAnim.to("#hand", { duration: 1, rotation: 0, transformOrigin: "center bottom" });
-
-// cursorAnim.to("#cursor", { duration: 0.25, x: -22 });
-// cursorAnim.to(
-//   "#iconCircles circle",
-//   0.5,
-//   { duration: 0.5, attr: { r: 6 }, stagger:0.15 },
-//   "expand"
-// );
-// cursorAnim.to("#cursor", { duration: 1.1, x: 40 }, "expand");
-// cursorAnim.to("#cursor", { duration: 0.75, x: 0 }, "contract");
-// cursorAnim.to("#iconCircles circle", { duration: 0.5, attr: { r: 4 } }, "contract");
-
-// arrowAnim.to("#caret", {
-//   duration: 0.5,
-//   attr: { points: "60 30, 35 50, 60 70" },
-//   repeat: 3,
-//   yoyo: true,
-//   ease: "power2.inOut",
-//   repeatDelay: 0.25
-// });
-
-// get elements positioned
-gsap.set(".thumbs", { xPercent: -50 });
-gsap.set(".arrow", { yPercent: -50 });
-gsap.set(".panel-overlay-text", { y: 30 });
-
-// lower screen animation with nav dots and rotating titles
-const dotAnim = gsap.timeline({ paused: true });
-dotAnim.to(
-  ".dot",
-  {
-    stagger: { each: 1, yoyo: true, repeat: 1 },
-    scale: 2.1,
-    rotation: 0.1,
-    ease: "none"
-  },
-  0.5
-);
-dotAnim.to(
-  ".title",
-  slides.length + 1,
-  { y: -(slides.length * 30), rotation: 0.01, ease: "none" },
-  0
-);
-dotAnim.time(1);
-
-// make the whole thing draggable
-let dragMe = Draggable.create(container, {
-  type: "x",
-  edgeResistance: 1,
-  snap: offsets,
-  inertia: true,
-  bounds: "#masterWrap",
-  onDrag: tweenDot,
-  onThrowUpdate: tweenDot,
-  onDragEnd: slideAnim,
-  allowNativeTouchScrolling: false,
-  zIndexBoost: false
-});
-
-dragMe[0].id = "dragger";
-sizeIt();
-
-// main action check which of the 4 types of interaction called the function
-function slideAnim(e) {
-  oldSlide = activeSlide;
-  // dragging the panels
-  if (this.id === "dragger") {
-    activeSlide = offsets.indexOf(this.endX);
-  } else {
-    if (gsap.isTweening(container)) {
-      return;
+    for (let i = 0; i < hiddenElements; i++) {
+      const posClass = `proj--hidden--image--wrapper--div`;
+      const imagePosClass = `hidden--proj--image`;
+      let arrayInfo = {
+        wrapperPos: posClass,
+        imagePos: imagePosClass
+      };
+      imagePlacementArray.push(arrayInfo);
     }
-    // arrow clicks
-    if (this.id === "leftArrow" || this.id === "rightArrow") {
-      activeSlide =
-        this.id === "rightArrow" ? (activeSlide += 1) : (activeSlide -= 1);
-      // click on a dot
-    } else if (this.className === "dot") {
-      activeSlide = this.index;
-      // scrollwheel
-    } else {
-      activeSlide = e.deltaY > 0 ? (activeSlide += 1) : (activeSlide -= 1);
+    console.log(imagePlacementArray);
+    shuffleArray(imagePlacementArray);
+  }
+  function shuffleArray(array: any) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
+    return array;
   }
-  // make sure we're not past the end or beginning slide
-  activeSlide = activeSlide < 0 ? 0 : activeSlide;
-  activeSlide = activeSlide > slides.length - 1 ? slides.length - 1 : activeSlide;
-  if (oldSlide === activeSlide) {
-    return;
-  }
-  // if we're dragging we don't animate the container
-  if (this.id != "dragger") {
-    gsap.to(container, dur, { x: offsets[activeSlide], onUpdate: tweenDot });
-  }
-}
-
-// update the draggable element snap points
-function sizeIt() {
-  offsets = [];
-  iw = window.innerWidth;
-  gsap.set("#panelWrap", { width: slides.length * iw });
-  gsap.set(slides, { width: iw });
-  for (let i = 0; i < slides.length; i++) {
-    offsets.push(-slides[i].offsetLeft);
-  }
-  gsap.set(container, { x: offsets[activeSlide] });
-  dragMe[0].vars.snap = offsets;
-}
-
-gsap.set(".hideMe", { opacity: 0 });
-window.addEventListener("wheel", slideAnim);
-window.addEventListener("resize", sizeIt);
-
-// update dot animation when dragger moves
-function tweenDot() {
-  gsap.set(dotAnim, {
-    time: Math.abs(gsap.getProperty(container, "x") / iw) + 1
-  });
-}
-
-
-// function gotoSection(index, direction) {
-//   animating = true;
-//   index = wrap(index);
- 
-//   let tl = gsap.timeline({
-//    defaults: { duration: 3, ease: "expo.inOut" },
-//    onComplete: () => {
-//     animating = false;
-//    }
-//   });
-//   currentIndex = index;
-//  }
-// function setupHorizontalScroll() {
-//   //horizontal scroll thing
-//   const tracks = selectAll(".sticky-element");
-//   tracks.forEach((track, i) => {
-//   let trackWrapper = track.querySelectorAll(".track");
-//   let trackFlex = track.querySelectorAll(".track-flex");
-//   let allImgs = track.querySelectorAll(".slider-video");
-//   let progress = track.querySelectorAll(".progress--bar-total");
-//   let sliders = gsap.utils.toArray(".panel-wide");
-//   let thumbs = gsap.utils.toArray(".thumbs");
-//   let visible = gsap.utils.toArray(".visible");
-
-//   let trackWrapperWidth = () => {
-//     let width = 0;
-//     trackWrapper.forEach((el) => (width += el.offsetWidth));
-//     return width;
-//   };
-
-//   let trackFlexWidth = () => {
-//     let width = 0;
-//     trackFlex.forEach((el) => (width += el.offsetWidth));
-//     return width;
-//   };
-// //defaults and scroll tweener
-//   ScrollTrigger.defaults({});
-//     const scrollTween = gsap.to(trackWrapper, {
-//       x: () => -trackWrapperWidth() + window.innerWidth,
-//       scrollTrigger: {
-//         trigger: track,
-//         // pin: true,
-//         anticipatePin: 1,
-//         scrub: 1,
-//         start: "center center",
-//         pinSpacing:false,
-//         // markers: true,
-//         onEnter: () => {
-//           console.log("scrolltrigger has entered");
-//         },
-//         onLeave: () => {
-//           track.style.setProperty("--velocity", 0);
-//         },
-//         end: () => "+=" + (track.scrollWidth - window.innerWidth),
-//         onRefresh: (self) => self.getTween().resetTo("totalProgress", 0),
-//         invalidateOnRefresh: true,
-//       },
-//     });
-
-//   gsap.defaults({
-//     ease: "power4.easeInOut",
-
-//   });
-//   sliders.forEach((slider, i) => {
-   
-
-  
-//     let anim = gsap.timeline({
-//       scrollTrigger: {
-//         trigger: slider,
-//         containerAnimation: scrollTween,
-//         start: "left right",
-//         end: "right right",
-//         scrub: true,
-//       }
-//     }).to(visible, {
-//       width: "100%",
-//       backgroundColor: "#000000",
-//       ease: "power4.in"
-//     });
-//   });
-
-//   sliders.forEach((slider, i) => {
-//     if (thumbText[i]) {
-//      slider = gsap.timeline({
-//         scrollTrigger: {
-//           trigger: trackWrapper,
-//           containerAnimation: scrollTween,
-//           start: "right right",
-//           end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//           scrub: true
-//         }
-//       });
-    
-//     }
-
-//   });
-
-//   const tracks = selectAll(".sticky-element");
-
-// });
-//   const totalWidth = (panels as HTMLElement[]).reduce((acc, panel) => acc + panel.offsetWidth, 0);
-//   const computedWidth = totalWidth / (panels as HTMLElement[]).length;
-
-//   // panels.forEach((panel) => {
-//   //    gsap.to(panels, {
-//   //   x: () => "-45vw",
-//   //   ease: "none",
-//   //   scrollTrigger: {
-//   //     trigger: track,
-//   //     // pin: true,
-//   //     scrub: 1,
-//   //     end: () => "+=" + computedWidth,
-//   //     // end: () => {innerWrappers.forEach((wrapper) => {
-//   //     //   getComputedStyle(wrapper, "").getPropertyValue("")
-//   //     // })}
-//   //     invalidateOnRefresh: true
-//   //   }
-//   // });
-//   // })
-//   gsap.to(panels, {
-//     x: () => `-${totalWidth - window.innerWidth}`,
-//     ease: "none",
-//     scrollTrigger: {
-//       trigger: track,
-//       // pin: true,
-//       scrub: 1,
-//       end: () => `+=${totalWidth}`,
-//       invalidateOnRefresh: true
-//     }
-//   });
-//   // gsap.to(panels, {
-//   //   x: () => -totalWidth + window.innerWidth,
-//   //   ease: "none",
-//   //   scrollTrigger: {
-//   //     trigger: track,
-//   //     pin: true,
-//   //     scrub: 1,
-//   //     end: () => "+=" + totalWidth,
-//   //     invalidateOnRefresh: true
-//   //   }
-//   // });
-// }
-
-function scrollToVideo(hash: string) {
-  const video = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
-  // if (video) {
-    const panel = video.closest('.panel-wide') as HTMLElement;
-    if (panel) {
-      const track = document.querySelector('.track') as HTMLElement;
-      const panels = gsap.utils.toArray('.panel-wide') as HTMLElement[];
-      const panelIndex = panels.indexOf(panel);
-
-      // total width needed for wrap
-      const scrollPosition = panels.slice(0, panelIndex).reduce((acc, panel) => acc + panel.offsetWidth, 0);
-
-      // viewport center
-      const viewportCenter = window.innerWidth / 2;
-
-      //target position to scroll to (center the video)
-      const targetPosition = scrollPosition - viewportCenter + (panel.offsetWidth / 2);
-
-      gsap.to(track, {
-        x: -targetPosition,
-        duration: 1.2,
-        ease: "power2.inOut",
-        onStart: () => {
-          console.log("scroll started:" + track.offsetWidth);
-              //  end: () => "+=" + (track.scrollWidth - window.innerWidth),
-        },
-        onComplete: () => {
-          console.log("Scroll completed");
-          // ScrollTrigger.refresh();
-          // lenis.isStopped;
+  function projReplacePositioningClasses() {
+    const imageWrappers = document.querySelectorAll('.proj--image--wrapper--div');
+    imageWrappers.forEach((imageWrapper, index) => {
+      if (index < imagePlacementArray.length ) {
+        imageWrapper.classList.remove(...imageWrapper.classList);
+        imageWrapper.classList.add('proj--image--wrapper--div', imagePlacementArray[index].wrapperPos);
+        const image = imageWrapper.querySelector('.proj--image');
+        if (image) {
+          image.classList.remove(...image.classList);
+          image.classList.add('proj--image', imagePlacementArray[index].imagePos);
         }
-      });
-
-      // Update the URL hash without triggering a scroll
-      history.pushState(null, '', `#${hash}`);
-    }
-  }
-// }
-
-
-function setupHashNav() {
-  const thumbnails = document.querySelectorAll('.thumbtext');
-  thumbnails.forEach((thumb) => {
-    thumb.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = e.currentTarget as HTMLAnchorElement;
-      const hash = target.getAttribute('href')?.replace('#', '') || '';
-      scrollToVideo(hash);
-    });
-  });
-}
-//       scrollToVideo(hash);
-//     });
-//   });
-// }
-
-function handleInitialHash() {
-  if (window.location.hash) {
-    const hash = window.location.hash.replace('#', '');
-    scrollToVideo(hash);
-  }
-}
-
-function setupVideoObservers() {
-  const videos = document.querySelectorAll('.slider-video');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting) {
-        video.play();
-        video.controls = true;
-        video.autoplay = true;
-        video.loop = true;
-      } else {
-        video.pause();
-        video.controls = false;
-        video.autoplay = false;
-        video.loop = false;
       }
     });
-  }, { threshold: 0.5 });
-
-  videos.forEach(video => observer.observe(video));
+  }
+  processImages();
+  projReplacePositioningClasses();
 }
 
-// Event listeners
-window.addEventListener('DOMContentLoaded', () => {
-  setupHashNav();
-  handleInitialHash();
-  setupVideoObservers();
-//might be overkill
-  if (window.location.hash) {
-    scrollToVideo(window.location.hash);
-  }
-});
+// let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
+// function projectmaskingAnimationTransition() {
+//   // isMaskingAnimationRunning = true; 
 
-window.addEventListener('hashchange', () => {
-  const hash = window.location.hash.replace('#', '');
-  scrollToVideo(hash);
-});
+//   let tl = gsap.timeline();
 
-
-
-
-// function handleInitialHash() {
-//   if (window.location.hash) {
-//     const hash = window.location.hash.replace('#', '');
-//     scrollToVideo(hash);
-//   }
-// }
-// function setupHashNav() {
-//   if (window.location.hash) {
-//     const hash = window.location.hash.replace('#', '');
-//     scrollToVideo(hash);
-//   }
-
-  
-//   const thumbnails = document.querySelectorAll('.thumbtext');
-//   thumbnails.forEach((thumb) => {
-//     thumb.addEventListener('click', (e) => {
-//       e.preventDefault();
-//       const target = e.currentTarget as HTMLAnchorElement;
-//       const hash = target.getAttribute('href')?.replace('#', '') || '';
-//       window.location.hash = hash;
-//       scrollToVideo(hash);
-//     });
+//   tl.to(".maskingintro--element ", {
+//     opacity: 0,
+//     duration: 1.25,
+//     ease: "power1.out",
+//   }, 0) // animation starts at beginning of timeline
+//   .then(() => {
+//     setTimeout(() => {
+//       isMaskingAnimationRunning = false;
+//     }, 500);
 //   });
 // }
-const onScroll = () => {
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-  gsap.ticker.lagSmoothing(0);
-// scrollToVideo("");
   
-  }
+const hash = window.location.hash.substring(1);
+const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
+    let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
+    let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
+let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
 
-  const onDOMContentLoaded = () => {
-    // setupHorizontalScroll();
-    projectmaskingAnimationTransition() ;
-    setupHashNav();
-    handleInitialHash();
-    handleExternalLinks();
-    setupVideoObservers();
-  //  if (animating = true ) {
+function  seamlessLoopScroll() {
+  // ScrollTrigger.defaults({markers: {startColor: "white", endColor: "white"}});
+  let iteration = 0; // gets iterated when we scroll all the way to the end or start and wraps around 
+  // let sections = gsap.utils.toArray(".panel");
+  const spacing = 0.1, // (stagger)
+    snap = gsap.utils.snap(spacing), // we'll use this to snap the playhead on the seamlessLoop
+    cards = gsap.utils.toArray('.cards li'), seamlessLoop = buildSeamlessLoop(cards, spacing), scrub = gsap.to(seamlessLoop, {
+      totalTime: 0,
+      duration: 0.5,
+      ease: "power3",
+      paused: true
+    }), 
+    trigger = ScrollTrigger.create({
+      start: 0,
+      // pinSpacing: false,
+      // markers: {startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20},
+      onEnter: () => {
+        console.log("scrolltrigger entered")
+       
+      },
+      onUpdate(self) {
+        if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
+          wrapForward(self);
+          console.log('wrapping forward')
+        } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
+          wrapBackward(self);
+          console.log('wrapping backward')
+        } else {
+          scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
+          scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
+          self.wrapping = false;
+        }
+      // },
+      // Determine the current item based on the scroll position
+      // let totalTime = scrub.vars.totalTime;
+      // let currentLabel = '';
+      // for (let i = 0; i <= cards.length; i++) {
+      //   let labelTime = seamlessLoop.labels["label" + i];
+      //   if (labelTime !== undefined && totalTime >= labelTime) {
+      //     currentLabel = "label" + i;
+      //   }
+      // }
+      // console.log("Current item:", currentLabel);
+    },
+      end: "+=3000",
+      pin: ".gallery"
+    });
+    // const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
+    // let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
+    // let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
+    // let currentItem = {
 
-  //  }
-}
-  
-
-  const onClick = () => { 
-    // setupHashNav();
-    console.log("clicked");
-
-  }
-  window.addEventListener('hashchange', () => {
-    const hash = window.location.hash.replace('#', '');
-    scrollToVideo(hash);
-  });
-
-  window.addEventListener('resize', () => {
-    ScrollTrigger.refresh();
-  });
-  // const eventDispatcher = new EventDispatcher();
-// use the dispatcher, this should not need editing 
-eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
-eventDispatcher.addEventListener("click", onClick);
-eventDispatcher.addEventListener("scroll", onScroll);
-window.addEventListener('hashchange', onScroll);
-
-
-
-function handleExternalLinks() {
-  if (window.location.hash) {
-    const hash = window.location.hash.replace('#', '');
-    scrollToVideo(hash);
-  }
-}
-
-
-
- 
-// const tracks = gsap.utils.toArray(".sticky-element");
-
-
-// tracks.forEach((track, i) => {
-//   // let track = gsap.utils.selector( ".track");
-//   let trackWrapper = document.querySelectorAll(".track");
-//   let trackFlex = document.querySelectorAll(".track-flex");
-//   let allImgs = document.querySelectorAll(".image");
-//   let progress = document.querySelectorAll(".progress--bar-total");
-
-//   let sliders = gsap.utils.toArray(".panel-wide");
-//   let thumbs = gsap.utils.toArray(".thumbs");
-
-
-//   let visible = gsap.utils.toArray(".visible");
-
-//   let trackWrapperWidth = () => {
-//     let width = 0;
-//     trackWrapper.forEach((el) => (width += el.offsetWidth));
-//     return width;
-//   };
-
-//   let trackFlexWidth = () => {
-//     let width = 0;
-//     trackFlex.forEach((el) => (width += el.offsetWidth));
-//     return width;
-//   };
-
-//   ScrollTrigger.defaults({});
-
-//   gsap.defaults({
-//     ease: "power4.easeInOut",
-
-//   });
-
-//   let scrollTween = gsap.to(trackWrapper, {
-//     x: () => -trackWrapperWidth() + window.innerWidth,
-//     scrollTrigger: {
-//       trigger: track,
-//       pin: true,
-//       anticipatePin: 1,
-//       scrub: 1,
-//       start: "center center",
-//       // markers: true,
-//       // onUpdate: () => {
-//       //   console.log("scroller updated")
-//       // },
-//       end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//       // onRefresh: (self) => self.getTween().resetTo("totalProgress", 0),
-//       invalidateOnRefresh: true
-//     }
-//   });
-
-
-
-//   sliders.forEach((slider, i) => {
-   
-// // slider = gsap.utils.selector('.slider') as any;
-  
-//     let anim = gsap.timeline({
-//       scrollTrigger: {
-//         trigger: slider,
-//         containerAnimation: scrollTween,
-//         start: "left right",
-//         end: "right right",
-//         scrub: true,
-//       }
-//     }).to(visible, {
-//       width: "100%",
-//       backgroundColor: "#000000",
-//       ease: "power4.in"
-//     });
-//   });
-
-//   sliders.forEach((slider, i) => {
-//     if (thumbText[i]) {
-//      slider = gsap.timeline({
-//         scrollTrigger: {
-//           trigger: trackWrapper,
-//          containerAnimation: scrollTween,
-//           start: "right right",
-//           end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//           scrub: true
-//         }
-//       });
+    //   label: "",
+    //   element: HTMLElement,
+    // };
     
-//     }
+    // function updateCurrentItem() {
+    //   let totalTime = scrub.vars.totalTime;
+    //   let currentLabel = '';
+    //   let currentElement = null;
+    
+    //   for (let i = 0; i <= cards.length; i++) {
+    //     let labelTime = seamlessLoop.labels["label" + i];
+    //     if (labelTime !== undefined && totalTime >= labelTime) {
+    //       currentLabel = "label" + i;
+    //       currentElement = cards[i];
+    //     }
+    //   }
+    
+    //   currentItem.label = currentLabel;
+    //   currentItem.element = currentElement;
+    
+    //   console.log("Current item:", currentItem);
+    // }
+    
+    // seamlessLoop.add('label1', 0)
+    // seamlessLoop.add("label2", 1)
+  return { iteration, seamlessLoop, scrub, trigger, spacing };
+}
 
-//   });
+function wrapForward(trigger) { // when the ScrollTrigger reaches the end, loop back to the beginning
+	iteration++;
+	trigger.wrapping = true;
+	trigger.scroll(trigger.start + 1);
+}
 
-// });
+function wrapBackward(trigger) { // when the ScrollTrigger reaches the start again, loop back to the end
+	iteration--;
+	if (iteration < 0) { // to keep the playhead from stopping at the beginning, we jump ahead 10 iterations
+		iteration = 9;
+		seamlessLoop.totalTime(seamlessLoop.totalTime() + seamlessLoop.duration() * 10);
+    scrub.pause(); // otherwise it may update the totalTime right before the trigger updates 
+	}
+	trigger.wrapping = true;
+	trigger.scroll(trigger.end - 1);
+}
 
+function scrubTo(totalTime) { // moves the scroll position to the place that corresponds to the totalTime value of the seamlessLoop
+	let progress = (totalTime - seamlessLoop.duration() * iteration) / seamlessLoop.duration();
+	if (progress > 1) {
+		wrapForward(trigger);
+	} else if (progress < 0) {
+		wrapBackward(trigger);
+	} else {
+		trigger.scroll(trigger.start + progress * (trigger.end - trigger.start));
+	}
+}
 
+function buildSeamlessLoop(items, spacing) {
+	let overlap = Math.ceil(1 / spacing), //  accommodate the seamless looping
+		startTime = items.length * spacing + 0.5, // the time on the rawSequence at which we'll start the seamless loop
+		loopTime = (items.length + overlap) * spacing + 1, // the spot at the end where we loop back to the startTime 
+		rawSequence = gsap.timeline({paused: true}), // this is where all the "real" animations live
+		seamlessLoop = gsap.timeline({ // this merely scrubs the playhead of the rawSequence so that it appears to seamlessly loop
+			paused: true,
+			repeat: -1, // to accommodate infinite scrolling/looping
+			onRepeat() { // works around a super rare edge case bug that's fixed GSAP 3.6.1
+				this._time === this._dur && (this._tTime += this._dur - 0.01);
+			}
+		}),
+		l = items.length + overlap * 2,
+		time = 0,
+		i, index, item;
 
-// function scrollToVideo(hash: string) {
-//  let trackWrapperWidth = window.innerWidth;
-//   const video = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
- 
-//   if (video) {
-//     const slider = video.closest('.panel-wide') as HTMLElement;
-//     let sliderAnimation = gsap.to(slider, {
-//     scrollTrigger: {
-//       trigger: slider,
-//       start: "left left",
-//       end: ()=> "" + (slider.offsetWidth ),
-//       scrub: true
-//     }
+	// set initial state of items
+	// gsap.set(items, {xPercent: 400, opacity: 0,	scale: 0});
+
+	// create all the animations in a staggered fashion. create EXTRA animations at the end 4 seamless looping.
+	for (i = 0; i < l; i++) {
+		index = i % items.length;
+		item = items[index];
+		time = i * spacing;
+		rawSequence.fromTo(item, {scale: 0, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
+		           .fromTo(item, {xPercent: 400}, {xPercent: -400, duration: 1, ease: "none", immediateRender: true}, time);
+		i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
+// console.log("label" + i, time);
+	}
+  // let currentItem = "";
+
+  // function updateCurrentItem() {
+  //   items.forEach((item, time) => {
+  //     if (ScrollTrigger.isInViewport(item, 0.5)) {
+  //       currentItem = "label" + item + time;
+  //     }
+  //   });
+  // }
+  // ScrollTrigger.addEventListener("scrollEnd", updateCurrentItem);
+	// label.
+	// set up the scrubbing of the playhead to make it appear seamless. 
+	rawSequence.time(startTime);
+	seamlessLoop.to(rawSequence, {
+		time: loopTime,
+		duration: loopTime - startTime,
+		ease: "none"
+	}).fromTo(rawSequence, {time: overlap * spacing + 1}, {
+		time: startTime,
+		duration: startTime - (overlap * spacing + 1),
+		immediateRender: false,
+		ease: "none"
+	});
+	return seamlessLoop;
+}
+
+// function reconstructVideo () {
+//   let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+//   const state = Flip.getState(videos);
+//   function swapPosition() {
+//     var parent = box.parentElement === container1 ? container2 : container1;
+//     parent.appendChild(box);
+//   }
+//   function flip(elements, changeFunc, vars) {
+//     elements = gsap.utils.toArray(elements);
+//     vars = vars || {};
+//     let tl = gsap.timeline({onComplete: vars.onComplete, delay: vars.delay || 0}),
+//         bounds = elements.map(el => el.getBoundingClientRect()),
+//         copy = {},
+//         p;
+//     elements.forEach(el => {
+//       el._flip && el._flip.progress(1);
+//       el._flip = tl;
 //     })
-//     console.log("Target video:", video);
-//     console.log("Target slider:", slider);
-
-//     const trackWrapper = document.querySelector(".track") as HTMLElement;
-//     const sliders = gsap.utils.toArray(".panel-wide");
-//     const thumbText = gsap.utils.toArray(".panel-overlay-text");
-//     const visible = gsap.utils.toArray(".visible");
-
-//     let trackWrapperWidth = () => {
-//       let width = 0;
-//       sliders.forEach((el: HTMLElement) => (width += el.offsetWidth));
-//       return width;
-//     };
-
-//     let scrollTween = gsap.to(trackWrapper, {
-//       x: () => -trackWrapperWidth() + window.innerWidth,
-//       scrollTrigger: {
-//         trigger: trackWrapper,
-//         pin: true,
-//         anticipatePin: 1,
-//         scrub: 1,
-//         start: "center center",
-//         end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//         invalidateOnRefresh: true
-//       }
-//     });
-
-//     sliders.forEach((sliderElement, i) => {
-//       gsap.timeline({
-//         scrollTrigger: {
-//           trigger: sliderElement,
-//           containerAnimation: scrollTween,
-//           start: "left right",
-//           end: "right right",
-//           scrub: true,
-//         }
-//       }).to(visible[i], {
-//         width: "100%",
-//         backgroundColor: "#000000",
-//         ease: "power4.in"
-//       });
-
-//       if (thumbText[i]) {
-//         gsap.timeline({
-//           scrollTrigger: {
-//             trigger: trackWrapper,
-//             containerAnimation: scrollTween,
-//             start: "right right",
-//             end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//             scrub: true
-//           }
-//         });
-//       }
-//     });
-
-//     const sliderOffset = slider.offsetLeft;
-//     console.log("Slider offset:", sliderOffset);
-
-//     lenis.scrollTo(sliderOffset, {
-//       offset: 0,
-//       immediate: false,
-//       duration: 1.2,
-//       onComplete: () => {
-//         console.log("Scroll completed");
-//         console.log("Current scroll position:", lenis.scroll);
-//         ScrollTrigger.refresh();
-//       }
-//     });
-
-//     // Update the URL hash without triggering a scroll
-//     history.pushState(null, '', `#${hash}`);
-//     // if (slider) {
-//     //    gsap.set(('.track'), {x:0,});
-//     // //  gsap.quickSetter(slider, ".track", () => {})
-//     //   // console.log("Scrolling to:", slider);
-//     //   console.log("Target video:", video);
-//     //   console.log("Target slider:", slider);
-//     //   console.log("Slider offset:", slider.offsetLeft);
-//     //   const sliderOffset = slider.offsetLeft;
-//     //   lenis.scrollTo(sliderOffset, {
-//     //     offset: 0,
-//     //     immediate: false,
-//     //     duration: 1.2,
-        
-//     //     onComplete: () => {
-
-//     //       console.log("Scroll completed");
-//     //       console.log("Current scroll position:", lenis.scroll);
-//     //     }
-//     //   });
-//     //      // Update the URL hash without triggering a scroll
-//     //      history.pushState(null, '', `#${hash}`);
-//     // }
+//     changeFunc();
+//     for (p in vars) {
+//       p !== "onComplete" && p !== "delay" && (copy[p] = vars[p]);
+//     }
+//     copy.x = (i, element) => "+=" + (bounds[i].left - element.getBoundingClientRect().left);
+//     copy.y = (i, element) => "+=" + (bounds[i].top - element.getBoundingClientRect().top);
+//     return tl.from(elements, copy);
 //   }
 // }
 
-// function scrollToVideo(hash: string) {
-//   // if (!hash) {
-//   //   console.log("No hash provided");
-//   //   return;
-//   // }
+ function setupVideos() {
+  const videoSources: { [key: string]: string } = {
+    '#selfie-by-flip': '../assets/optimized/full/selfie-by-flip-compressed-full.mp4',
+    '#food-mood': '../assets/optimized/full/food-mood-compressed-full.mp4',
+    '#fold-4-launch': '../assets/optimized/full/galaxy-fold-4-launch-compressed-full.mp4',
+    '#coca-cola-y3000': '../assets/optimized/full/y3000-case-film-compressed-full.mp4',
+    '#tiny-type': '../assets/optimized/full/samsung-tiny-type-compressed-full.mp4',
+   
+};
 
+  let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+    videos.forEach((video) => {
+       // Set initial visibility
+    // gsap.set(video, { autoAlpha: 0 }); // Start with all videos hidden
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.classList.add("playing");
+             // Swap the video source based on data-hashnav
+             const hashNav = video.dataset.hashnav;
+            //  console.log(hashNav);
+            // flip([box], swapPosition);
+              // const hash = video.getAttribute('data-hashnav')?.replace('#', '') || '';
+              // gsap.to(hash, { duration: 1, autoAlpha: 1, ease: 'power2.inOut' });
+              console.log(`hash nav matches and Video ${video.dataset.hashnav} is playing `);
+             
+            
+             
+            //  else {
+            //   console.log("hash nav dont match");
+            //  }
+          //    if (hashNav && hashNav in videoSources) {
+          //     // videos.push(videoSources[hashNav]);
+          //     // video.src = videoSources[hashNav];
+          // }
+            video.play();
+            thumbtextTl.restart();
+            thumbtextTl.play();
+            // console.log(`Video ${video} is playing`);
+       
+            // console.log(`Video ${video.dataset.hashnav} is playing`);
+          } else {
+            video.pause();
+            thumbtextTl.pause();
+            console.log(`Video ${video.dataset.hashnav} is paused`);
+          }
+        });
+      }, { threshold: 0.5 });
+  
+      observer.observe(video);
+    });
+  }
+  // function swapPlayingVideo () {
+  //   const video = document.querySelector('.slider-video') as HTMLVideoElement;
+  //   if (!video.isPlaying) {
+  //   console.log(`Video ${video} is playing`);
+  //   }
+  // }
+ function scrollToVideo(hash: string) {
+    console.log('Attempting to scroll to video with hash:', hash);
+    const currentVideo = document.querySelector('.playing') as HTMLElement;
+    const targetVideo = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  if (currentVideo && targetVideo) {
+    gsap.to(window, {
+            scrollTo: { y: videoArray.length }, // Adjust offset as needed
+            duration: 1,
+            ease: 'power2.inOut'
+          });
+          
+    history.pushState('', `#${hash}`, `#${hash}`);
+    ScrollTrigger.refresh();
+    // _ScrollTrigger.
+  }
+    if (targetVideo) {
+      history.pushState('', `#${hash}`, `#${hash}`);
+      console.log('URL hash updated to:', hash);
+    } else {
+      console.log('Target video not found for hash:', hash);
+    }
+  }
+  function setupHashNav() {
+    const thumbnails = document.querySelectorAll('.thumbtext');
+    thumbnails.forEach((thumb) => {
+      thumb.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = e.currentTarget as HTMLAnchorElement;
+        const hash = target.getAttribute('href')?.replace('#', '') || '';
+        
+      });
+    });
+  }
+  
+  function handleInitialHash() {
+    if (window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      setupHashNav ();
+      scrollToVideo(hash);
+    }
+  }
+    // const slider = new SeamlessSlider('.gallery');
+  
+  // Event listeners
+  function initScrollFunctionality() {
+    // const slider = new SeamlessSlider('.gallery');
+  
+    // Call any other scroll-related initialization code
+  }
+  let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
+  
+  function projectmaskingAnimationTransition() {
+    // const slider = new SeamlessSlider('.gallery');
+    let tl = gsap.timeline();
+  
+    tl.to(".maskingintro--element", {
+      opacity: 0,
+      duration: 1.25,
+      ease: "power1.out",
+    }, 0)
+    .then(() => {
+      setTimeout(() => {
+        isMaskingAnimationRunning = false;
+        initScrollFunctionality(); // Call the scroll initialization function here
+        // if (window.location.hash) {
+        //   const hash = window.location.hash.substring(1);
+        //   slider.scrollToVideo(hash);
+        // }
+      }, 500);
+    });
+  }
+  
+  const onDOMContentLoaded = () => {
+  console.clear();
+    navigation.setupNavigationEvents();
+    projectmaskingAnimationTransition();
+    setupVideos();
+    // Remove the direct initialization of SeamlessSlider from here
+  };
+  
+  const onClick = () => {
+    navigation.checkforAnimation();
+    console.log("clicked");
+  };
+  
+  const onScroll = () => {
+    gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
+  };
+  
+  // const eventDispatcher = new EventDispatcher();
+  
+  // use the dispatcher, this should not need editing
+  eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
+  eventDispatcher.addEventListener("click", onClick);
+  eventDispatcher.addEventListener("scroll", onScroll);
+  window.addEventListener('hashchange', onScroll);
+  
+// class SeamlessSlider {
+//   private slider: HTMLElement;
+//   private sections: HTMLElement[];
+//   private videos: HTMLVideoElement[];
+//   private seamlessLoop: gsap.core.Timeline;
+//   private spacing: number;
+//   private scrub: gsap.core.Tween;
+//   // private totalTime = this.scrub.vars.totalTime;
+//   private trigger: ScrollTrigger;
+//   private iteration: number;
+//   // sliderWidth: number;
+//   // sectionWidth: number;
+  
+//   // sliderWidth: number;
+
+//   constructor(sliderSelector: string) {
+//     this.slider = document.querySelector('.gallery') as HTMLElement;
+//     this.sections = Array.from(this.slider.querySelectorAll('.cards li'));
+//     this.videos = Array.from(this.slider.querySelectorAll('.slider-video'));
+//     this.spacing = 0.1;
+//     this.iteration = 0;
+
+//     this.init();
+//     window.addEventListener('resize', this.handleResize.bind(this));
+//   }
+
+//   private init() {
+//     gsap.registerPlugin(ScrollTrigger);
+//     gsap.registerPlugin(Flip);
+
+//     this.setupSeamlessLoop();
+//     this.setupVideos();
+//     this.setupScrollTrigger();
+//     this.setupHashNavigation();
+//     this.calculateSizes();
+//   }
+//   private handleResize() {
+//     this.calculateSizes();
+//     this.updatePositions();
+//     ScrollTrigger.refresh();
+//   }
+
+//   private setupSeamlessLoop() {
+//     const overlap = Math.ceil(1 / this.spacing);
+//     const startTime = this.sections.length * this.spacing + 0.5;
+//     const loopTime = (this.sections.length + overlap) * this.spacing + 1;
+//     const rawSequence = gsap.timeline({ paused: true });
+
+//     this.seamlessLoop = gsap.timeline({
+//       paused: true,
+//       repeat: -1,
+//       //idk
+//       // onRepeat: () => {
+//       //   this.seamlessLoop._time === this.seamlessLoop._dur && (this.seamlessLoop._tTime += this.seamlessLoop._dur - 0.01);
+//       // },
+//     });
+
+//     const l = this.sections.length + overlap * 2;
+//     let time = 0;
+
+//     for (let i = 0; i < l; i++) {
+//       const index = i % this.sections.length;
+//       const section = this.sections[index];
+//       time = i * this.spacing;
+//       // item = section[index];
+//       rawSequence.fromTo(
+//        section,
+//         { scale: 0, opacity: 0 },
+//         {
+//           scale: 1,
+//           opacity: 1,
+//           zIndex: 100,
+//           duration: 0.5,
+//           yoyo: true,
+//           repeat: 1,
+//           ease: 'power1.in',
+//           immediateRender: true,
+//         },
+//         time
+//       ).fromTo(
+//        section,
+//         { xPercent: 400 },
+//         { xPercent: -400, duration: 1, ease: 'none', immediateRender: true },
+//         time
+//       );
+
+//       i <= this.sections.length && this.seamlessLoop.add(`label${i}`, time);
+//     }
+
+//     rawSequence.time(startTime);
+//     this.seamlessLoop.to(rawSequence, {
+//       time: loopTime,
+//       duration: loopTime - startTime,
+//       ease: 'none',
+//     }).fromTo(
+//       rawSequence,
+//       { time: overlap * this.spacing + 1 },
+//       {
+//         time: startTime,
+//         duration: startTime - (overlap * this.spacing + 1),
+//         immediateRender: false,
+//         ease: 'none',
+//       }
+//     );
+//   }
+
+//   private setupVideos() {
+//     this.videos.forEach((video) => {
+//       const observer = new IntersectionObserver((entries) => {
+//         entries.forEach((entry) => {
+//           if (entry.isIntersecting) {
+//             video.play();
+//             // console.log(`Video ${video} is playing`);
+//             console.log(`Video ${video.dataset.hashnav} is playing`);
+//           } else {
+//             video.pause();
+//             console.log(`Video ${video.dataset.hashnav} is paused`);
+//           }
+//         });
+//       }, { threshold: 0.5 });
+  
+//       observer.observe(video);
+//     });
+//   }
+  
+//   // private setupScrollTrigger() {
+//   //   const snap = gsap.utils.snap(this.spacing);
+//   //   this.scrub = gsap.to(this.seamlessLoop, {
+//   //     totalTime: 0,
+//   //     duration: 0.5,
+//   //     ease: 'power3',
+//   //     paused: true,
+//   //   });
+  
+//   //   this.trigger = ScrollTrigger.create({
+//   //     trigger: this.slider,
+//   //     start: 'top top',
+//   //     end: () => `+=${this.sectionWidth}`,
+//   //     pin: true,
+//   //     pinSpacing: false,
+//   //     anticipatePin: 1,
+//   //     onUpdate: (self) => {
+//   //       // ... (existing code)
+//   //     },
+//   //     onRefresh: () => {
+//   //       this.calculateSizes();
+//   //       this.updatePositions();
+//   //     },
+//   //   });
+//   // }
+  
+//   private setupScrollTrigger() {
+//     const snap = gsap.utils.snap(this.spacing);
+//     // let maxWidth = 0;
+
+//     // const getMaxWidth = () => {
+//     //   maxWidth = 0;
+//     //   this.videos.forEach((video, index) => {
+//     //     maxWidth += video.width;
+//     //     console.log(maxWidth);
+//     //   });
+//     // };
+//     // getMaxWidth();
+//     this.scrub = gsap.to(this.seamlessLoop, {
+//       totalTime: 0,
+//       duration: 0.5,
+//       ease: 'power3',
+//       paused: true,
+//     });
+//     // let totalTime = this.scrub.vars.totalTime;
+//     // scrubTo(totalTime) { // moves the scroll position to the place that corresponds to the totalTime value of the seamlessLoop
+//     //   this.seamlessLoop.totalTime(this.seamlessLoop.totalTime() + this.seamlessLoop.duration() * 10);
+//     //   	let progress = (this.totalTime - this.seamlessLoop.duration() * this.iteration) / this.seamlessLoop.duration();
+//     //   	if (progress > 1) {
+//     //   		this.wrapForward(this.trigger);
+//     //   	} else if (progress < 0) {
+//     //   		this.wrapBackward(this.trigger);
+//     //   	} else {
+//     //   		this.trigger.scroll(this.trigger.start + progress * (this.trigger.end - this.trigger.start));
+//     //   	}
+//     //   }
+
+//     this.trigger = ScrollTrigger.create({
+//       start: 0,
+//       // end: () => `+=${this.sectionWidth}`,
+//       end: '+=3000',
+//       pin: "#masterWrap",
+//       // pinSpacing: false,
+//       //     anticipatePin: 1,
+//       // markers: {startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20},
+//       onUpdate: (self) => {
+//         if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
+//           this.wrapForward(self);
+//         } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
+//           this.wrapBackward(self);
+//         } else {
+//           this.scrub.vars.totalTime = snap((this.iteration + self.progress) * this.seamlessLoop.duration());
+//           this.scrub.invalidate().restart();
+//           self.wrapping = false;
+//         }
+//       },
+
+//         // onRefresh: () => {
+//         //   // Recalculate the width and positioning of elements
+//         //   this.calculateSizes();
+//         //   this.updatePositions();
+//         // },
+//       // },
+//     });
+//   }
+//   private calculateSizes() {
+//     this.sliderWidth = this.slider.offsetWidth;
+//     this.sectionWidth = this.sections.reduce((width, section) => width + section.offsetWidth, 0);
+//   }
+  
+//   private updatePositions() {
+//     // gsap.set(this.slider, { width: window.innerWidth, height: window.innerHeight });
+//     this.seamlessLoop.progress(this.seamlessLoop.progress());
+//   }
+//   private setupHashNavigation() {
+//     window.addEventListener('hashchange', () => {
+//       const hash = window.location.hash.substring(1);
+//       this.updateVideoBasedOnHash(hash);
+//     });
+  
+//     const thumbnails = document.querySelectorAll('.thumbtext');
+//     thumbnails.forEach((thumb) => {
+//       thumb.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         const target = e.currentTarget as HTMLAnchorElement;
+//         const hash = target.getAttribute('href')?.replace('#', '') || '';
+//         this.updateVideoBasedOnHash(hash);
+//       });
+//     });
+//   }
+  
+//   private scrollToSection(index: number) {
+//     const progress = index / (this.sections.length - 1);
+//     gsap.to(this.seamlessLoop, {
+//       progress,
+//       duration: 1,
+//       ease: 'power1.inOut',
+//       // onUpdate: () => {
+//       //   ScrollTrigger.refresh();
+//       // },
+//     });
+//   }
+//   updateVideoBasedOnHash(currentHash: string) {
+//     const hash = window.location.hash.substring(1);
+//     if (hash && hash !== currentHash) {
+//       const currentVideo = this.slider.querySelector('.slider-video') as HTMLElement;
+//       const targetVideo = this.slider.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  
+//       if (targetVideo && targetVideo !== currentVideo) {
+//         console.log('Current video:', currentVideo);
+//         console.log('Target video:', targetVideo);
+  
+//         const state = Flip.getState(currentVideo);
+  
+//         currentVideo.classList.remove('active');
+//         targetVideo.classList.add('active');
+  
+//         Flip.from(state, {
+//           duration: 1,
+//           ease: 'power1.inOut',
+//           onComplete: () => {
+//             console.log('Flip animation completed');
+//             // ScrollTrigger.refresh();
+//           }
+//         });
+  
+//         history.pushState('', `#${hash}`, `#${hash}`);
+//         console.log('URL hash updated to:', hash);
+//       }
+//     }
+//   }
+//   // private scrollToSection(index: number) {
+//   //   const progress = index / (this.sections.length - 1);
+//   //   this.seamlessLoop.progress(progress);
+//   //   ScrollTrigger.refresh();
+//   //   console.log(`Scrolled to section: ${index}`);
+//   // }
+  
+//   // private scrollToVideo(hash: string) {
+//   //   const video = this.slider.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+//   //   if (video) {
+//   //     const section = video.closest('.cards li') as HTMLElement;
+//   //     if (section) {
+//   //       const sectionIndex = this.sections.indexOf(section);
+//   //       if (sectionIndex !== -1) {
+//   //         console.log('Scrolling to section:', sectionIndex);
+//   //         this.scrollToSection(sectionIndex);
+//   //         history.pushState('', `#${hash}`, `#${hash}`);
+//   //         console.log('URL hash updated to:', hash);
+//   //       } else {
+//   //         console.log('Section not found for video:', hash);
+//   //       }
+//   //     } else {
+//   //       console.log('Section not found for video:', hash);
+//   //     }
+//   //   } else {
+//   //     console.log('Video not found for hash:', hash);
+//   //   }
+//   // }
+//   // scrollToVideo(hash: string) {
+//   //   console.log('Attempting to scroll to video with hash:', hash);
+//   //   const currentVideo = this.slider.querySelector('.slider-video.active') as HTMLElement;
+//   //   const targetVideo = this.slider.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  
+//   //   if (targetVideo) {
+//   //     if (currentVideo) {
+//   //       const state = Flip.getState(currentVideo);
+  
+//   //       currentVideo.classList.remove('active');
+//   //       targetVideo.classList.add('active');
+  
+//   //       Flip.from(state, {
+//   //         duration: 1,
+//   //         ease: 'power1.inOut',
+//   //         onComplete: () => {
+//   //           console.log('Flip animation completed');
+//   //           ScrollTrigger.refresh();
+//   //         }
+//   //       });
+//   //     } else {
+//   //       console.log('Current video not found');
+//   //       targetVideo.classList.add('active');
+//   //     }
+  
+//   //     history.pushState('', `#${hash}`, `#${hash}`);
+//   //     console.log('URL hash updated to:', hash);
+//   //   } else {
+//   //     console.log('Target video not found for hash:', hash);
+//   //   }
+//   // }
+//   private pauseAllVideos() {
+//     this.videos.forEach((video) => video.pause());
+//   }
+
+//   private playVideoAtIndex(index: number) {
+//     if (index >= 0 && index < this.videos.length) {
+//       this.videos[index].play();
+//     }
+//   }
+
+//   private wrapForward(trigger: ScrollTrigger) {
+//     this.iteration++;
+//     trigger.wrapping = true;
+//     trigger.scroll(trigger.start + 1);
+//   }
+
+//   private wrapBackward(trigger: ScrollTrigger) {
+//     this.iteration--;
+//     if (this.iteration < 0) {
+//       this.iteration = 9;
+//       this.seamlessLoop.totalTime(this.seamlessLoop.totalTime() + this.seamlessLoop.duration() * 10);
+//       this.scrub.pause();
+//       trigger.wrapping = true;
+//       trigger.scroll(trigger.end - 1);
+//     }
+//   }
+// }
+
+
+// function scrollToVideo(hash: string) {
 //   const video = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
 //   if (video) {
-//     const slider = video.closest('.panel-wide') as HTMLElement;
+//     const slider = video.closest('.cards li') as HTMLElement;
 //     if (slider) {
-//       console.log("Target video:", video);
-//       console.log("Target slider:", slider);
+//       const sliderIndex = Array.from(slider.parentElement.children).indexOf(slider);
+//       const sliders = gsap.utils.toArray('.cards li');
 
-//       const trackWrapper = document.querySelector(".track") as HTMLElement;
-//       const sliders = gsap.utils.toArray(".panel-wide");
-//       const thumbText = gsap.utils.toArray(".panel-overlay-text");
-//       const visible = gsap.utils.toArray(".visible");
+//       // Shuffle the sliders array to bring the hashed video to the first position
+//       const shuffledSliders = gsap.utils.shuffle(sliders, );
 
-//       let trackWrapperWidth = () => {
-//         let width = 0;
-//         sliders.forEach((el: HTMLElement) => (width += el.offsetWidth));
-//         return width;
-//       };
-
-//       let scrollTween = gsap.to(trackWrapper, {
-//         x: () => -trackWrapperWidth() + window.innerWidth,
-//         scrollTrigger: {
-//           trigger: trackWrapper,
-//           pin: true,
-//           anticipatePin: 1,
-//           scrub: 1,
-//           start: "center center",
-//           end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//           invalidateOnRefresh: true
-//         }
-//       });
-
-//       sliders.forEach((sliderElement, i) => {
-//         gsap.timeline({
-//           scrollTrigger: {
-//             trigger: sliderElement,
-//             containerAnimation: scrollTween,
-//             start: "left right",
-//             end: "right right",
-//             scrub: true,
-//           }
-//         }).to(visible[i], {
-//           width: "100%",
-//           backgroundColor: "#000000",
-//           ease: "power4.in"
-//         });
-
-//         if (thumbText[i]) {
-//           gsap.timeline({
-//             scrollTrigger: {
-//               trigger: trackWrapper,
-//               containerAnimation: scrollTween,
-//               start: "right right",
-//               end: () => "+=" + (trackWrapperWidth() - window.innerWidth),
-//               scrub: true
-//             }
-//           });
-//         }
-//       });
-
-//       const sliderOffset = slider.offsetLeft;
-//       console.log("Slider offset:", sliderOffset);
-
-//       lenis.scrollTo(sliderOffset, {
-//         offset: 0,
-//         immediate: false,
-//         duration: 1.2,
+//       // Animate the shuffled sliders to their new positions
+//       gsap.to(shuffledSliders, {
+//         duration: 1,
+//         ease: 'power1.inOut',
+//         x: (index) => (index - sliderIndex) * slider.offsetWidth,
 //         onComplete: () => {
-//           console.log("Scroll completed");
-//           console.log("Current scroll position:", lenis.scroll);
-//           ScrollTrigger.refresh();
-//         }
+//           // Play the video after the animation is complete
+//           const videoElement = slider.querySelector('video') as HTMLVideoElement;
+//           videoElement.play();
+//         },
 //       });
 
 //       // Update the URL hash without triggering a scroll
-//       history.pushState(null, '', `#${hash}`);
-//     } else {
-//       console.log("Slider not found for video:", video);
+//       history.pushState('', `#${hash}`);
 //     }
-//   } else {
-//     console.log("Video not found for hash:", hash);
-//   }
-// }
-// Handle initial hash on page load
-// function handleInitialHash() {
-//   if (window.location.hash) {
-//     const hash = window.location.hash.replace('#', '');
-//     scrollToVideo(hash);
-//   }
-// }
-// function setupHashNav() {
-//   if (window.location.hash) {
-//     const hash = window.location.hash.replace('#', '');
-//     scrollToVideo(hash);
-//   }
-
-  
-//   const thumbnails = document.querySelectorAll('.thumbtext');
-//   thumbnails.forEach((thumb) => {
-//     thumb.addEventListener('click', (e) => {
-//       e.preventDefault();
-//       const target = e.currentTarget as HTMLAnchorElement;
-//       const hash = target.getAttribute('href')?.replace('#', '') || '';
-//       window.location.hash = hash;
-//       scrollToVideo(hash);
-//     });
-//   });
-// }
-// const onScroll = () => {
-
-// scrollToVideo("");
-  
-//   }
-
-//   const onDOMContentLoaded = () => {
-//     projectmaskingAnimationTransition() ;
-//     setupHashNav();
-//     handleInitialHash();
-//     handleExternalLinks();
-//   //  if (animating = true ) {
-
-//   //  }
-// }
-  
-
-//   const onClick = () => { 
-//     // setupHashNav();
-//     console.log("clicked");
-
-//   }
-//   window.addEventListener('hashchange', () => {
-//     const hash = window.location.hash.replace('#', '');
-//     scrollToVideo(hash);
-//   });
-//   // const eventDispatcher = new EventDispatcher();
-// // use the dispatcher, this should not need editing 
-// eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
-// eventDispatcher.addEventListener("click", onClick);
-// eventDispatcher.addEventListener("scroll", onScroll);
-// window.addEventListener('hashchange', onScroll);
-
-
-
-// function handleExternalLinks() {
-//   if (window.location.hash) {
-//     const hash = window.location.hash.replace('#', '');
-//     scrollToVideo(hash);
 //   }
 // }
 
 
-
-// function gotoSection(index, direction) {
-//  animating = true;
-//  index = wrap(index);
-
-//  let tl = gsap.timeline({
-//   defaults: { duration: 3, ease: "expo.inOut" },
-//   onComplete: () => {
-//    animating = false;
-//   }
-//  });
-//  currentIndex = index;
-// }
- 
