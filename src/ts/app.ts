@@ -74,6 +74,7 @@ const onDOMContentLoaded = () => {
     initEvents();
     // initShadowGrid();
     document.body.style.visibility = 'visible';
+    console.clear();
 
 };
 

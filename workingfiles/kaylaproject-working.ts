@@ -16,45 +16,15 @@ import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
-
-// froggie zone
-
-let browserHash: string | null;
-
-function handleInitialHash() {
-  browserHash = window.location.hash;
-}
-function reorderListItems() {
-  handleInitialHash();
-  const ul = document.querySelector('.cards');
-  if (!ul) {
-    console.error('UL with class "cards" not found');
-    return;
-  }
-  const lis = Array.from(ul.querySelectorAll('li'));
-  if (browserHash) {
-    const matchingLi = lis.find(li => li.getAttribute('data-hashnav') === browserHash);
-    if (matchingLi) {
-      ul.removeChild(matchingLi);
-      ul.insertBefore(matchingLi, ul.firstChild);
-      console.log(`moved li ${browserHash} to first child`);
-    } else {
-      console.log('no matching li found for the current hash');
-    }
-  } else {
-    console.log('no browser hash present');
-  }
-}
-reorderListItems();
-
-// froggie zone
+import { killFlip } from './grid';
+import { text } from 'stream/consumers';
 
 const navigation = new Navigation();
 const eventDispatcher = new EventDispatcher();
 gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
 let animating: boolean;
 let currentIndex = 0;
-
+let textItemsTL = gsap.timeline(); //create the timeline
 // const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
 // if (canvasElement) {
 //   const canvas = new Canvas(canvasElement);
@@ -64,17 +34,8 @@ let currentIndex = 0;
 // }
 // this is the panel overlay text - which probably needs to move in with flip or something so it acts right.
 // or possibly just called in global scope
-let thumbText = gsap.utils.toArray(".panel-overlay-text");
-let thumbtextTl = gsap.timeline(); //create the timeline
-thumbtextTl.fromTo(thumbText, 
-  { duration: 1.75, opacity: 1, ease: "power4.inOut", stagger:0.525 }, 
-  { duration: 1.75, opacity: 0 , ease: "power4.inOut", stagger:0.525, delay:0.525
- },
- 
-);
+
 let imagePlacementArray: any[] = [];
-
-
 
 mrScopertonShufflerton();
 function mrScopertonShufflerton() {
@@ -135,10 +96,7 @@ const hash = window.location.hash.substring(1);
 const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
 let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
 let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
-
-// updateDOMFromArray(cardsArray).then(() => {
-  let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
-// });
+let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
 
 function  seamlessLoopScroll() {
   // reconstructVideo(hash);
@@ -212,7 +170,6 @@ function scrubTo(totalTime) { // moves the scroll position to the place that cor
 }
 
 function buildSeamlessLoop(items, spacing) {
-
 	let overlap = Math.ceil(1 / spacing), //  accommodate the seamless looping
 		startTime = items.length * spacing + 0.5, // the time on the rawSequence at which we'll start the seamless loop
 		loopTime = (items.length + overlap) * spacing + 1, // the spot at the end where we loop back to the startTime 
@@ -229,14 +186,14 @@ function buildSeamlessLoop(items, spacing) {
 		i, index, item;
 
 	// set initial state of items
-	gsap.set(items, {xPercent: 0, opacity: 0,	scale: 0});
+	// gsap.set(items, {xPercent: 0, opacity: 0,	scale: 0});
 
 	for (i = 0; i < l; i++) {
 		index = i % items.length;
 		item = items[index];
 		time = i * spacing;
 		rawSequence
-    .fromTo(item, {scale: 0, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
+    .fromTo(item, {scale: 1, opacity:1}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: false}, time)
 		.fromTo(item, {xPercent: 400}, {xPercent: -400, duration: 1, ease: "none", immediateRender:true}, time);
 		i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
 	}
@@ -259,97 +216,234 @@ gsap.timeline({}) //overkill prob
 	return seamlessLoop;
 }
 
-function setupVideos() {
-  let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
-  videos.forEach((video) => {
-    const hashNav = video.dataset.hashnav;
-    const currentVideo = video.querySelector('.video-matching') as HTMLVideoElement;
-    const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
-    const state = Flip.getState(targetVideo);
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          video.play();
-          thumbtextTl.restart();
-          thumbtextTl.play();
-          
-        } else {
-          video.pause();
-          thumbtextTl.pause();
-          video.classList.remove('active');
+// this is where I swap the hash video and the currently playing video
+function scrollToVideo(hash) {
+  const video = document.querySelector(`[data-hashnav="${hash}"]`);
+  if (video) {
+    const container = video.closest('.cards');
+    const scrollPosition = video.offsetTop - container.offsetTop;
+    
+    gsap.to(container, {
+      scrollTo: {y: scrollPosition, autoKill: true, },
+      duration: 1,
+      ease: "power2.inOut",
+      
+      onComplete: () => {
+        ScrollTrigger.refresh();
+      }
+    });
+  }
+}
+function reconstructVideo(hash) {
+  let videos = gsap.utils.toArray('.slider-video');
+  let videoMatchingBrowserHash = videos.find(video => video.dataset.hashnav === hash);
+  let listItems = gsap.utils.toArray('.cards li');
+  let textItems = gsap.utils.toArray('.panel-overlay-text');
+  // let thumbText = gsap.utils.toArray(".panel-overlay-text");
+
+
+  // function getOrder(videos) {
+  //   const style = window.getComputedStyle(item);
+  //   return Number(style.getPropertyValue("order"));
+  // }
+  if (videoMatchingBrowserHash) {
+    const state = Flip.getState(videos);
+    //store original parents
+    const originalParents = videos.map(video => video.parentNode);
+    // const startOrder = Flip.getByTarget(videos[0]);
+    // const state = Flip.getState(listItems);
+    videos.splice(videos.indexOf(videoMatchingBrowserHash), 1);
+    videos.unshift(videoMatchingBrowserHash);
+    // //repeat
+    // textItems.splice(textItems.indexOf(textItems), 2);
+    // textItems.unshift(textItems, 2);
+
+    const container = document.querySelector('.cards li');
+  
+    // working, only the first video (matching one) to the first list item
+    const firstListItem = listItems[0];
+    firstListItem.innerHTML = '';
+    // firstListItem.insertBefore(textItems[0], videoMatchingBrowserHash);
+    firstListItem.appendChild(videoMatchingBrowserHash);
+    // firstListItem.appendChild(textItems.push(".panel-overlay-text"));
+ //prior working
+  //   container.innerHTML = '';
+  //   videos.forEach(video => {
+  //     container.appendChild(video);
+  //  });
+    // listItems.splice(listItems.indexOf(videos[]))
+    // listItems.push(video);
+    // listItems.forEach(video => {
+    //   // listItems.splice(listItems.indexOf(videos[0]))
+    //   listItems.push(video);
+    // })
+    Flip.from(state, {
+      absolute: true,
+      ease: "power1.inOut",
+      // prune: true,
+      // nested: true,
+      onComplete: () => {
+        //trying to restore og videos here
+        for (let i = 1; i < videos.length; i++) {
+          if (videos[i].parentNode !== originalParents[i]) {
+            // originalParents[i].insertBefore(textItems[i], videos[i]);
+            originalParents[i].appendChild(videos[i]);
+            // gsap.set(videos[i], {transform:"unset",opacity: "1"});
+          }
         }
-      });
-    }, { threshold: 0.5 });
+        
+        seamlessLoop = buildSeamlessLoop(videos, spacing);
+        scrub = gsap.to(seamlessLoop, {
+          totalTime: 0,
+          duration: 0.5,
+          ease: "none",
+          paused: true,
+          clearProps: "all",
+        });
+        ScrollTrigger.refresh();
+        // textItemsTL
+        // .fromTo(textItems, 
+        //   { duration: 1.75, opacity: 1, ease: "power4.inOut", stagger:0.525 }, 
+        //   { duration: 1.75, opacity: 0 , ease: "power4.inOut", stagger:0.525, delay:0.525
+        //  },
+        //  );
+        // gsap.timeline.
+      },
+    });
+    //   listItems.forEach(video => {
+    //     // console.log(state);
+    //     listItems.push(video);
+    //     // Flip.getByTarget(video)
+    //     // flip
+    //   // listItems.push(video);
+    // })
+// console.log(state);
 
-    observer.observe(video);
-  });
-}
-
-function sliderVerticalCentering() {
-  const windowHeight = window.innerHeight;
-  const sectionElement = document.querySelector('.section') as HTMLElement;
-  
-  if (!sectionElement) {
-    console.error('Section element not found');
-    return;
+    //append our other videos to. list stuff ?
+    // const originalListItem = document.querySelectorAll(".section");
+    // const newvideo = document.querySelector('.slider-video') as HTMLVideoElement;
+    // originalListItem.forEach(listitem => (
+    //   listitem.appendChild(newvideo);
+    // );
   }
-
-  const remainingSpace = windowHeight - sectionElement.offsetHeight;
-  
-  const cardsElement = document.querySelector('.cards') as HTMLElement;
-  if (cardsElement) {
-    cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
-  } else {
-    console.error('Cards element not found');
-  }
 }
-window.addEventListener('load', sliderVerticalCentering);
-window.addEventListener('resize', sliderVerticalCentering);
-  
-let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
-  
-function projectmaskingAnimationTransition() {
-  let tl = gsap.timeline();
-  tl.to(".maskingintro--element", {
-    opacity: 0,
-    duration: 1.25,
-    ease: "power1.out",
-  }, 0)
-  .then(() => {
+//  this is where I get the browser window hash
+function handleInitialHash() {
+  if (window.location.hash) {
+    const hash = window.location.hash;
+    reconstructVideo(hash);
+    
+    // Wait for the DOM to update before scrolling
     setTimeout(() => {
-      isMaskingAnimationRunning = false;
-    }, 500);
-  });
+      scrollToVideo(hash);
+    }, 100);
+  }
 }
 
-const onDOMContentLoaded = () => {
-  navigation.setupNavigationEvents();
-  projectmaskingAnimationTransition();
-  // projectmaskingAnimationTransition();
-  console.clear();
-  // setTimeout(() => {
-    setupVideos();
-  // }, 5000);
+// this is where I get the currently playing video
 
-  // setTimeout(() => {
-  //   handleInitialHash();
-  // }, 2000);
-};
+ function setupVideos() {
+let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+videos.forEach((video) => {
+  const projectText = video.getAttribute('data-project');
+  // const textOverlay = document.querySelectorAll("panel-overlay-text")[0] as HTMLElement;
+  // textOverlay.classList.add('panel-overlay-text');
+  // if (textOverlay) {
+  // textOverlay.innerHTML = projectText;
+  // video.parentElement.appendChild(textOverlay);
+  // }
+  // const hashNav = video.dataset.hashnav;
+  const currentVideo = video.querySelector('.video-matching') as HTMLVideoElement;
+  // const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  // const targetText = video.querySelector(`[data-project="#${hash}"]`) as HTMLElement;
+  // const textTl = gsap.timeline({ paused: true });
+  //   textTl.fromTo(textItemsTL, 
+  //     { opacity: 0, y: 20 }, 
+  //     { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+  //   );
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        video.play();
+        //  textTl.restart();
+        //  textTl.play();
+        
+      } else {
+        video.pause();
+        //  textTl.pause();
+        // video.classList.remove('active');
+      }
+    });
+  }, { threshold: 0.5 });
 
-const onClick = () => {
-  navigation.checkforAnimation();
-  console.log("clicked");
-};
-
-const onScroll = () => {
-  gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
-};
-const onhashchange = () => {
-  window.location.hash = hash;
+  observer.observe(video);
+});
 }
 
-eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
-eventDispatcher.addEventListener("click", onClick);
-eventDispatcher.addEventListener("scroll", onScroll);
-eventDispatcher.addEventListener('hashchange', onhashchange);
+  function sliderVerticalCentering() {
+    const windowHeight = window.innerHeight;
+    const sectionElement = document.querySelector('.section') as HTMLElement;
+    
+    if (!sectionElement) {
+      console.error('Section element not found');
+      return;
+    }
   
+    const remainingSpace = windowHeight - sectionElement.offsetHeight;
+    
+    const cardsElement = document.querySelector('.cards') as HTMLElement;
+    if (cardsElement) {
+      cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
+    } else {
+      console.error('Cards element not found');
+    }
+  }
+  window.addEventListener('load', sliderVerticalCentering);
+  window.addEventListener('resize', sliderVerticalCentering);
+
+  // Event listeners
+
+  let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
+  
+  function projectmaskingAnimationTransition() {
+    let tl = gsap.timeline();
+    tl.to(".maskingintro--element", {
+      opacity: 0,
+      duration: 1.25,
+      ease: "power1.out",
+    }, 0)
+    .then(() => {
+      setTimeout(() => {
+        isMaskingAnimationRunning = false;
+      }, 500);
+    });
+  }
+  
+  const onDOMContentLoaded = () => {
+    navigation.setupNavigationEvents();
+    projectmaskingAnimationTransition();
+    setupVideos();
+    setTimeout(() => {
+      handleInitialHash();
+    }, 2000);
+  };
+  
+  const onClick = () => {
+    navigation.checkforAnimation();
+    console.log("clicked");
+  };
+  
+  const onScroll = () => {
+    gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
+  };
+  const onhashchange = () => {
+    window.location.hash = hash;
+  }
+
+  eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
+  eventDispatcher.addEventListener("click", onClick);
+  eventDispatcher.addEventListener("scroll", onScroll);
+  eventDispatcher.addEventListener('hashchange', onhashchange);
+  
+
+
