@@ -41,6 +41,398 @@ const logo = document.querySelector(".topbar--global");
 const videos = gsap.utils.toArray(document.querySelectorAll('.slider-video')) ;
 let animating: boolean;
 let currentIndex = 0;
+// class SeamlessSlider {
+//   private slider: HTMLElement;
+//   private sections: HTMLElement[];
+//   private videos: HTMLVideoElement[];
+//   private seamlessLoop: gsap.core.Timeline;
+//   private spacing: number;
+//   private scrub: gsap.core.Tween;
+//   // private totalTime = this.scrub.vars.totalTime;
+//   private trigger: ScrollTrigger;
+//   private iteration: number;
+//   // sliderWidth: number;
+//   // sectionWidth: number;
+  
+//   // sliderWidth: number;
+
+//   constructor(sliderSelector: string) {
+//     this.slider = document.querySelector('.gallery') as HTMLElement;
+//     this.sections = Array.from(this.slider.querySelectorAll('.cards li'));
+//     this.videos = Array.from(this.slider.querySelectorAll('.slider-video'));
+//     this.spacing = 0.1;
+//     this.iteration = 0;
+
+//     this.init();
+//     window.addEventListener('resize', this.handleResize.bind(this));
+//   }
+
+//   private init() {
+//     gsap.registerPlugin(ScrollTrigger);
+//     gsap.registerPlugin(Flip);
+
+//     this.setupSeamlessLoop();
+//     this.setupVideos();
+//     this.setupScrollTrigger();
+//     this.setupHashNavigation();
+//     this.calculateSizes();
+//   }
+//   private handleResize() {
+//     this.calculateSizes();
+//     this.updatePositions();
+//     ScrollTrigger.refresh();
+//   }
+
+//   private setupSeamlessLoop() {
+//     const overlap = Math.ceil(1 / this.spacing);
+//     const startTime = this.sections.length * this.spacing + 0.5;
+//     const loopTime = (this.sections.length + overlap) * this.spacing + 1;
+//     const rawSequence = gsap.timeline({ paused: true });
+
+//     this.seamlessLoop = gsap.timeline({
+//       paused: true,
+//       repeat: -1,
+//       //idk
+//       // onRepeat: () => {
+//       //   this.seamlessLoop._time === this.seamlessLoop._dur && (this.seamlessLoop._tTime += this.seamlessLoop._dur - 0.01);
+//       // },
+//     });
+
+//     const l = this.sections.length + overlap * 2;
+//     let time = 0;
+
+//     for (let i = 0; i < l; i++) {
+//       const index = i % this.sections.length;
+//       const section = this.sections[index];
+//       time = i * this.spacing;
+//       // item = section[index];
+//       rawSequence.fromTo(
+//        section,
+//         { scale: 0, opacity: 0 },
+//         {
+//           scale: 1,
+//           opacity: 1,
+//           zIndex: 100,
+//           duration: 0.5,
+//           yoyo: true,
+//           repeat: 1,
+//           ease: 'power1.in',
+//           immediateRender: true,
+//         },
+//         time
+//       ).fromTo(
+//        section,
+//         { xPercent: 400 },
+//         { xPercent: -400, duration: 1, ease: 'none', immediateRender: true },
+//         time
+//       );
+
+//       i <= this.sections.length && this.seamlessLoop.add(`label${i}`, time);
+//     }
+
+//     rawSequence.time(startTime);
+//     this.seamlessLoop.to(rawSequence, {
+//       time: loopTime,
+//       duration: loopTime - startTime,
+//       ease: 'none',
+//     }).fromTo(
+//       rawSequence,
+//       { time: overlap * this.spacing + 1 },
+//       {
+//         time: startTime,
+//         duration: startTime - (overlap * this.spacing + 1),
+//         immediateRender: false,
+//         ease: 'none',
+//       }
+//     );
+//   }
+
+//   private setupVideos() {
+//     this.videos.forEach((video) => {
+//       const observer = new IntersectionObserver((entries) => {
+//         entries.forEach((entry) => {
+//           if (entry.isIntersecting) {
+//             video.play();
+//             // console.log(`Video ${video} is playing`);
+//             console.log(`Video ${video.dataset.hashnav} is playing`);
+//           } else {
+//             video.pause();
+//             console.log(`Video ${video.dataset.hashnav} is paused`);
+//           }
+//         });
+//       }, { threshold: 0.5 });
+  
+//       observer.observe(video);
+//     });
+//   }
+  
+//   // private setupScrollTrigger() {
+//   //   const snap = gsap.utils.snap(this.spacing);
+//   //   this.scrub = gsap.to(this.seamlessLoop, {
+//   //     totalTime: 0,
+//   //     duration: 0.5,
+//   //     ease: 'power3',
+//   //     paused: true,
+//   //   });
+  
+//   //   this.trigger = ScrollTrigger.create({
+//   //     trigger: this.slider,
+//   //     start: 'top top',
+//   //     end: () => `+=${this.sectionWidth}`,
+//   //     pin: true,
+//   //     pinSpacing: false,
+//   //     anticipatePin: 1,
+//   //     onUpdate: (self) => {
+//   //       // ... (existing code)
+//   //     },
+//   //     onRefresh: () => {
+//   //       this.calculateSizes();
+//   //       this.updatePositions();
+//   //     },
+//   //   });
+//   // }
+  
+//   private setupScrollTrigger() {
+//     const snap = gsap.utils.snap(this.spacing);
+//     // let maxWidth = 0;
+
+//     // const getMaxWidth = () => {
+//     //   maxWidth = 0;
+//     //   this.videos.forEach((video, index) => {
+//     //     maxWidth += video.width;
+//     //     console.log(maxWidth);
+//     //   });
+//     // };
+//     // getMaxWidth();
+//     this.scrub = gsap.to(this.seamlessLoop, {
+//       totalTime: 0,
+//       duration: 0.5,
+//       ease: 'power3',
+//       paused: true,
+//     });
+//     // let totalTime = this.scrub.vars.totalTime;
+//     // scrubTo(totalTime) { // moves the scroll position to the place that corresponds to the totalTime value of the seamlessLoop
+//     //   this.seamlessLoop.totalTime(this.seamlessLoop.totalTime() + this.seamlessLoop.duration() * 10);
+//     //   	let progress = (this.totalTime - this.seamlessLoop.duration() * this.iteration) / this.seamlessLoop.duration();
+//     //   	if (progress > 1) {
+//     //   		this.wrapForward(this.trigger);
+//     //   	} else if (progress < 0) {
+//     //   		this.wrapBackward(this.trigger);
+//     //   	} else {
+//     //   		this.trigger.scroll(this.trigger.start + progress * (this.trigger.end - this.trigger.start));
+//     //   	}
+//     //   }
+
+//     this.trigger = ScrollTrigger.create({
+//       start: 0,
+//       // end: () => `+=${this.sectionWidth}`,
+//       end: '+=3000',
+//       pin: "#masterWrap",
+//       // pinSpacing: false,
+//       //     anticipatePin: 1,
+//       // markers: {startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20},
+//       onUpdate: (self) => {
+//         if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
+//           this.wrapForward(self);
+//         } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
+//           this.wrapBackward(self);
+//         } else {
+//           this.scrub.vars.totalTime = snap((this.iteration + self.progress) * this.seamlessLoop.duration());
+//           this.scrub.invalidate().restart();
+//           self.wrapping = false;
+//         }
+//       },
+
+//         // onRefresh: () => {
+//         //   // Recalculate the width and positioning of elements
+//         //   this.calculateSizes();
+//         //   this.updatePositions();
+//         // },
+//       // },
+//     });
+//   }
+//   private calculateSizes() {
+//     this.sliderWidth = this.slider.offsetWidth;
+//     this.sectionWidth = this.sections.reduce((width, section) => width + section.offsetWidth, 0);
+//   }
+  
+//   private updatePositions() {
+//     // gsap.set(this.slider, { width: window.innerWidth, height: window.innerHeight });
+//     this.seamlessLoop.progress(this.seamlessLoop.progress());
+//   }
+//   private setupHashNavigation() {
+//     window.addEventListener('hashchange', () => {
+//       const hash = window.location.hash.substring(1);
+//       this.updateVideoBasedOnHash(hash);
+//     });
+  
+//     const thumbnails = document.querySelectorAll('.thumbtext');
+//     thumbnails.forEach((thumb) => {
+//       thumb.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         const target = e.currentTarget as HTMLAnchorElement;
+//         const hash = target.getAttribute('href')?.replace('#', '') || '';
+//         this.updateVideoBasedOnHash(hash);
+//       });
+//     });
+//   }
+  
+//   private scrollToSection(index: number) {
+//     const progress = index / (this.sections.length - 1);
+//     gsap.to(this.seamlessLoop, {
+//       progress,
+//       duration: 1,
+//       ease: 'power1.inOut',
+//       // onUpdate: () => {
+//       //   ScrollTrigger.refresh();
+//       // },
+//     });
+//   }
+//   updateVideoBasedOnHash(currentHash: string) {
+//     const hash = window.location.hash.substring(1);
+//     if (hash && hash !== currentHash) {
+//       const currentVideo = this.slider.querySelector('.slider-video') as HTMLElement;
+//       const targetVideo = this.slider.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  
+//       if (targetVideo && targetVideo !== currentVideo) {
+//         console.log('Current video:', currentVideo);
+//         console.log('Target video:', targetVideo);
+  
+//         const state = Flip.getState(currentVideo);
+  
+//         currentVideo.classList.remove('active');
+//         targetVideo.classList.add('active');
+  
+//         Flip.from(state, {
+//           duration: 1,
+//           ease: 'power1.inOut',
+//           onComplete: () => {
+//             console.log('Flip animation completed');
+//             // ScrollTrigger.refresh();
+//           }
+//         });
+  
+//         history.pushState('', `#${hash}`, `#${hash}`);
+//         console.log('URL hash updated to:', hash);
+//       }
+//     }
+//   }
+//   // private scrollToSection(index: number) {
+//   //   const progress = index / (this.sections.length - 1);
+//   //   this.seamlessLoop.progress(progress);
+//   //   ScrollTrigger.refresh();
+//   //   console.log(`Scrolled to section: ${index}`);
+//   // }
+  
+//   // private scrollToVideo(hash: string) {
+//   //   const video = this.slider.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+//   //   if (video) {
+//   //     const section = video.closest('.cards li') as HTMLElement;
+//   //     if (section) {
+//   //       const sectionIndex = this.sections.indexOf(section);
+//   //       if (sectionIndex !== -1) {
+//   //         console.log('Scrolling to section:', sectionIndex);
+//   //         this.scrollToSection(sectionIndex);
+//   //         history.pushState('', `#${hash}`, `#${hash}`);
+//   //         console.log('URL hash updated to:', hash);
+//   //       } else {
+//   //         console.log('Section not found for video:', hash);
+//   //       }
+//   //     } else {
+//   //       console.log('Section not found for video:', hash);
+//   //     }
+//   //   } else {
+//   //     console.log('Video not found for hash:', hash);
+//   //   }
+//   // }
+//   // scrollToVideo(hash: string) {
+//   //   console.log('Attempting to scroll to video with hash:', hash);
+//   //   const currentVideo = this.slider.querySelector('.slider-video.active') as HTMLElement;
+//   //   const targetVideo = this.slider.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+  
+//   //   if (targetVideo) {
+//   //     if (currentVideo) {
+//   //       const state = Flip.getState(currentVideo);
+  
+//   //       currentVideo.classList.remove('active');
+//   //       targetVideo.classList.add('active');
+  
+//   //       Flip.from(state, {
+//   //         duration: 1,
+//   //         ease: 'power1.inOut',
+//   //         onComplete: () => {
+//   //           console.log('Flip animation completed');
+//   //           ScrollTrigger.refresh();
+//   //         }
+//   //       });
+//   //     } else {
+//   //       console.log('Current video not found');
+//   //       targetVideo.classList.add('active');
+//   //     }
+  
+//   //     history.pushState('', `#${hash}`, `#${hash}`);
+//   //     console.log('URL hash updated to:', hash);
+//   //   } else {
+//   //     console.log('Target video not found for hash:', hash);
+//   //   }
+//   // }
+//   private pauseAllVideos() {
+//     this.videos.forEach((video) => video.pause());
+//   }
+
+//   private playVideoAtIndex(index: number) {
+//     if (index >= 0 && index < this.videos.length) {
+//       this.videos[index].play();
+//     }
+//   }
+
+//   private wrapForward(trigger: ScrollTrigger) {
+//     this.iteration++;
+//     trigger.wrapping = true;
+//     trigger.scroll(trigger.start + 1);
+//   }
+
+//   private wrapBackward(trigger: ScrollTrigger) {
+//     this.iteration--;
+//     if (this.iteration < 0) {
+//       this.iteration = 9;
+//       this.seamlessLoop.totalTime(this.seamlessLoop.totalTime() + this.seamlessLoop.duration() * 10);
+//       this.scrub.pause();
+//       trigger.wrapping = true;
+//       trigger.scroll(trigger.end - 1);
+//     }
+//   }
+// }
+
+
+// function scrollToVideo(hash: string) {
+//   const video = document.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+//   if (video) {
+//     const slider = video.closest('.cards li') as HTMLElement;
+//     if (slider) {
+//       const sliderIndex = Array.from(slider.parentElement.children).indexOf(slider);
+//       const sliders = gsap.utils.toArray('.cards li');
+
+//       // Shuffle the sliders array to bring the hashed video to the first position
+//       const shuffledSliders = gsap.utils.shuffle(sliders, );
+
+//       // Animate the shuffled sliders to their new positions
+//       gsap.to(shuffledSliders, {
+//         duration: 1,
+//         ease: 'power1.inOut',
+//         x: (index) => (index - sliderIndex) * slider.offsetWidth,
+//         onComplete: () => {
+//           // Play the video after the animation is complete
+//           const videoElement = slider.querySelector('video') as HTMLVideoElement;
+//           videoElement.play();
+//         },
+//       });
+
+//       // Update the URL hash without triggering a scroll
+//       history.pushState('', `#${hash}`);
+//     }
+//   }
+// }
 
 // const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
 // if (canvasElement) {

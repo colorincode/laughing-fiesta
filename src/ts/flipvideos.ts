@@ -150,10 +150,10 @@ function applyFullscreenStyles() {
   // tl.add({})
   gsap.to(fullscreenElement, {
     position: 'fixed',
-    top: '15%',
-    left: '15%',
-    right: '15%',
-    bottom: '15%',
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
     width: '100vw',
     height: '100vh',
     zIndex: 9999,
@@ -320,7 +320,7 @@ const flipVideo = (video: HTMLVideoElement) => {
     Flip.fit(video, parent, {
       position: "relative",
       width: "100%", //resetting to match figure tag
-      height: "fit-content", //resetting to match figure tag
+      // height: "fit-content", //resetting to match figure tag
       inset: "unset", //resetting to match figure tag
     });
       // parent.append(videoFigure);
@@ -381,6 +381,7 @@ const flipVideo = (video: HTMLVideoElement) => {
       });
     }
   };
+
  export function MatchMedia() {
 // create
 let mm = gsap.matchMedia();
