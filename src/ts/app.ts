@@ -3,10 +3,14 @@ import gsap from 'gsap';
 import EasePack from 'gsap/EasePack';
 import { Power4 } from 'gsap/gsap-core';
 import Observer from 'gsap/Observer';
+import Timeline from 'gsap/all';
+import  Tween  from 'gsap/src/all';
 //gsap registration, global scope
-gsap.registerPlugin(Power4);
 gsap.registerPlugin(EasePack);
-gsap.registerPlugin(Observer);
+gsap.registerPlugin(Tween);
+gsap.registerPlugin(SteppedEase);
+gsap.registerPlugin(Timeline);
+gsap.registerPlugin(Power4);
 // component deps
 import "./shared/header";
 import {Navigation} from "./shared/nav";
@@ -21,14 +25,10 @@ import { LoadVideoAssets } from './videohandlers';
 import { Canvas } from './Canvas'
 
 const navigation = new Navigation();
-// const animationHandler = new AnimationHandler();
-
-
-// const scroll = new scrollEvent();
+let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
 const parentGrid = document.querySelector('.homegrid__container');
 const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
-// const modalOpen = document.querySelector('.modal-overlay');
-// const modalNew = new modal();
+
 function loadCanvas() {
   if (canvasElement) {
     const canvas = new Canvas(canvasElement);
@@ -38,42 +38,35 @@ function loadCanvas() {
   }
 }
 function smoothLinkClick(e: MouseEvent) {
-
-  e.preventDefault();
-
+e.preventDefault();
  let targetUrl = e.currentTarget.getAttribute('href');
-  // Create GSAP animation
-  gsap.to("body", {
-      opacity: 0,
-      duration: 0.5,
-      onComplete: () => {
-          window.location.href = targetUrl;
-      }
-  });
-
 }
-
-
+function projectmaskingAnimationTransition() {
+  let tl = gsap.timeline();
+  tl.to(".maskingintro--element", {
+    opacity: 0,
+    duration: 1.65,
+    
+    ease: "power4.out",
+    autoAlpha: 1,
+  }, 0)
+  .then(() => {
+    setTimeout(() => {
+      isMaskingAnimationRunning = false;
+    }, 500);
+  });
+}
+projectmaskingAnimationTransition();
 const eventDispatcher = new EventDispatcher();
 const onClick = () => {
-    // console.log("click fired from app");
-    // animationHandler.setupGSAPtl();
     navigation.checkforAnimation();
-    // listenForFlip();
-    // initEvents();
-
-
-
-
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
+   
     LoadVideoAssets();
-    // listenForFlip();
     loadCanvas();
     initEvents();
-    // initShadowGrid();
-    document.body.style.visibility = 'visible';
     console.clear();
 
 };
@@ -85,63 +78,16 @@ const onChange = () => {
 const onResize = () => {
     callAfterResize();
     killFlip();
-    // listenForFlip();
-    // LoadVideoAssets();
     console.clear();
 }
 
 const onScroll = () => {
-//  scrollInit();
-// let homegridObserve = document.querySelector("homegrid__container");
-// if (homegridObserve) {
-// Observer.create({
-//   type: 'wheel,touch,pointer',
-//   preventDefault: true,
-//   wheelSpeed: -1,
-//   onChange: function(e) {
-//   console.log("scroll change");
-//   },
-//   onStop: () => {
-//     console.log('scroll stopped');
-//     // listenForFlip();
-//   },
-// });
-
-// // ScrollTrigger.normalizeScroll(true);
-// }
 
 }
-
 
 // use the dispatcher, this should not need editing 
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("fullscreenchange",onChange);
 eventDispatcher.addEventListener("resize",onResize);
-// eventDispatcher.addEventListener("scroll",onScroll);
-// eventDispatcher.removeEventListener("click", onClick);
-// eventDispatcher.removeEventListener("click",LoadVideoAssets);
-
-
-
-
-
-
-
-// eventDispatcher.addEventListener("click",shuffleGridBack);
-
-// Later, if you need to remove specific event listeners
-// eventDispatcher.removeEventListener("DOMContentLoaded", onDOMContentLoaded);
-// eventDispatcher.removeEventListener("click", onClick);
-
-// Or dispose of all event listeners when they are no longer needed
-// eventDispatcher.dispose();
-// const loaded = () => {
-//     document.addEventListener("DOMContentLoaded", () => {
-//         navigation.setupNavigationEvents();
-//         shuffle();  
-
-
-//     })
-// }
 

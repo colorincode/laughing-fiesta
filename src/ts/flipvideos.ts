@@ -286,14 +286,14 @@ const flipVideo = (video: HTMLVideoElement) => {
       scale: true,
       onStart: () => {
             // Set video to fullscreen
-            gsap.to(video, {height: "auto", width: "80vw", autoAlpha:1,  ...animationDefaults,}); 
+            gsap.to(video, {height: "auto", width: "70vw", autoAlpha:1,  ...animationDefaults,}); 
             // gsap.to(video, {}); 
             // set full screen to fancy   
             applyFullscreenStyles() ;
       },
       onComplete: () => {
         currentFullscreenVideo = fullscreenElement.contains(video) ? video : null;
-        gsap.set(video, {height: "auto", width: "80vw", autoAlpha:1,  ...animationDefaults,}); 
+        gsap.set(video, {height: "auto", width: "70vw", autoAlpha:1,  ...animationDefaults,}); 
         // let matchMedia= ;
         // if matchMedia ()
       },

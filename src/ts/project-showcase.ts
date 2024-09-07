@@ -1,8 +1,7 @@
 
-console.log("slider module loaded");
+// console.log("slider module loaded");
 //gsap modules
 import gsap, { SteppedEase, toArray } from 'gsap';
-// import TextPlugin from 'gsap/TextPlugin';
 import { Flip } from 'gsap/Flip';
 import Draggable from 'gsap/Draggable';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -17,13 +16,27 @@ import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
 
-// froggie zone
-
+// globals
 let browserHash: string | null;
+const navigation = new Navigation();
+const eventDispatcher = new EventDispatcher();
+gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
+let animating = false;
+let currentIndex = 0;
+let imagePlacementArray: any[] = [];
+// const hash = window.location.hash;
+// const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
+// let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
+// let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
+// let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
+let thumbtextTl = thumbtextTL();
+let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
 
+//handle initial hash and event
 function handleInitialHash() {
   browserHash = window.location.hash;
 }
+//re order list
 function reorderListItems() {
   handleInitialHash();
   const ul = document.querySelector('.cards');
@@ -46,36 +59,19 @@ function reorderListItems() {
   }
 }
 reorderListItems();
+//text TL
+function thumbtextTL() {
+  let thumbText = gsap.utils.toArray(".panel-overlay-text");
+  let thumbtextTl = gsap.timeline(); //create the timeline
+  thumbtextTl.fromTo(thumbText,
+    { duration: 1.25, opacity: 1, ease: "power4.inOut", stagger: 0.525 },
+    {
+      duration: 1.25, opacity: 0, ease: "power4.inOut", stagger: 0.525, delay: 0.525
+    }
 
-// froggie zone
-
-const navigation = new Navigation();
-const eventDispatcher = new EventDispatcher();
-gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Draggable, ScrollTrigger, Observer, ScrollToPlugin);
-let animating: boolean;
-let currentIndex = 0;
-
-// const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
-// if (canvasElement) {
-//   const canvas = new Canvas(canvasElement);
-//   window.addEventListener('beforeunload', () => {
-//     canvas.dispose();
-//   });
-// }
-// this is the panel overlay text - which probably needs to move in with flip or something so it acts right.
-// or possibly just called in global scope
-let thumbText = gsap.utils.toArray(".panel-overlay-text");
-let thumbtextTl = gsap.timeline(); //create the timeline
-thumbtextTl.fromTo(thumbText, 
-  { duration: 1.75, opacity: 1, ease: "power4.inOut", stagger:0.525 }, 
-  { duration: 1.75, opacity: 0 , ease: "power4.inOut", stagger:0.525, delay:0.525
- },
- 
-);
-let imagePlacementArray: any[] = [];
-
-
-
+  );
+  return thumbtextTl;
+}
 mrScopertonShufflerton();
 function mrScopertonShufflerton() {
 
@@ -143,6 +139,8 @@ let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`);
 function  seamlessLoopScroll() {
   // reconstructVideo(hash);
   // ScrollTrigger.defaults({markers: {startColor: "white", endColor: "white"}});
+  //observer /draggable
+
   let iteration = 0; // gets iterated when we scroll all the way to the end or start and wraps around 
   const spacing = 0.1, // (stagger)
     snap = gsap.utils.snap(spacing), // we'll use this to snap the playhead on the seamlessLoop
@@ -180,6 +178,35 @@ function  seamlessLoopScroll() {
       pin: ".gallery"
     });
 
+    Observer.create({
+      type: "touch",
+      // start: 0,
+      // trigger: 'video-matching',
+      // invalidateOnRefresh: true,
+      // wheelSpeed: -1,
+      tolerance: 10,
+      preventDefault: true,
+      onDrag: () =>  {
+        if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
+          wrapForward(self);
+          console.log('wrapping forward')
+        } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
+          wrapBackward(self);
+          console.log('wrapping backward')
+        } else {
+          scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
+          scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
+          self.wrapping = false;
+        }
+    },
+      onDragEnd: () =>  {
+        scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
+          scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
+          self.wrapping = false;
+      },
+      // tolerance: 10,
+      // preventDefault: true
+    });
   return { iteration, seamlessLoop, scrub, trigger, spacing };
 }
 
@@ -262,10 +289,11 @@ gsap.timeline({}) //overkill prob
 function setupVideos() {
   let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
   videos.forEach((video) => {
-    const hashNav = video.dataset.hashnav;
-    const currentVideo = video.querySelector('.video-matching') as HTMLVideoElement;
-    const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
-    const state = Flip.getState(targetVideo);
+    // const hashNav = video.dataset.hashnav;
+    // const currentVideo = video.querySelector('.video-matching') as HTMLVideoElement;
+    // const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
+    // const state = Flip.getState(targetVideo);
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -303,17 +331,15 @@ function sliderVerticalCentering() {
     console.error('Cards element not found');
   }
 }
-window.addEventListener('load', sliderVerticalCentering);
-window.addEventListener('resize', sliderVerticalCentering);
-  
-let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
-  
+// proj animation transition 
 function projectmaskingAnimationTransition() {
   let tl = gsap.timeline();
   tl.to(".maskingintro--element", {
     opacity: 0,
-    duration: 1.25,
+    duration: 1.65,
+    
     ease: "power1.out",
+    autoAlpha: 1,
   }, 0)
   .then(() => {
     setTimeout(() => {
@@ -322,19 +348,34 @@ function projectmaskingAnimationTransition() {
   });
 }
 
+// reorderListItems();
+// sliderVerticalCentering();
+window.addEventListener('resize', sliderVerticalCentering);
+
+sliderVerticalCentering();
+projectmaskingAnimationTransition();
+// mrScopertonShufflerton();
+// seamlessLoopScroll();
+// window.addEventListener("load", (event) => {
+//   //fire these before dom content load
+//   reorderListItems();
+//   sliderVerticalCentering();
+// });
 const onDOMContentLoaded = () => {
   navigation.setupNavigationEvents();
-  projectmaskingAnimationTransition();
-  // projectmaskingAnimationTransition();
-  console.clear();
-  // setTimeout(() => {
-    setupVideos();
-  // }, 5000);
 
-  // setTimeout(() => {
-  //   handleInitialHash();
-  // }, 2000);
+  console.clear();
+  setupVideos();
+  // let thumbtextTl = thumbtextTL();
+  // seamlessLoopScroll();
+  thumbtextTL();
 };
+
+
+const onResize = () => {
+  sliderVerticalCentering();
+  // gsap.ticker.tick();
+}
 
 const onClick = () => {
   navigation.checkforAnimation();
@@ -345,11 +386,14 @@ const onScroll = () => {
   gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
 };
 const onhashchange = () => {
-  window.location.hash = hash;
+  // window.location.hash = hash;
+  handleInitialHash();
 }
-
+// eventDispatcher.addEventListener("load", onready);
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
+eventDispatcher.addEventListener('hashchange', onhashchange);
+eventDispatcher.addEventListener("onResize", onResize);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("scroll", onScroll);
-eventDispatcher.addEventListener('hashchange', onhashchange);
+
   
