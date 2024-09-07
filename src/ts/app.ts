@@ -1,5 +1,6 @@
 //import libs 
-import gsap from 'gsap';
+import gsap, { SteppedEase} from 'gsap'
+import Draggable from 'gsap/Draggable';
 import EasePack from 'gsap/EasePack';
 import { Power4 } from 'gsap/gsap-core';
 import Observer from 'gsap/Observer';
@@ -11,6 +12,8 @@ gsap.registerPlugin(Tween);
 gsap.registerPlugin(SteppedEase);
 gsap.registerPlugin(Timeline);
 gsap.registerPlugin(Power4);
+gsap.registerPlugin(Observer);
+
 // component deps
 import "./shared/header";
 import {Navigation} from "./shared/nav";
@@ -38,25 +41,37 @@ function loadCanvas() {
   }
 }
 function smoothLinkClick(e: MouseEvent) {
-e.preventDefault();
+
+  e.preventDefault();
+
  let targetUrl = e.currentTarget.getAttribute('href');
-}
-function projectmaskingAnimationTransition() {
-  let tl = gsap.timeline();
-  tl.to(".maskingintro--element", {
-    opacity: 0,
-    duration: 1.65,
-    
-    ease: "power4.out",
-    autoAlpha: 1,
-  }, 0)
-  .then(() => {
-    setTimeout(() => {
-      isMaskingAnimationRunning = false;
-    }, 500);
+  // Create GSAP animation
+  gsap.to("body", {
+      opacity: 0,
+      duration: 0.5,
+      onComplete: () => {
+          window.location.href = targetUrl;
+      }
   });
+
 }
-projectmaskingAnimationTransition();
+// function projectmaskingAnimationTransition() {
+//   let tl = gsap.timeline();
+//   tl.to(".maskingintro--element", {
+//     opacity: 0,
+//     duration: 1.65,
+    
+//     ease: "power4.out",
+//     autoAlpha: 1,
+//   }, 0)
+//   .then(() => {
+//     setTimeout(() => {
+//       isMaskingAnimationRunning = false;
+//     }, 500);
+//   });
+// }
+
+// projectmaskingAnimationTransition();
 const eventDispatcher = new EventDispatcher();
 const onClick = () => {
     navigation.checkforAnimation();
@@ -67,6 +82,7 @@ const onDOMContentLoaded = () => {
     LoadVideoAssets();
     loadCanvas();
     initEvents();
+    document.body.style.visibility = 'visible';
     console.clear();
 
 };

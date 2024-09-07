@@ -9,7 +9,7 @@ import Observer from 'gsap/Observer';
 import Timeline from 'gsap/all';
 import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from './shared/eventdispatch';
-import _Observer from 'gsap/Observer';
+
 // import { event } from 'jquery';
 // import { relative } from 'path';
 
