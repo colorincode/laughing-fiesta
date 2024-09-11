@@ -40,21 +40,21 @@ function loadCanvas() {
     });
   }
 }
-function smoothLinkClick(e: MouseEvent) {
+// function smoothLinkClick(e: MouseEvent) {
 
-  e.preventDefault();
+//   e.preventDefault();
 
- let targetUrl = e.currentTarget.getAttribute('href');
-  // Create GSAP animation
-  gsap.to("body", {
-      opacity: 0,
-      duration: 0.5,
-      onComplete: () => {
-          window.location.href = targetUrl;
-      }
-  });
+//  let targetUrl = e.currentTarget.getAttribute('href');
+//   // Create GSAP animation
+//   gsap.to("body", {
+//       opacity: 0,
+//       duration: 0.5,
+//       onComplete: () => {
+//           window.location.href = targetUrl;
+//       }
+//   });
 
-}
+// }
 // function projectmaskingAnimationTransition() {
 //   let tl = gsap.timeline();
 //   tl.to(".maskingintro--element", {
@@ -70,7 +70,60 @@ function smoothLinkClick(e: MouseEvent) {
 //     }, 500);
 //   });
 // }
+let isLoaded = false;
+let isLoadingAnimationEnd = false;
+const tl = gsap.timeline();
 
+const loadingAnimation = () => {
+
+  const figures = gsap.utils.toArray('.video--item')
+ 
+  tl.fromTo(figures, 
+    { 
+      // xPercent:0, 
+      opacity: 0,	
+      scale: 0, 
+      duration: 1,
+    },
+    {
+      opacity: 1,	
+      scale: 1, 
+      autoAlpha: 1,
+      stagger: 0.2,
+      duration: 1,
+    }
+    )
+    
+    // tl.add
+    // ({
+    //   // opacity: 1,
+    //   duration: 1,
+    //   onComplete: () => {
+    //         isLoadingAnimationEnd = true;
+    //       }
+
+    // })
+
+//   let tl = gsap.timeline();
+  tl.to(".maskingintro--element", {
+    opacity: 0,
+    duration: 1.25,
+    ease: "power4.out",
+    autoAlpha: 1,
+  }, 0)
+};
+
+tl.fromTo('.outer-wrapper', {
+  duration: 1,
+  opacity:0,
+  autoAlpha: 1,
+
+  ease: "power4.in",
+}, {
+  duration: 1,
+  opacity:1,
+  ease: "power4.out",
+})
 // projectmaskingAnimationTransition();
 const eventDispatcher = new EventDispatcher();
 const onClick = () => {
@@ -78,11 +131,12 @@ const onClick = () => {
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
-   
-    LoadVideoAssets();
+    loadingAnimation();
     loadCanvas();
+    LoadVideoAssets();
+  
     initEvents();
-    document.body.style.visibility = 'visible';
+    // document.body.style.visibility = 'visible';
     console.clear();
 
 };
@@ -95,6 +149,7 @@ const onResize = () => {
     callAfterResize();
     killFlip();
     console.clear();
+    // gsap.killTweensOf('.video--item')
 }
 
 const onScroll = () => {

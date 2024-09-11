@@ -91,10 +91,10 @@ export function LoadVideoAssets() {
     //   stagger: 1,
       
     // })
-    gsap.fromTo(figures, 
-    { xPercent:0, opacity: 0,	scale: 0, autoAlpha: 1, },
-    {opacity: 1,	scale: 1, autoAlpha: 1,}
-    )
+    // gsap.fromTo(figures, 
+    // { xPercent:0, opacity: 0,	scale: 0, autoAlpha: 1, },
+    // {opacity: 1,	scale: 1, autoAlpha: 1,}
+    // )
     let visibleElements = 9;
     let hiddenElements = filteredFigures.length - visibleElements;
   

@@ -9,8 +9,7 @@ gsap.registerPlugin(EasePack);
 gsap.registerPlugin(Timeline);
 gsap.registerPlugin(Power2);
 export class Navigation {
-   tl = gsap.timeline({})
-;
+   tl = gsap.timeline({});
    navigation = document.querySelector('.navigation');
    originalWrapper = document.querySelector('#about');
     constructor() {
@@ -21,47 +20,103 @@ export class Navigation {
 
       window.onresize = () => this.logWindowSize(); // Use arrow function
     }
+tweenNav = this.tl.fromTo('.navigation > .open',
+{  
+  opacity: 0,	
+  scale: 0, 
+  duration: 1,
+  autoAlpha: 1,
+  // yPercent:-100,
+  
+  stagger: 0.2,
+},
+{
+  opacity: 1,
+  scale: 1,
+  duration: 1,
+  backgroundColor: "rgba(0, 0, 0, 0.90)",
+  // yPercent:0,
+  ease: 'power4.in',
+  paused: true,
+}
+)
 
-    tweenNav = gsap.to(".navigation ", {
-      // y:0,
-      ease: 'power2.in',
-      // delay: 0.5,
-      duration: 1.25,
-      autoAlpha: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.80)",
-      paused: true,
-      // clearProps: "all",
-    //  onComplete: () => {
-    //   clearProps: "all",
-    //  }
+
+
+  //   tweenNav = gsap.to(".navigation ", {
+  //     // y:0,
+  //     ease: 'power4.in',
+  //     // delay: 0.5,
+  //     duration: 1.25,
+  //     autoAlpha: 1,
+  //     backgroundColor: "rgba(0, 0, 0, 0.80)",
+  //     // paused: true,
+  //     stagger: 0.2,
+  //     // clearProps: "all",
+  //   //  onComplete: () => {
+  //   //   clearProps: "all",
+  //   //  }
 
 
 
-  });
-  tweenWrap =  gsap.to(".show", {
+  // });
+  tweenWrap =  this.tl.to(".show", {
     ease: 'power2.in',
     duration: 0.75,
     autoAlpha: 1,
-    stagger: 0.2,
+    // stagger: 0.2,
     paused: true,
     onStart: () => {
     // this.navigation?.clientTop = 90;
     }
 
   });
-  tweenX = gsap.to(".xmark--closer__span", {
-    ease: 'power2.in',
-    autoAlpha: 0.75,
-    duration:0.75,
+  tweenX = this.tl.fromTo(".xmark--closer", {
+    ease: 'power4.inOut',
+    scaleY: 0,
+    autoAlpha: 0,
+    opacity: 0,
+    duration:0.7,
     stagger:0.2,
+    yPercent:5,
+  }, {
+  
+    scaleY: 1,
+    scale:1,
+    autoAlpha: 1,
+    opacity: 1,
+    duration:0.7,
+ 
+    stagger:0.2,
+    yPercent:-5,
+  })
+  tweenText = this.tl.to('.navtext', {
+    ease: 'power4.in',
+    opacity: 1,
+    scaleY: 1,
+    autoAlpha: 1,
+    // yPercent:3,
 
   })
-  tweenText = gsap.to('.navigation .toggle-wrapper .show', {
-    ease: 'power2.in',
-    autoAlpha: 1,
-    duration:0.75,
-    stagger:0.2,
-    paused: true,
+  sidenavTl = this.tl.fromTo(".sidenav__desktop", 
+    {
+      // yPercent:5,
+      // xPercent:0,
+      autoAlpha: 1,
+      duration: 0.7,
+      stagger:0.2,
+      ease: 'none',
+  }, {
+  
+  // scale: 1,
+  // stagger:0.2,
+  // duration: 0.7,
+  // duration: 1,
+  autoAlpha: 1,
+  // yPercent:5,
+  // xPercent:0,
+  ease: 'none',
+
   })
 
     setupNavigationEvents(): void {
@@ -76,23 +131,25 @@ export class Navigation {
       showButton?.addEventListener('click', (e) => {
         // console.log('Show button clicked');
         this.toggleNavigation(true);
-        this.tweenWrap.play();
+        this.sidenavTl.play();
         this.tweenX.play();
-
+        // this.tweenWrap.play();
+      
         e.stopPropagation();
       });
   
       hideButton?.addEventListener('click', (e) => {
         this.toggleNavigation(false);
-        this.tweenText.play();
-
+        this.tweenText.restart();
+        this.tweenX.restart();
         e.stopPropagation();
       });
   
       xMarkSpan?.addEventListener('click', (e) => {
         this.xMarksSpot();
         this.tweenX.reverse();
-
+        this.tweenText.reverse();
+        this.sidenavTl.reverse();
         // this.tweenWrap.play();
 
         e.stopPropagation();
@@ -100,7 +157,7 @@ export class Navigation {
   
       navigation?.addEventListener('click', (e) => {
         this.toggleNavigation(false);
-        this.tweenNav.reverse();
+        this.tweenText.reverse();
 
         e.stopPropagation();
       });
@@ -111,7 +168,8 @@ export class Navigation {
         this.tweenNav.restart();
         this.tweenX.restart();
         this.tweenWrap.restart();
-
+        this.tweenText.restart();
+        this.sidenavTl.restart();
         e.stopPropagation();
       });
     }
@@ -124,16 +182,19 @@ export class Navigation {
      
       if (isOpen) {
         navigation?.classList.add('open');
+        this.sidenavTl.play();
+        this.tweenX.play();
+    
         this.tweenNav.play();
         this.tweenNav.restart(); // this to fix an issue where tween only fired once
-
+        this.sidenavTl.restart();
        
       } else {
         navigation?.classList.remove('open');
-        
-        this.tweenWrap.play();
+        this.tweenX.reverse();
+        // this.tweenWrap.play();
         this.tweenNav.reverse();
-   
+        this.sidenavTl.reverse();
 
       }
     }

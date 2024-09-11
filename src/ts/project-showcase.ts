@@ -31,7 +31,7 @@ let imagePlacementArray: any[] = [];
 // let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
 let thumbtextTl = thumbtextTL();
 let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
-
+let mm = gsap.matchMedia();
 //handle initial hash and event
 function handleInitialHash() {
   browserHash = window.location.hash;
@@ -66,7 +66,7 @@ function thumbtextTL() {
   thumbtextTl.fromTo(thumbText,
     { duration: 1.25, opacity: 1, ease: "power4.inOut", stagger: 0.525 },
     {
-      duration: 1.25, opacity: 0, ease: "power4.inOut", stagger: 0.525, delay: 0.525
+      duration: 1.25, opacity: 0, ease: "power4.inOut", stagger: 0.525, 
     }
 
   );
@@ -177,36 +177,76 @@ function  seamlessLoopScroll() {
       end: "+=3000",
       pin: ".gallery"
     });
+    // let mm = gsap.matchMedia();
+    // let maxWidth = 0;
 
-    Observer.create({
-      type: "touch",
-      // start: 0,
-      // trigger: 'video-matching',
-      // invalidateOnRefresh: true,
-      // wheelSpeed: -1,
-      tolerance: 10,
-      preventDefault: true,
-      onDrag: () =>  {
-        if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
-          wrapForward(self);
-          console.log('wrapping forward')
-        } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
-          wrapBackward(self);
-          console.log('wrapping backward')
-        } else {
-          scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
-          scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
-          self.wrapping = false;
-        }
-    },
-      onDragEnd: () =>  {
-        scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
-          scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
-          self.wrapping = false;
-      },
-      // tolerance: 10,
-      // preventDefault: true
-    });
+    // mm.add("(max-width: 768px)", () => { 
+    //       const getMaxWidth = () => {
+    //   maxWidth = 0;
+    //   videoArray.forEach((section) => {
+    //   maxWidth += section.offsetWidth;
+    //   });
+    // };
+    // getMaxWidth();
+    //        //if a phone make it draggable??
+    //   let scrollTween = gsap.to(videoArray, {
+    //     x: () => `-${maxWidth - window.innerWidth}`,
+    //     ease: "none",
+    //   });
+      
+    //   let horizontalScroll = ScrollTrigger.create({
+    //     animation: scrollTween,
+    //     trigger: ".wrapper",
+    //     pin: true,
+    //     scrub: true,
+    //     end: () => `+=${maxWidth}`,
+    //     invalidateOnRefresh: true
+    //   });
+      
+    //   var dragRatio = (maxWidth / (maxWidth - window.innerWidth))
+ 
+    //   var drag = Draggable.create(".drag-proxy", {
+    //     trigger: '.wrapper',
+    //     type: "x",
+    //     allowContextMenu: true,
+    //     onPress() {
+    //       this.startScroll = horizontalScroll.scroll();
+    //     },
+    //     onDrag() {
+    //       horizontalScroll.scroll(this.startScroll - (this.x - this.startX) * dragRatio);
+    //     }
+    //   })[0];
+
+    // })
+    // Observer.create({
+    //   type: "touch",
+    //   // start: 0,
+    //   // trigger: 'video-matching',
+    //   // invalidateOnRefresh: true,
+    //   // wheelSpeed: -1,
+    //   tolerance: 10,
+    //   preventDefault: true,
+    //   onDrag: () =>  {
+    //     if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
+    //       wrapForward(self);
+    //       console.log('wrapping forward')
+    //     } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
+    //       wrapBackward(self);
+    //       console.log('wrapping backward')
+    //     } else {
+    //       scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
+    //       scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
+    //       self.wrapping = false;
+    //     }
+    // },
+    //   onDragEnd: () =>  {
+    //     scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
+    //       scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
+    //       self.wrapping = false;
+    //   },
+    //   // tolerance: 10,
+    //   // preventDefault: true
+    // });
   return { iteration, seamlessLoop, scrub, trigger, spacing };
 }
 
@@ -256,9 +296,9 @@ function buildSeamlessLoop(items, spacing) {
 		i, index, item;
 
 	// set initial state of items
-	gsap.set(items, {xPercent: 0, opacity: 0,	scale: 0});
+	gsap.set(items, {xPercent: 'auto', opacity:1,	scale: 1});
 
-	for (i = 0; i < l; i++) {
+	for (i = 0; i < l; i++) { 
 		index = i % items.length;
 		item = items[index];
 		time = i * spacing;
@@ -288,6 +328,12 @@ gsap.timeline({}) //overkill prob
 
 function setupVideos() {
   let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+  //this is to avoid null throws on video only for mobile
+  let clicked = false;
+  // let hasClicked = document.addEventListener("click", () => {
+  
+  //   return clicked=true;
+  //  })
   videos.forEach((video) => {
     // const hashNav = video.dataset.hashnav;
     // const currentVideo = video.querySelector('.video-matching') as HTMLVideoElement;
@@ -298,13 +344,24 @@ function setupVideos() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           video.play();
-          thumbtextTl.restart();
+          document.addEventListener("click", () => {
+            clicked = true;
+            video.controls = true // Show controls
+            thumbtextTl.pause();
+          });
+          video.controls = true // Show controls
+          video.muted = false; // Unmute the video
           thumbtextTl.play();
-          
+            // video.controls = true // Show controls
+            // video.muted = false; // Unmute the video
+          // thumbtextTl.restart();
         } else {
           video.pause();
           thumbtextTl.pause();
-          video.classList.remove('active');
+          thumbtextTl.restart();
+          video.controls = false; // hide controls
+          video.muted = true; // Unmute the video
+          // video.classList.remove('active');
         }
       });
     }, { threshold: 0.5 });
@@ -323,10 +380,20 @@ function sliderVerticalCentering() {
   }
 
   const remainingSpace = windowHeight - sectionElement.offsetHeight;
-  
+
   const cardsElement = document.querySelector('.cards') as HTMLElement;
+  mm.add("(max-width: 412px)", () => {
+    if (cardsElement) {
+      cardsElement.style.marginTop = `200px`;
+    } else {
+      console.error('Cards element not found');
+    }
+
+  })
+
   if (cardsElement) {
     cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
+
   } else {
     console.error('Cards element not found');
   }
@@ -366,9 +433,9 @@ const onDOMContentLoaded = () => {
 
   console.clear();
   setupVideos();
-  // let thumbtextTl = thumbtextTL();
+  let thumbtextTl = thumbtextTL();
   // seamlessLoopScroll();
-  thumbtextTL();
+  // thumbtextTL();
 };
 
 
@@ -388,6 +455,7 @@ const onScroll = () => {
 const onhashchange = () => {
   // window.location.hash = hash;
   handleInitialHash();
+  thumbtextTL();
 }
 // eventDispatcher.addEventListener("load", onready);
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);

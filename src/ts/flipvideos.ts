@@ -90,9 +90,10 @@ function videoLinksVisible(video: HTMLVideoElement) {
     function handlePlayIconClick(e: MouseEvent) {
       e.preventDefault(); // Prevent the default navigation
       e.stopPropagation();
-      if (!isMaskingAnimationRunning) {
-        maskingAnimationTransition();
-      }
+      maskingAnimationTransition();
+      // if (!isMaskingAnimationRunning) {
+      //   maskingAnimationTransition();
+      // }
     }
     function maskingAnimationTransition() {
       isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
@@ -103,7 +104,7 @@ function videoLinksVisible(video: HTMLVideoElement) {
         opacity: 0,
         duration: .70,
         ease: "power1.in",
-        delay: .6,
+        delay: .3,
       }, 0) // animation starts at beginning of timeline
       .to(".masking--element", {
         // y: "0%",
@@ -122,7 +123,7 @@ function videoLinksVisible(video: HTMLVideoElement) {
 
 // end create the link elements
 function hideVideoLinks() {
-  console.log('Hiding video links');
+  // console.log('Hiding video links');
   shadowGrid.style.display = "none";
   projectName.innerHTML = '';
   companyName.innerHTML = '';
@@ -149,13 +150,14 @@ function applyFullscreenStyles() {
   // });
   // tl.add({})
   gsap.to(fullscreenElement, {
+    ease: "none",
     position: 'fixed',
     top: '0',
     left: '0',
     right: '0',
     bottom: '0',
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '100%',
     zIndex: 9999,
     display: "grid",
     placeContent: "center",
@@ -170,7 +172,7 @@ function applyFullscreenStyles() {
   pauseOtherVideos(currentFullscreenVideo as HTMLVideoElement);
 }
 function resetFullscreenStyles() {
-  gsap.set(fullscreenElement, {
+  gsap.to(fullscreenElement, {
     position: 'static',
     top: 'auto',
     left: 'auto',
@@ -217,25 +219,32 @@ const saveInitialState = () => {
 
 // pause all videos except the one in fullscreen
 const pauseOtherVideos = (excludeVideo: HTMLVideoElement) => {
-    gridItems.forEach((item: HTMLElement) => {
-      const video = item.querySelector('.video--item') as HTMLVideoElement;
-      if (video && video !== excludeVideo && !video.paused) {
-        video.pause();
-      }
-    });
+  // if a video exists, pause it. handle play action with user action
+
+  // if (video)
+    // gridItems.forEach((item: HTMLElement) => {
+    //   const video = item.querySelector('.video--item') as HTMLVideoElement;
+    //   video.pause();
+    //   // if (video && video !== excludeVideo && !video.paused) {
+    //   //   video.pause();
+    //   // }
+    // });
   };
   
 // Play the fullscreen video
-const playFullscreenVideo = (video: HTMLVideoElement) => {
+const playFullscreenVideo = () => {
+  const video = document.querySelector('.video--item') as HTMLVideoElement;
     if (video.paused) {
       video.play();
     }
   };
   // Flip video to fullscreen
 const flipVideo = (video: HTMLVideoElement) => {
+  let mm = gsap.matchMedia();
     const { parent, position } = originalStates.get(video) || { parent: null, position: null };
     if (!parent || !position) return; // Ensure parent and position are valid
   // console.log(parent, position);
+
     if (currentFullscreenVideo && currentFullscreenVideo !== video) {
       returnToOriginalPosition(video);
     }
@@ -279,21 +288,32 @@ const flipVideo = (video: HTMLVideoElement) => {
       // modify video attributes when in fullscreen
       video.controls = false; // Show controls
       video.muted = true; // Unmute the video
-      playFullscreenVideo (video);
+      playFullscreenVideo ();
 
     Flip.from(state, {
       ...animationDefaults,
       scale: true,
       onStart: () => {
             // Set video to fullscreen
-            gsap.to(video, {height: "auto", width: "70vw", autoAlpha:1,  ...animationDefaults,}); 
-            // gsap.to(video, {}); 
+            gsap.to(video, {height: "auto", width: "70vw", autoAlpha:1,   ease: "none"}); 
+            //mqq to fix tablet
+            // mm.add("(max-width: 1068px)", () => {
+            //   gsap.to(video, {height: "auto", width: "95vw",   ease: "none"}); 
+            // });
+           //mq to fix iphone alignment
+            mm.add("(max-width: 1068px)", () => {
+              gsap.to(video, {height: "auto", width: "95vw",   ease: "none"}); 
+            });
+         
             // set full screen to fancy   
             applyFullscreenStyles() ;
       },
       onComplete: () => {
         currentFullscreenVideo = fullscreenElement.contains(video) ? video : null;
-        gsap.set(video, {height: "auto", width: "70vw", autoAlpha:1,  ...animationDefaults,}); 
+        gsap.set(video, {height: "auto", width: "70vw", autoAlpha:1,  ease: "none"});
+        mm.add("(max-width: 768px)", () => {
+          gsap.to(video, {height: "auto", width: "95vw", autoAlpha:1,   ease: "none"}); 
+        });
         // let matchMedia= ;
         // if matchMedia ()
       },
@@ -382,44 +402,44 @@ const flipVideo = (video: HTMLVideoElement) => {
     }
   };
 
- export function MatchMedia() {
-// create
-let mm = gsap.matchMedia();
-// mq
-mm.add("(max-width: 800px)", () => {
-  const video = document.querySelector('.video--item') as HTMLVideoElement;
-  let videoFigure = document.querySelector('.video--figure') as HTMLElement;
-  const { parent, position } = originalStates.get(video) || { parent: null, position: null };
-  if (!parent || !position) return; // Ensure parent and position are valid
- // Find the original figure element
- const originalFigure = parent.querySelector('.video--figure') as HTMLElement;
+//  export function MatchMedia() {
+// // create
+// let mm = gsap.matchMedia();
+// // mq
+// mm.add("(max-width: 800px)", () => {
+//   const video = document.querySelector('.video--item') as HTMLVideoElement;
+//   let videoFigure = document.querySelector('.video--figure') as HTMLElement;
+//   const { parent, position } = originalStates.get(video) || { parent: null, position: null };
+//   if (!parent || !position) return; // Ensure parent and position are valid
+//  // Find the original figure element
+//  const originalFigure = parent.querySelector('.video--figure') as HTMLElement;
     
- // If the original figure exists, append the video to it
- if (originalFigure) {
-   originalFigure.appendChild(video);
- } else {
-   // If not, append directly to the parent
-   parent.appendChild(video);
- }
+//  // If the original figure exists, append the video to it
+//  if (originalFigure) {
+//    originalFigure.appendChild(video);
+//  } else {
+//    // If not, append directly to the parent
+//    parent.appendChild(video);
+//  }
 
- // Remove any orphaned figure elements inside fullscreenElement
- const orphanedFigures = fullscreenElement.querySelectorAll('figure');
- orphanedFigures.forEach(figure => figure.remove());
-  // only runs when viewport is at least 800px wide
-  // gsap.to(...);
-  // gsap.from(...);
-  // ScrollTrigger.create({...});
-  // flipVideo();
-  // returnToOriginalPosition();
+//  // Remove any orphaned figure elements inside fullscreenElement
+//  const orphanedFigures = fullscreenElement.querySelectorAll('figure');
+//  orphanedFigures.forEach(figure => figure.remove());
+//   // only runs when viewport is at least 800px wide
+//   // gsap.to(...);
+//   // gsap.from(...);
+//   // ScrollTrigger.create({...});
+//   // flipVideo();
+//   // returnToOriginalPosition();
 
-  return () => { // optional
-    // cleanup();
-  };
-});
+//   return () => { // optional
+//     // cleanup();
+//   };
+// });
 
-// later, if we need to revert all the animations/ScrollTriggers...
-mm.revert();
- } 
+// // later, if we need to revert all the animations/ScrollTriggers...
+// mm.revert();
+//  } 
 //export these funcs.
  export function callAfterResize() {
   // matchMedia("800px").then(function () {})
@@ -441,9 +461,21 @@ mm.revert();
     //   }
     // });
     // cleanup();
+    // let gridItem = Flip.getByTarget('grid__item') ;
     let dc = gsap.delayedCall(0.2 || 0.2, initEvents).pause(),
     
-    handler = () => dc.restart(true);
+    handler = () => {
+      dc.restart(true);
+      Flip.killFlipsOf(".video--item");
+      Observer.getAll().forEach(o => o.kill()); 
+      gsap.set(parent, { zIndex: 'unset'});
+      gsap.killTweensOf(".video--item");
+      gsap.killTweensOf(fullscreenElement)
+    }
+ 
+
+
+  
     window.addEventListener("resize", handler);
     return handler; // in case you want to window.removeEventListener() later
   }
