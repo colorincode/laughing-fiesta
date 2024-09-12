@@ -26,9 +26,10 @@ import { initEvents,callAfterResize } from './flipvideos';
 import { LoadVideoAssets } from './videohandlers';
 // import { scrollInit}  from './project-showcase';
 import { Canvas } from './Canvas'
+import { on } from 'events';
 
 const navigation = new Navigation();
-let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
+let isMaskingAnimationRunning = false; // flag to not allow multiple animations to pile up
 const parentGrid = document.querySelector('.homegrid__container');
 const canvasElement = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
 
@@ -72,58 +73,69 @@ function loadCanvas() {
 // }
 let isLoaded = false;
 let isLoadingAnimationEnd = false;
-const tl = gsap.timeline();
+const tl = gsap.timeline({
+  defaults: {
+    ease: "power4.inOut",
+    opacity:0,
+  }
+});
 
 const loadingAnimation = () => {
-
-  const figures = gsap.utils.toArray('.video--item')
+  tl.from('.outer__wrapper', {
  
+
+    autoAlpha: 0, //animate opacity from zero to one, and set visibility to inherit
+    ease: "power4.in",
+    // opacity: 1,
+    stagger: 0,
+    duration: 1.25,
+    onInterrupt: () => {
+    //set an interrupt protocol, if this animation fails to fire then nothing will be visible, it should rarely if ever have to be accessed
+    tl.restart();
+    },
+    onComplete: () => { }
+  })
+
+ 
+  const figures = gsap.utils.toArray('.video--item')
   tl.fromTo(figures, 
     { 
-      // xPercent:0, 
-      opacity: 0,	
+      delay: 1, // we want to set this tl delay to fire just a little bit before our outer wrap ends
+      // opacity: 0,	
       scale: 0, 
       duration: 1,
+      stagger:0.1
     },
     {
       opacity: 1,	
+      // delay: 1.45, //match the duration of the outer-wrapper 
       scale: 1, 
       autoAlpha: 1,
       stagger: 0.2,
       duration: 1,
     }
     )
-    
-    // tl.add
-    // ({
-    //   // opacity: 1,
-    //   duration: 1,
-    //   onComplete: () => {
-    //         isLoadingAnimationEnd = true;
-    //       }
+}
+const maskingAnimationTransition = () => {
+    // tl.to(".maskingintro--element", {
+  //   opacity: 0,
+  //   duration: 1.15,
+  //   ease: "power4.out",
+  //   autoAlpha: 1,
+  // }, 0)
+  //   .then(() => {
+//     setTimeout(() => {
+//       isMaskingAnimationRunning = false;
+//     }, 500);
+//   });
+}
 
-    // })
 
-//   let tl = gsap.timeline();
-  tl.to(".maskingintro--element", {
-    opacity: 0,
-    duration: 1.25,
-    ease: "power4.out",
-    autoAlpha: 1,
-  }, 0)
+//this must fire before the other event dispatchers, wont completely prevent bubbling
+window.onload = (event) => {
+  // console.log("page is fully loaded");
+  loadingAnimation();
 };
-
-tl.fromTo('.outer-wrapper', {
-  duration: 1,
-  opacity:0,
-  autoAlpha: 1,
-
-  ease: "power4.in",
-}, {
-  duration: 1,
-  opacity:1,
-  ease: "power4.out",
-})
 // projectmaskingAnimationTransition();
 const eventDispatcher = new EventDispatcher();
 const onClick = () => {
@@ -131,34 +143,45 @@ const onClick = () => {
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
-    loadingAnimation();
     loadCanvas();
     LoadVideoAssets();
-  
     initEvents();
-    // document.body.style.visibility = 'visible';
     console.clear();
 
 };
 
-const onChange = () => {
-    // videoScreenChange();
-}
-
 const onResize = () => {
     callAfterResize();
     killFlip();
-    console.clear();
-    // gsap.killTweensOf('.video--item')
 }
 
-const onScroll = () => {
-
+const onRefresh = () => {
+  window.onload = (event) => {
+    // console.log("page is fully loaded");
+    loadingAnimation();
+  };
+  navigation.setupNavigationEvents();
+  loadCanvas();
+  LoadVideoAssets();
+  initEvents();
+  // document.body.style.visibility = 'visible';
+  console.clear();
 }
 
-// use the dispatcher, this should not need editing 
+//before unload will really only be helpful in times of someone on a desktop clicking reload a lot
+eventDispatcher.addEventListener('beforeunload', () => {
+  killFlip();
+  gsap.killTweensOf('.outer__wrapper');
+  gsap.killTweensOf('.video--item');
+  eventDispatcher.removeEventListener("click", onClick);
+  eventDispatcher.removeEventListener("resize", onResize);
+  console.clear();
+});
+
+// use the dispatcher, this should not need editing , windows elems separate from dom dispatches
+eventDispatcher.addEventListener("refresh", onRefresh);
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener("click", onClick);
-eventDispatcher.addEventListener("fullscreenchange",onChange);
+
 eventDispatcher.addEventListener("resize",onResize);
 

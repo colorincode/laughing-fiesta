@@ -25,20 +25,20 @@
 //   pointer-events: none;
 // }
 /*! locomotive-scroll v4.1.3 | MIT License | https://github.com/locomotivemtl/locomotive-scroll */
-html.has-scroll-smooth {
-  overflow: hidden; }
+// html.has-scroll-smooth {
+//   overflow: hidden; }
 
-html.has-scroll-dragging {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
+// html.has-scroll-dragging {
+//   -webkit-user-select: none;
+//   -moz-user-select: none;
+//   -ms-user-select: none;
+//   user-select: none; }
 
-.has-scroll-smooth body {
-  overflow: hidden; }
+// .has-scroll-smooth body {
+//   overflow: hidden; }
 
-.has-scroll-smooth [data-scroll-container] {
-  min-height: 100vh; }
+// .has-scroll-smooth [data-scroll-container] {
+//   min-height: 100vh; }
 
 // [data-scroll-direction="horizontal"] [data-scroll-container] {
 //   height: 100vh;
@@ -90,20 +90,37 @@ html.has-scroll-dragging {
 //   [data-scroll-direction="horizontal"] .c-scrollbar_thumb {
 //     right: auto;
 //     bottom: 0; }
-.masking--container {
+.maskingintro--container {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   z-index: 9999;
   pointer-events: none;
+
 }
-.masking--element {
-  height: 100vh;
-  width: 100%;
+.maskingintro--element {
+  // height: 100%;
+  // width: 100%;
   background: #000000;
-  opacity: 0;
+  // visibility: hidden;
+  position: relative;
+  transform: translateY(-100%);
+  pointer-events: none;
+  // visibility: hidden;
   // transform: translateY(100%);
+}
+.maskingintro--element:after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: black;
+  z-index: -1;
+  transform: scaleY(1);
+  transform-origin: bottom;
 }
 a:focus {
   outline: none;
@@ -287,8 +304,7 @@ h1,h2,h3,h4,h5,h6 {
   // }
   // }
   .outer__wrapper {
-    // display: grid; //affects nav
-    // height: 100vh;
+    visibility: hidden;
     pointer-events: all;
     grid-row: auto;
     // padding-top:100px;
@@ -524,7 +540,7 @@ h1,h2,h3,h4,h5,h6 {
     cursor: pointer;
     will-change: transform;
     box-sizing: content-box; 
-    height: fit-content; //need for height to stay consistent
+    // height: fit-content; //need for height to stay consistent
     @media (max-width: 768px) {
       // aspect-ratio: 16 / 9;
       // height: 100%;
