@@ -1,6 +1,4 @@
 
-// console.log("slider module loaded");
-//gsap modules
 import gsap, { SteppedEase, toArray } from 'gsap';
 import { Flip } from 'gsap/Flip';
 import Draggable from 'gsap/Draggable';
@@ -61,17 +59,15 @@ function reorderListItems() {
 reorderListItems();
 //text TL
 function thumbtextTL() {
-  let thumbText = gsap.utils.toArray(".panel-overlay-text");
+  let thumbText = gsap.utils.toArray(".panel-overlay-x");
   let thumbtextTl = gsap.timeline(); //create the timeline
   thumbtextTl.fromTo(thumbText,
-    { duration: 1.25, opacity: 1, ease: "power4.inOut", stagger: 0.525 },
-    {
-      duration: 1.25, opacity: 0, ease: "power4.inOut", stagger: 0.525, 
-    }
-
+    { duration: 1.25, opacity: 0, ease: "power4.inOut" },
+    { duration: 1.25, opacity: 1, ease: "power4.inOut" }
   );
   return thumbtextTl;
 }
+
 mrScopertonShufflerton();
 function mrScopertonShufflerton() {
 
@@ -303,7 +299,7 @@ function buildSeamlessLoop(items, spacing) {
 		item = items[index];
 		time = i * spacing;
 		rawSequence
-    .fromTo(item, {scale: 0, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
+    .fromTo(item, {scale: 0.8, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
 		.fromTo(item, {xPercent: 400}, {xPercent: -400, duration: 1, ease: "none", immediateRender:true}, time);
 		i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
 	}
@@ -347,7 +343,7 @@ function setupVideos() {
           document.addEventListener("click", () => {
             clicked = true;
             video.controls = true // Show controls
-            thumbtextTl.pause();
+            // thumbtextTl.pause();
           });
           video.controls = true // Show controls
           video.muted = false; // Unmute the video
@@ -357,8 +353,8 @@ function setupVideos() {
           // thumbtextTl.restart();
         } else {
           video.pause();
-          thumbtextTl.pause();
-          thumbtextTl.restart();
+          // thumbtextTl.pause();
+          // thumbtextTl.restart();
           video.controls = false; // hide controls
           video.muted = true; // Unmute the video
           // video.classList.remove('active');
@@ -433,11 +429,11 @@ const onDOMContentLoaded = () => {
 
   console.clear();
   setupVideos();
-  let thumbtextTl = thumbtextTL();
+  // let thumbtextTl = thumbtextTL();
   // seamlessLoopScroll();
   // thumbtextTL();
 };
-
+ 
 
 const onResize = () => {
   sliderVerticalCentering();
@@ -455,8 +451,51 @@ const onScroll = () => {
 const onhashchange = () => {
   // window.location.hash = hash;
   handleInitialHash();
-  thumbtextTL();
+  // thumbtextTL();
 }
+
+
+function isTouchDevice() {
+  return (
+    ('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0) ||
+    (window.matchMedia("(pointer: coarse)").matches)
+  );
+}
+
+if (isTouchDevice()) {
+  let startX, startY;
+  let isSwiping = false;
+
+  document.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    isSwiping = true;
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isSwiping) return;
+    
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const deltaX = startX - currentX;
+    const deltaY = startY - currentY;
+    
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // e.preventDefault(); // this is throwing an error 
+      const scrollAmount = deltaX * 1.25;
+      window.scrollBy(0, scrollAmount);
+      startX = currentX;
+      startY = currentY;
+      onScroll();
+    }
+  });
+
+  document.addEventListener('touchend', () => {
+    isSwiping = false;
+  });
+}
+
 // eventDispatcher.addEventListener("load", onready);
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 eventDispatcher.addEventListener('hashchange', onhashchange);

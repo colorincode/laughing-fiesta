@@ -94,7 +94,7 @@ tweenNav = this.tl.fromTo('.navigation > .open',
     ease: 'power4.in',
     opacity: 1,
     scaleY: 1,
-    autoAlpha: 1,
+    // autoAlpha: 1,
     // yPercent:3,
 
   })
@@ -148,7 +148,7 @@ tweenNav = this.tl.fromTo('.navigation > .open',
       xMarkSpan?.addEventListener('click', (e) => {
         this.xMarksSpot();
         this.tweenX.reverse();
-        this.tweenText.reverse();
+        // this.tweenText.reverse();
         this.sidenavTl.reverse();
         // this.tweenWrap.play();
 
@@ -157,7 +157,7 @@ tweenNav = this.tl.fromTo('.navigation > .open',
   
       navigation?.addEventListener('click', (e) => {
         this.toggleNavigation(false);
-        this.tweenText.reverse();
+        // this.tweenText.reverse();
 
         e.stopPropagation();
       });

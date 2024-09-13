@@ -29,7 +29,7 @@ const gridItemsShuffled = gsap.utils.shuffle(gridItems);
 const fullscreenElement = document.querySelector('.fullscreen--scale') as HTMLElement;
 // const maskingLayer = document.querySelector('.masking--element') as HTMLElement;
 let currentFullscreenVideo: HTMLVideoElement | null = null;
-const originalStates = new Map<Element, { parent: Element, index: number, position: { top: number, left: number, width: number, height: number } }>();
+const originalStates = new Map<Element, { parent: Element, index: number, position: {   } }>();
 let isFullscreen = false;
 const timeline = gsap.timeline();
 const eventDispatcher = new EventDispatcher();
@@ -107,7 +107,7 @@ function maskingAnimationTransition() {
      video.pause();
 
   }
-  let pseudo = CSSRulePlugin.getRule(".maskingintro--element:after");
+  // let pseudo = CSSRulePlugin.getRule(".maskingintro--element:after");
   // maskertonAnim.from(".maskingintro--element", {
  
   //   opacity: 0,	
@@ -140,11 +140,11 @@ function maskingAnimationTransition() {
   maskertonAnim.to(".maskingintro--element", {
     yPercent: 100
   })
-  .to(pseudo, {
-    cssRule: {
-      scaleY: 0.4
-    }
-  })
+  // .to(pseudo, {
+  //   cssRule: {
+  //     scaleY: 0.4
+  //   }
+  // })
   .then(() => {
     setTimeout(() => {
       isMaskingAnimationRunning = false;
@@ -162,6 +162,7 @@ function hideVideoLinks() {
   
 
 }
+
 function applyFullscreenStyles() {
   // let tl = 
   // gsap.fromTo(".fullscreen--scale",{
@@ -181,7 +182,7 @@ function applyFullscreenStyles() {
   //   height: "auto"
   // });
   // tl.add({})
-  gsap.to(fullscreenElement, {
+  timeline.to(fullscreenElement, {
     ease: "none",
     position: 'fixed',
     // top: '0',
@@ -198,13 +199,18 @@ function applyFullscreenStyles() {
     background: "rgba(0,0,0,0.5)",
     maxWidth: 'unset',
     maxHeight: 'unset',
-    visibility: "visible"
+    visibility: "visible",
+    onComplete: () => {
+      timeline.clear();
+
+    }
+
   });
   //pause vidya except fullscreener
   // pauseOtherVideos(currentFullscreenVideo as HTMLVideoElement);
 }
 function resetFullscreenStyles() {
-  gsap.to(fullscreenElement, {
+  timeline.to(fullscreenElement, {
     position: 'fixed',
     top: 'auto',
     left: 'auto',
@@ -220,8 +226,113 @@ function resetFullscreenStyles() {
     visibility: "hidden"
   });
 }
+// function applyFullscreenStyles() {
+//   // let tl = 
+//   // gsap.fromTo(".fullscreen--scale",{
+//   //   opacity: 0,
+//   //   scale: 0,
+//   //   autoAlpha: 1,
+//   // },{
+//   //   opacity: 1,
+//   //   scale: 1,
+//   //   autoAlpha: 1,
+//   // });
+//   // gsap.fromTo('video--item', {
+//   //   opacity: 1,
+//   //   width: '80vw'
+//   // }, {
+//   //   width: "",
+//   //   height: "auto"
+//   // });
+//   // tl.add({})
+
+//   timeline.to(fullscreenElement, {
+//     // scaleY: 1,
+//     // ...animationDefaults,
+//     autoAlpha: 1,
+//     // repeat: -1,
+
+//     position: 'fixed',
+//     // top: '0',
+//     // left: '0',
+//     // right: '0',
+//     // bottom: '0',
+//     // width: '100%',
+//     // height: '100%',
+//     zIndex: 9999,
+//     display: "grid",
+//     placeContent: "center",
+//     placeItems: "center",
+//     placeSelf: "center",
+//     background: "rgba(0,0,0,0.5)",
+//     // maxWidth: 'unset',
+//     // maxHeight: 'unset',
+//     visibility: "hidden",
+  
+
+
+//   });
+    
+//   //   position: 'fixed',
+//   //   top: '0',
+//   //   left: '0',
+//   //   right: '0',
+//   //   bottom: '0',
+//   //   width: '100%',
+//   //   height: '100%',
+//   //   zIndex: 9999,
+//   //   display: "grid",
+//   //   placeContent: "center",
+//   //   placeItems: "center",
+//   //   placeSelf: "center",
+//   //   background: "rgba(0,0,0,0.5)",
+//   //   maxWidth: 'unset',
+//   //   maxHeight: 'unset',
+//   //   visibility: "visible",
+//   // }
+
+
+// // );
+//   timeline.to('.shadow-inner-grid', {
+//     // autoAlpha: 1,
+//     opacity:1,
+//     stagger: 0.1,
+
+//   }) 
+//   // timeline.to(".company-name", { opacity:1, autoAlpha:0, }, "<");
+//   // timeline.to(".project-name-revealed", { opacity:1, autoAlpha:0, }, "<");
+//   // timeline.to(".play--icon", { opacity:1, autoAlpha:0, }, "<");
+//   //pause vidya except fullscreener
+//   // pauseOtherVideos(currentFullscreenVideo as HTMLVideoElement);
+// }
+// function resetFullscreenStyles() {
+//   timeline.to(fullscreenElement, {
+//     // position: 'fixed',
+//     // top: 'auto',
+//     // left: 'auto',
+//     // right: 'auto',
+//     // bottom: 'auto',
+//     // width: 'auto',
+//     // height: 'auto',
+//     zIndex: 'unset',
+//     display: "none",
+//     background: "none",
+//     // maxWidth: 'none',
+//     // maxHeight: 'none',
+//     visibility: "hidden"
+//   });
+// }
 // defaults
-const animationDefaults = {  ease: 'power1.inOut' };
+const animationDefaults = {  
+  ease: 'linear',
+//   stagger: {
+//     // wrap advanced options in an object
+//     each: 0.1,
+//     // from: 'center',
+//     grid: 'auto',
+//     // ease: 'power2.inOut',
+// }
+};
 
 //cleanup animations
 const debouncedCleanup = () => {
@@ -249,10 +360,10 @@ const saveInitialState = () => {
           parent: item.parentElement!,
           index,
           position: { 
-            top: rect.top, 
-            left: rect.left, 
-            width: rect.width, 
-            height: rect.height 
+            // top: rect.top, 
+            // left: rect.left, 
+            // width: rect.width, 
+            // height: rect.height 
           }, 
         });
         //  make videos play even when no fullscreen is active
@@ -284,6 +395,7 @@ const playFullscreenVideo = () => {
   };
   // Flip video to fullscreen
 const flipVideo = (video: HTMLVideoElement) => {
+  // let timelineFullscreen = gsap.timeline();
     const { parent, position } = originalStates.get(video) || { parent: null, position: null };
     if (!parent || !position) return; // Ensure parent and position are valid
     if (currentFullscreenVideo && currentFullscreenVideo !== video) {
@@ -291,19 +403,6 @@ const flipVideo = (video: HTMLVideoElement) => {
     }
     videoLinksVisible(video);
     applyFullscreenStyles();
-    // const debouncedCleanup = () => {
-    //     if (cleanupDelayedCall) {
-    //       cleanupDelayedCall.kill();
-    //     }
-    //     cleanupDelayedCall = gsap.delayedCall(3, () => {
-    //       if (!isAnimating) {
-    //         gsap.killTweensOf(video);
-    //         timeline.clear();
-    //         eventDispatcher.dispose();
-    //         console.log("Animation cleanup completed");
-    //       }
-    //     });
-    //   };
     const state = Flip.getState(video, { props: 'class' });
     gsap.set(parent, { zIndex: 1 });
       let videoFigure = document.querySelector('.video--figure') as HTMLElement;
@@ -322,31 +421,36 @@ const flipVideo = (video: HTMLVideoElement) => {
 
     Flip.from(state, {
       ...animationDefaults,
+      duration:0.6,
       scale: true,
       onStart: () => {
-            // Set video to fullscreen
-            gsap.to(video, {height: "auto", width: "70vw", autoAlpha:1,   ease: "none"});
-; 
+          //   // Set video to fullscreen
+          applyFullscreenStyles() ;
+            timeline.to(video, {height: "auto", width: "70vw", autoAlpha:1 });
+
+         
            //mq to fix iphone alignment, cant tell if working 
             mm.add("(max-width: 1068px)", () => {
-              gsap.to(video, {height: "auto", width: "95vw",   ease: "none"}); 
+              timeline.to(video, {height: "auto", width: "95vw", }); 
             });
-         
-            // set full screen to fancy   
-            applyFullscreenStyles() ;
       },
       onComplete: () => {
+          // set full screen to fancy   
+     
         currentFullscreenVideo = fullscreenElement.contains(video) ? video : null;
-        gsap.set(video, {height: "auto", width: "70vw", autoAlpha:1,  ease: "none",});
+        timeline.from(video, {height: "auto", width: "70vw", autoAlpha:1,});
+        // timelineFullscreen.reverse();
 
         //mq to fix iphone alignment, cant tell if working 
         mm.add("(max-width: 768px)", () => {
-          gsap.to(video, {height: "auto", width: "95vw", autoAlpha:1,   ease: "none", }); 
+          timeline.from(video, {height: "auto", width: "95vw", autoAlpha:1 }); 
+
         });
       },
       cleanup: () => {
         debouncedCleanup();
         eventDispatcher.dispose();
+        timeline.restart();
       },
     });
   };
@@ -364,15 +468,15 @@ const flipVideo = (video: HTMLVideoElement) => {
       parent.appendChild(video);
 
     // // attempt at fitting based on anim. does fix positioning, but the offset may not be worth perf
-    // Flip.fit(video, parent, {
-    //   position: "relative",
-    //   width: "100%", //resetting to match figure tag
-    //   // height: "fit-content", //resetting to match figure tag
-    //   inset: "unset", //resetting to match figure tag
-    // });
+    Flip.fit(video, parent, {
+      position: "relative",
+      width: "100%", //resetting to match figure tag
+      // height: "fit-content", //resetting to match figure tag
+      inset: "unset", //resetting to match figure tag
+    });
 
       hideVideoLinks();
-      resetFullscreenStyles();
+    
       // revert video attributes
       video.classList.add('video-figure');
       video.controls = false; // Hide controls
@@ -422,16 +526,24 @@ const flipVideo = (video: HTMLVideoElement) => {
     
       // });
       Flip.from(state, {
-        ...animationDefaults,
+        // ...animationDefaults,
         duration:0.6,
         onComplete: () => {
           gsap.set(parent, { zIndex: 'unset'});
-          gsap.killTweensOf(video);
-          gsap.killTweensOf(fullscreenElement);
+          timeline.pause();
+          // gsap.killTweensOf(video);
+          // gsap.killTweensOf(fullscreenElement);
+          // timeline.clear();
+
           // Resume playback of other videos
           gridItems.forEach((item: HTMLElement) => {
             const video = item.querySelector('.video--item') as HTMLVideoElement;
-            gsap.set(fullscreenElement, {zIndex: 'unset', background: "none", visibility: "hidden"});
+            // gsap.set(fullscreenElement, {zIndex: 'unset', background: "none", visibility: "hidden"});
+            gsap.fromTo(fullscreenElement, 
+              {zIndex: '9999', background: "none", visibility: "inherit", autoAlpha: 1},
+              {zIndex: 'unset', background: "none", visibility: "hidden", autoAlpha: 0}
+
+            );
             if (video && video !== currentFullscreenVideo && video.paused) {
               video.play().catch(error => {
                 console.error('Error attempting to play video:', error);
@@ -442,6 +554,7 @@ const flipVideo = (video: HTMLVideoElement) => {
         cleanup: () => {
           debouncedCleanup();
           eventDispatcher.dispose();
+          resetFullscreenStyles();
         },
       });
     }
@@ -502,7 +615,7 @@ function handleEvent(self: any, eventType: string,  eventDispatcher: EventDispat
   document.dispatchEvent(event);
 }
 
-function handlePlayIconClick(e: PointerEvent) {
+function handlePlayIconClick() {
   console.log("play icon click fired");
   const playIcon = document.querySelector('.play--icon');
   if (playIcon) {
@@ -511,7 +624,7 @@ function handlePlayIconClick(e: PointerEvent) {
     
       maskertonAnim.play();
       maskingAnimationTransition();
-
+      let e = new PointerEvent("click", {})
       e.preventDefault();
      
       // e.stopImmediatePropagation();
@@ -534,6 +647,10 @@ const addVideoClickListeners = () => {
   const videos = document.querySelectorAll('.video--item:not(.hidden--video)');
   videos.forEach((video) => {
     video.addEventListener('click', handleVideoClick);
+    video.addEventListener('click', toggleVideo);
+    handlePlayIconClick();
+
+    // video.addEventListener("click", handlePlayIconClick(e));
   });
  
 
@@ -554,7 +671,7 @@ const handleVideoClick = (e) => {
                 currentTarget: video,
                 type: 'click'
               } as unknown as Event);
-              handlePlayIconClick(e);
+             
 
               // videoObserverKill();
             },
@@ -588,9 +705,20 @@ function videoObserverKill() {
 const onDOMContentLoaded = () => {
   initShadowGrid();
   saveInitialState(); // Save the initial state of videos
+  addVideoClickListeners();
   // document.addEventListener('DOMContentLoaded', initShadowGrid);
   // we dont need much here, we are listening for load on main app. 
+  // gridItems.forEach((item: HTMLElement) => {
+  //   // const video = item.querySelector('.video--item') as HTMLElement;
+  //   // if (video) {
+  //   //   video.addEventListener('click', toggleVideo);
+  //   // }
+  // });
+  document.addEventListener('click', onClick);
+  // video.addEventListener('click', toggleVideo);
 };
+
+// };
 
 const onClick = (e: Event) => {
   if (currentFullscreenVideo && !fullscreenElement.contains(e.target as Node)) {
@@ -600,7 +728,7 @@ const onClick = (e: Event) => {
 
 }
 // send off the dispatchers, these shouldn't need editing just edit funcs above. 
-eventDispatcher.addEventListener("click", onClick);
+document.addEventListener("click", onClick);
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 
 

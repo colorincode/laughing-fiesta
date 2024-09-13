@@ -103,7 +103,7 @@
   // height: 100%;
   // width: 100%;
   background: #000000;
-  // visibility: hidden;
+  visibility: hidden;
   position: relative;
   transform: translateY(-100%);
   pointer-events: none;
@@ -159,6 +159,7 @@ h1,h2,h3,h4,h5,h6 {
   position:relative;
   overflow: hidden;
 }
+
 // h1,
 // h2,
 // h3,
@@ -945,7 +946,7 @@ h1,h2,h3,h4,h5,h6 {
   position: absolute;
   cursor: pointer;
   animation-name: links-fade-in;
-  animation-duration: 2s;
+  animation-duration: 1s;
   transition: all .7s ease-in-out;
   @media (min-width: 2000px) {
     font-size: 120px;
@@ -986,9 +987,9 @@ h1,h2,h3,h4,h5,h6 {
   cursor: default!important;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  animation-name: links-fade-in;
-  animation-duration: 2s;
-  transition: all 0.8s ease-in-out;
+  // animation-name: links-fade-in;
+  // animation-duration: 1s;
+  // transition: all 0.8s ease-in-out;
   align-self: flex-start;
   @media (min-width: 2000px) {
     font-size: 4rem;
@@ -1046,9 +1047,9 @@ h1,h2,h3,h4,h5,h6 {
   cursor:default;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  animation-name: links-fade-in;
-  animation-duration: 1.25s;
-  transition: all 1s ease-in-out;
+  // animation-name: links-fade-in;
+  // animation-duration: 1s;
+  // transition: all 1s ease-in-out;
   align-self: flex-end;
 
   @media (min-width: 2000px) {
@@ -1128,11 +1129,21 @@ h1,h2,h3,h4,h5,h6 {
 // }
       
 .fullscreen--scale {
-position: fixed;
-pointer-events: all;
-
-// width: 100vw;
-// height: 100vh;
+  position: fixed;
+  pointer-events: all;
+  height: auto;
+  width:70vw;
+  @media screen and (min-width: 1024px) {
+  width:95vw;
+    
+  }
+  // grid-auto-rows: 100%;
+  // place-items: center;
+  // align-items:center;
+  // justify-items: center;
+  //   display: grid;
+// width: 100%;
+// height: auto;
 
 }
 // .fullscreen--scale:focus-visible, :focus-within, :focus {
