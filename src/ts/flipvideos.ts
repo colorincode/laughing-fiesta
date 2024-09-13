@@ -185,10 +185,10 @@ function applyFullscreenStyles() {
   timeline.to(fullscreenElement, {
     ease: "none",
     position: 'fixed',
-    // top: '0',
-    // left: '0',
-    // right: '0',
-    // bottom: '0',
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
     width: '100%',
     height: '100%',
     zIndex: 9999,
@@ -201,7 +201,9 @@ function applyFullscreenStyles() {
     maxHeight: 'unset',
     visibility: "visible",
     onComplete: () => {
-      timeline.clear();
+      // timeline.clearProperties();
+
+
 
     }
 
@@ -426,12 +428,12 @@ const flipVideo = (video: HTMLVideoElement) => {
       onStart: () => {
           //   // Set video to fullscreen
           applyFullscreenStyles() ;
-            timeline.to(video, {height: "auto", width: "70vw", autoAlpha:1 });
+            // timeline.to(video, {height: "auto", width: "70vw", autoAlpha:1 });
 
          
            //mq to fix iphone alignment, cant tell if working 
             mm.add("(max-width: 1068px)", () => {
-              timeline.to(video, {height: "auto", width: "95vw", }); 
+              // timeline.to(video, {height: "auto", width: "95vw", }); 
             });
       },
       onComplete: () => {
@@ -530,7 +532,7 @@ const flipVideo = (video: HTMLVideoElement) => {
         duration:0.6,
         onComplete: () => {
           gsap.set(parent, { zIndex: 'unset'});
-          timeline.pause();
+          // timeline.pause();
           // gsap.killTweensOf(video);
           // gsap.killTweensOf(fullscreenElement);
           // timeline.clear();
@@ -539,11 +541,11 @@ const flipVideo = (video: HTMLVideoElement) => {
           gridItems.forEach((item: HTMLElement) => {
             const video = item.querySelector('.video--item') as HTMLVideoElement;
             // gsap.set(fullscreenElement, {zIndex: 'unset', background: "none", visibility: "hidden"});
-            gsap.fromTo(fullscreenElement, 
-              {zIndex: '9999', background: "none", visibility: "inherit", autoAlpha: 1},
-              {zIndex: 'unset', background: "none", visibility: "hidden", autoAlpha: 0}
+            // gsap.fromTo(fullscreenElement, 
+            //   {zIndex: '9999', background: "none", visibility: "inherit", autoAlpha: 1},
+            //   {zIndex: 'unset', background: "none", visibility: "hidden", autoAlpha: 0}
 
-            );
+            // );
             if (video && video !== currentFullscreenVideo && video.paused) {
               video.play().catch(error => {
                 console.error('Error attempting to play video:', error);
@@ -583,6 +585,7 @@ const toggleVideo = (event: Event | CustomEvent) => {
   flipVideo(video);
   if (currentFullscreenVideo && currentFullscreenVideo !== video) {
     returnToOriginalPosition(currentFullscreenVideo);
+    timeline.restart();
   }
 };
 

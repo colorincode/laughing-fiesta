@@ -1131,10 +1131,10 @@ h1,h2,h3,h4,h5,h6 {
 .fullscreen--scale {
   position: fixed;
   pointer-events: all;
-  height: auto;
-  width:70vw;
+  // height: auto;
+  // width:70vw;
   @media screen and (min-width: 1024px) {
-  width:95vw;
+  // width:95vw;
     
   }
   // grid-auto-rows: 100%;
