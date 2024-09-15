@@ -139,7 +139,7 @@ window.onload = (event) => {
 // projectmaskingAnimationTransition();
 const eventDispatcher = new EventDispatcher();
 const onClick = () => {
-    navigation.checkforAnimation();
+    // navigation.checkforAnimation();
 };
 const onDOMContentLoaded = () => {
     navigation.setupNavigationEvents();
@@ -152,7 +152,7 @@ const onDOMContentLoaded = () => {
 
 const onResize = () => {
     callAfterResize();
-    killFlip();
+    // killFlip();
 }
 
 const onRefresh = () => {

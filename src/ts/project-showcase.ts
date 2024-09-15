@@ -22,12 +22,8 @@ gsap.registerPlugin(EasePack, Tween, SteppedEase, Timeline, Power4, Flip, Dragga
 let animating = false;
 let currentIndex = 0;
 let imagePlacementArray: any[] = [];
-// const hash = window.location.hash;
-// const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
-// let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
-// let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
-// let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
-let thumbtextTl = thumbtextTL();
+
+
 let isMaskingAnimationRunning = true; // flag to not allow multiple animations to pile up
 let mm = gsap.matchMedia();
 //handle initial hash and event
@@ -58,14 +54,30 @@ function reorderListItems() {
 }
 reorderListItems();
 //text TL
-function thumbtextTL() {
-  let thumbText = gsap.utils.toArray(".panel-overlay-x");
-  let thumbtextTl = gsap.timeline(); //create the timeline
-  thumbtextTl.fromTo(thumbText,
-    { duration: 1.25, opacity: 0, ease: "power4.inOut" },
-    { duration: 1.25, opacity: 1, ease: "power4.inOut" }
-  );
-  return thumbtextTl;
+let xMarkTimelines: Map<HTMLElement, GSAPTimeline> = new Map();
+function createXMarkTimelines() {
+  const xMarks = document.querySelectorAll(".panel-overlay-x");
+  xMarks.forEach((xMark) => {
+    const timeline = gsap.timeline({ paused: true });
+    timeline.fromTo(xMark,
+      { duration: 1.25, opacity: 0, ease: "linear", visibility: 'hidden' },
+      { duration: 1.25, opacity: 1, ease: "linear", visibility: 'inherit' }
+    );
+    xMarkTimelines.set(xMark as HTMLElement, timeline);
+  });
+}
+createXMarkTimelines();
+
+function playXMarkForVideo(currentVideo: HTMLVideoElement) {
+  gsap.set(".panel-overlay-x", { opacity: 0, visibility: 'hidden' });
+  xMarkTimelines.forEach((timeline) => {
+    timeline.pause(0);
+  });
+  const currentXMark = currentVideo.parentElement?.querySelector(".panel-overlay-x") as HTMLElement | null;
+  if (currentXMark && xMarkTimelines.has(currentXMark)) {
+    const timeline = xMarkTimelines.get(currentXMark);
+    timeline?.play();
+  }
 }
 
 mrScopertonShufflerton();
@@ -118,7 +130,6 @@ function mrScopertonShufflerton() {
       }
     });
   }
-
   processImages();
   projReplacePositioningClasses();
 }
@@ -133,9 +144,7 @@ let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`);
 // });
 
 function  seamlessLoopScroll() {
-  // reconstructVideo(hash);
-  // ScrollTrigger.defaults({markers: {startColor: "white", endColor: "white"}});
-  //observer /draggable
+
 
   let iteration = 0; // gets iterated when we scroll all the way to the end or start and wraps around 
   const spacing = 0.1, // (stagger)
@@ -155,7 +164,7 @@ function  seamlessLoopScroll() {
       // pinSpacing: false,
       // markers: {startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20},
       onEnter: () => {
-        console.log("scrolltrigger entered");
+        // console.log("scrolltrigger entered");
       },
       onUpdate(self) {
         if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
@@ -272,6 +281,7 @@ function scrubTo(totalTime) { // moves the scroll position to the place that cor
 	} else {
 		trigger.scroll(trigger.start + progress * (trigger.end - trigger.start));
 	}
+  // trigger.wrapping = true;
 }
 
 function buildSeamlessLoop(items, spacing) {
@@ -291,19 +301,66 @@ function buildSeamlessLoop(items, spacing) {
 		time = 0,
 		i, index, item;
 
-	// set initial state of items
-	gsap.set(items, {xPercent: 'auto', opacity:1,	scale: 1});
+  // set initial state of items
+  gsap.set(items, {
+    xPercent: 'auto', 
+    opacity:1,  
+    marginRight: 0,
+    marginLeft: 0,
+    paddingLeft:'10%', 
+    paddingRight: '10%',
+  });
 
-	for (i = 0; i < l; i++) { 
-		index = i % items.length;
-		item = items[index];
-		time = i * spacing;
-		rawSequence
-    .fromTo(item, {scale: 0.8, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
-		.fromTo(item, {xPercent: 400}, {xPercent: -400, duration: 1, ease: "none", immediateRender:true}, time);
-		i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
-	}
+  for (i = 0; i < l; i++) { 
+    index = i % items.length;
+    item = items[index];
+    time = i * spacing;
+    rawSequence
+  
+    .fromTo(item, {
+      opacity: 1}, 
+      {  
+      opacity: 1, 
+      zIndex: 100, 
+      duration: 0.5, 
+      yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
+    .fromTo(item, {
+      xPercent: 420
+    }, {
+      xPercent: -420, 
+      duration: 1, ease: "none", immediateRender:true}, time);
+    i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
+  }
+
+//   function toIndex(index, vars) {
+//     vars = vars || {};
+//     Math.abs(index - curIndex) > length / 2 &&
+//       (index += index > curIndex ? -length : length); // always go in the shortest direction
+//     let newIndex = gsap.utils.wrap(0, length, index),
+//       time = times[newIndex];
+//     if (time > tl.time() !== index > curIndex) {
+//       // if we're wrapping the timeline's playhead, make the proper adjustments
+//       vars.modifiers = { time: gsap.utils.wrap(0, tl.duration()) };
+//       time += tl.duration() * (index > curIndex ? 1 : -1);
+//     }
+//     curIndex = newIndex;
+//     vars.overwrite = true;
+//     return tl.tweenTo(time, vars);
+//   }
+//   tl.next = (vars) => toIndex(curIndex + 1, vars);
+//   tl.previous = (vars) => toIndex(curIndex - 1, vars);
+//   tl.current = () => curIndex;
+//   tl.toIndex = (index, vars) => toIndex(index, vars);
+//   tl.times = times;
+//   tl.progress(1, true).progress(0, true); // pre-render for performance
+//   if (config.reversed) {
+//     tl.vars.onReverseComplete();
+//     tl.reverse();
+//   }
+//   return tl;
+// }
 gsap.timeline({}) //overkill prob
+
 .addLabel('start', startTime)  //overkill prob
 	// set up the scrubbing of the playhead to make it appear seamless. 
 	rawSequence.time(startTime);
@@ -326,16 +383,8 @@ function setupVideos() {
   let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
   //this is to avoid null throws on video only for mobile
   let clicked = false;
-  // let hasClicked = document.addEventListener("click", () => {
-  
-  //   return clicked=true;
-  //  })
-  videos.forEach((video) => {
-    // const hashNav = video.dataset.hashnav;
-    // const currentVideo = video.querySelector('.video-matching') as HTMLVideoElement;
-    // const targetVideo = video.querySelector(`[data-hashnav="#${hash}"]`) as HTMLElement;
-    // const state = Flip.getState(targetVideo);
 
+  videos.forEach((video) => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -343,21 +392,14 @@ function setupVideos() {
           document.addEventListener("click", () => {
             clicked = true;
             video.controls = true // Show controls
-            // thumbtextTl.pause();
           });
           video.controls = true // Show controls
           video.muted = false; // Unmute the video
-          thumbtextTl.play();
-            // video.controls = true // Show controls
-            // video.muted = false; // Unmute the video
-          // thumbtextTl.restart();
+          playXMarkForVideo(video);
         } else {
           video.pause();
-          // thumbtextTl.pause();
-          // thumbtextTl.restart();
           video.controls = false; // hide controls
           video.muted = true; // Unmute the video
-          // video.classList.remove('active');
         }
       });
     }, { threshold: 0.5 });
@@ -417,21 +459,13 @@ window.addEventListener('resize', sliderVerticalCentering);
 
 sliderVerticalCentering();
 projectmaskingAnimationTransition();
-// mrScopertonShufflerton();
-// seamlessLoopScroll();
-// window.addEventListener("load", (event) => {
-//   //fire these before dom content load
-//   reorderListItems();
-//   sliderVerticalCentering();
-// });
 const onDOMContentLoaded = () => {
   navigation.setupNavigationEvents();
-
   console.clear();
   setupVideos();
-  // let thumbtextTl = thumbtextTL();
-  // seamlessLoopScroll();
-  // thumbtextTL();
+  adjustXPositionIOS();
+  document.querySelector(".next").addEventListener("click", () => scrubTo(scrub.vars.totalTime + spacing));
+  document.querySelector(".prev").addEventListener("click", () => scrubTo(scrub.vars.totalTime - spacing));
 };
  
 
@@ -441,19 +475,59 @@ const onResize = () => {
 }
 
 const onClick = () => {
-  navigation.checkforAnimation();
+  // navigation.checkforAnimation();
   console.log("clicked");
+
 };
 
 const onScroll = () => {
   gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
 };
 const onhashchange = () => {
-  // window.location.hash = hash;
   handleInitialHash();
-  // thumbtextTL();
 }
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+function isTrackpadDevice() {
+  return (
+    ('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0)
+  );
+}
+if (isTrackpadDevice()) {
+  let isScrolling = false;
+  let scrollTimeout;
 
+  document.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+
+      const scrollAmount = e.deltaX * 1;
+
+      window.scrollBy(0, scrollAmount);
+
+      onScroll();
+
+      isScrolling = true;
+
+      clearTimeout(scrollTimeout!);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 150);
+    }
+  }, { passive: false });
+}
+function adjustXPositionIOS() {
+  if (isIOS()) {
+    const xMarks = document.querySelectorAll('.panel-overlay-x');
+    xMarks.forEach(x => {
+      if (x instanceof HTMLElement) {
+        x.style.transform = 'translate(8px, -40px)';
+      }
+    });
+  }
+}
 
 function isTouchDevice() {
   return (

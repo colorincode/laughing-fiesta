@@ -240,13 +240,18 @@ h1,h2,h3,h4,h5,h6 {
 // justify-content: center;
 // flex-wrap: wrap;
 // }
+// .hideme {
+//   visibility:hidden;
+//   opacity:0;
 
+// }
 .topbar--global {
     // background: black;
       position: absolute;
       top:0;
       left:15px;
       z-index: 999;
+      width: 100%;
   }
   .topbar--svg {
     width: 150px;
@@ -271,11 +276,11 @@ h1,h2,h3,h4,h5,h6 {
     font-size: 1.1em;
     font-family: "Manrope", sans-serif;
     font-display: swap;
-    overflow-y: hidden;
+    // overflow-y: hidden;
     @media (max-width: 768px) {
-      // overflow-y: hidden;
-      // overflow-x: scroll;
-      overflow: hidden;
+      overflow-y: hidden;
+      overflow-x: scroll;
+      // overflow: hidden;
     }
   }
   .webgl-canvas {
@@ -938,15 +943,18 @@ h1,h2,h3,h4,h5,h6 {
 }
 .play--icon {
   --fa-secondary-color: #d4d1d1;
-  --fa-secondary-opacity: 0.6;
-  color: #f8f3f4;
-  opacity: .8;
+  --fa-secondary-opacity: 0.8;
+ 
+  color:  #0000003e;
+  // opacity: .8;
   font-size: 5.5rem;
   margin: 5px;
-  position: absolute;
+  // position: absolute;
   cursor: pointer;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
   animation-name: links-fade-in;
-  animation-duration: 1s;
+  animation-duration: 0.8s;
   transition: all .7s ease-in-out;
   @media (min-width: 2000px) {
     font-size: 120px;
@@ -963,8 +971,10 @@ h1,h2,h3,h4,h5,h6 {
   outline: none;
 }
 .play--icon:hover {
-  opacity: 1;
-  color:  #bcbcbc;
+  // opacity: 1;
+  --fa-secondary-color: #000000f2;
+  --fa-secondary-opacity: 0.8;
+  color: #f8f3f4fb;
 }
 
 .project-name {

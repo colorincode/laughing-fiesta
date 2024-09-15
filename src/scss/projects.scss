@@ -435,7 +435,6 @@ h1,h2,h3,h4,h5,h6 {
 .slider-video {
   aspect-ratio: 16 / 9;
   position: absolute;
-  inset: 5%; /* Changed from 5% to 0 */
   z-index: 99;
   pointer-events: all;
   position: absolute;
@@ -457,18 +456,20 @@ h1,h2,h3,h4,h5,h6 {
   left: 50%;
   overflow-y: hidden;
 }
-
 .panel-overlay-text {
   position: absolute;
   z-index:8888;
-  width: 100%;    
+  width: 100%;
   height: 100%;
+  padding: 0 10%;
   top: 0;
+  left: 0;
   text-align: right;
   font-size: 3rem;
   font-weight: 700;
   font-family: "Manrope", sans-serif;
   color: rgba(255,255,255,1);
+  pointer-events: none;
   @media screen and (max-width:1068px){
     font-size: 2.5rem;
   }
@@ -476,7 +477,7 @@ h1,h2,h3,h4,h5,h6 {
     font-size: 2rem;
   }
   @media screen and (max-width:414px) {
-    font-size: 1rem;
+    font-size: 1.75rem;
   }
 }
 .panel-overlay-x {
@@ -484,6 +485,7 @@ h1,h2,h3,h4,h5,h6 {
   margin-right: 5px;
   box-sizing: border-box;
   opacity: 0;
+  pointer-events: all;
   @media screen and (min-width:2000px){
     margin-top: 15px;
     margin-right: 9px;
@@ -707,10 +709,18 @@ h1,h2,h3,h4,h5,h6 {
 // }
 
 .actions {
-	position: absolute;
-	bottom: 25px;
-	left: 50%;
-	transform: translateX(-50%);
+	// position: absolute;
+	// bottom: 25px;
+	// left: 50%;
+	// transform: translateX(-50%);
+  text-align: center;
+  color: #fff;
+  // pointer-events: none;
+  // font-family: Manrope, sans-serif;
+  // font-size: 3rem;
+  font-weight: 700;
+  pointer-events: all;
+  //   cursor: pointer;
 }
 .slider-video {
   object-fit: cover;
@@ -721,55 +731,126 @@ h1,h2,h3,h4,h5,h6 {
     min-width: 1px;
     // height: fit-content;
     border-radius: 0.1rem;
-    display: grid;
+    // display: grid;
     position: relative;
     overflow: clip;
 }
-button {
-  display:inline-block;
-  outline: none;
-  border: none;
-  padding: 8px 14px;
-  background: #414141;
-  background-image: -webkit-linear-gradient(top, #575757, #414141);
-  background-image: -moz-linear-gradient(top, #575757, #414141);
-  background-image: -ms-linear-gradient(top, #575757, #414141);
-  background-image: -o-linear-gradient(top, #575757, #414141);
-  background-image: linear-gradient(to bottom, #575757, #414141);
-  text-shadow: 0px 1px 0px #414141;
-  -webkit-box-shadow: 0px 1px 0px 414141;
-  -moz-box-shadow: 0px 1px 0px 414141;
-  box-shadow: 0px 1px 0px 414141;
-  color: #ffffff;
-  text-decoration: none;
-  margin: 0 auto 10px;
-  -webkit-border-radius: 4;
-  -moz-border-radius: 4;
-  border-radius: 4px;
-  padding: 12px 25px;
-  font-family: Mori;
-  font-weight:400;
-  text-transform: uppercase;
-  font-weight: 600;
+// .prev, .next {
+//     cursor: pointer;
+//     z-index: 9999;
+//     outline: none;
+//     border:none;
+//     padding: 8px 14px;
+//     background:none;
+// }
+.next {
+  position:absolute;
+  right: 0;
+  top: 50%;
   cursor: pointer;
-  font-size: 20px;
-  line-height: 18px;
+    z-index: 9999;
+    outline: none;
+    border:none;
+    padding: 8px 14px;
+    background:none;
+    font-size: 3rem;
+    --fa-secondary-color: #d4d1d1;
+    --fa-secondary-opacity: 0.8;
+    color: #fff;
+    @media screen and (max-width:1068px){
+      font-size: 2.5rem;
+    }
+    @media screen and (max-width:768px){
+      font-size: 2rem;
+    }
+    @media screen and (max-width:414px) {
+      font-size: 1.75rem;
+    }
 }
+.prev {
+  position:absolute;
+  left: 0;
+  top: 50%;
+  cursor: pointer;
+  z-index: 9999;
+  outline: none;
+  border:none;
+  padding: 8px 14px;
+  background:none;
+  font-size: 3rem;
+  --fa-secondary-color: #d4d1d1;
+  --fa-secondary-opacity: 0.8;
+  color: #fff;
+  @media screen and (max-width:1068px){
+    font-size: 2.5rem;
+  }
+  @media screen and (max-width:768px){
+    font-size: 2rem;
+  }
+  @media screen and (max-width:414px) {
+    font-size: 1.75rem;
+  }
+}
+.prev:hover {
+  // opacity: 1;
+  --fa-secondary-color: #0000009f;
+  --fa-secondary-opacity: 0.8;
+  color: #f8f3f4fb;
+}
+.next:hover {
+  // opacity: 1;
+  --fa-secondary-color: #0000009f;
+  --fa-secondary-opacity: 0.8;
+  color: #f8f3f4fb;
+}
+// button {
+//   display:inline-block;
+//   outline: none;
+//   border: none;
+//   padding: 8px 14px;
+//   background: #414141;
+//   background-image: -webkit-linear-gradient(top, #575757, #414141);
+//   background-image: -moz-linear-gradient(top, #575757, #414141);
+//   background-image: -ms-linear-gradient(top, #575757, #414141);
+//   background-image: -o-linear-gradient(top, #575757, #414141);
+//   background-image: linear-gradient(to bottom, #575757, #414141);
+//   text-shadow: 0px 1px 0px #414141;
+//   -webkit-box-shadow: 0px 1px 0px 414141;
+//   -moz-box-shadow: 0px 1px 0px 414141;
+//   box-shadow: 0px 1px 0px 414141;
+//   color: #ffffff;
+//   text-decoration: none;
+//   margin: 0 auto 10px;
+//   -webkit-border-radius: 4;
+//   -moz-border-radius: 4;
+//   border-radius: 4px;
+//   padding: 12px 25px;
+//   font-family: Mori;
+//   font-weight:400;
+//   text-transform: uppercase;
+//   font-weight: 600;
+//   cursor: pointer;
+//   font-size: 20px;
+//   line-height: 18px;
+// }
 
-button:hover {
-  background: #57a818;
-  background-image: -webkit-linear-gradient(top, #57a818, #4d9916);
-  background-image: -moz-linear-gradient(top, #57a818, #4d9916);
-  background-image: -ms-linear-gradient(top, #57a818, #4d9916);
-  background-image: -o-linear-gradient(top, #57a818, #4d9916);
-  background-image: linear-gradient(to bottom, #57a818, #4d9916);
-  text-shadow: 0px 1px 0px #32610e;
-  -webkit-box-shadow: 0px 1px 0px fefefe;
-  -moz-box-shadow: 0px 1px 0px fefefe;
-  box-shadow: 0px 1px 0px fefefe;
-  color: #ffffff;
-  text-decoration: none;
-}
+// button:hover {
+//   background: #57a818;
+//   background-image: -webkit-linear-gradient(top, #57a818, #4d9916);
+//   background-image: -moz-linear-gradient(top, #57a818, #4d9916);
+//   background-image: -ms-linear-gradient(top, #57a818, #4d9916);
+//   background-image: -o-linear-gradient(top, #57a818, #4d9916);
+//   background-image: linear-gradient(to bottom, #57a818, #4d9916);
+//   text-shadow: 0px 1px 0px #32610e;
+//   -webkit-box-shadow: 0px 1px 0px fefefe;
+//   -moz-box-shadow: 0px 1px 0px fefefe;
+//   box-shadow: 0px 1px 0px fefefe;
+//   color: #ffffff;
+//   text-decoration: none;
+// }
+// .prev {
+//   display: inline-grid;
+// }
 // newwww
 
 // @media screen {
