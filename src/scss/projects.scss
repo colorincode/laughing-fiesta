@@ -57,8 +57,11 @@ a:focus-visible {
 h1,h2,h3,h4,h5,h6 {
     font-family: "Manrope";
 }
+.topbar--global a {
+  pointer-events: auto;
+}
 .topbar--global {
-  // background: black;
+    pointer-events: auto;
     position: fixed;
     top:0;
     left:15px;
@@ -67,6 +70,7 @@ h1,h2,h3,h4,h5,h6 {
 .topbar--svg {
   width: 150px;
   height: 125px;
+  pointer-events: all;
   @media (max-width: 768px) {
     width: 120px;
     height: 105px;
@@ -735,42 +739,48 @@ h1,h2,h3,h4,h5,h6 {
     position: relative;
     overflow: clip;
 }
-// .prev, .next {
-//     cursor: pointer;
-//     z-index: 9999;
-//     outline: none;
-//     border:none;
-//     padding: 8px 14px;
-//     background:none;
-// }
-.next {
+.next--centering--div  {
+  height: 100dvh;
   position:absolute;
   right: 0;
-  top: 50%;
-  cursor: pointer;
-    z-index: 9999;
-    outline: none;
-    border:none;
-    padding: 8px 14px;
-    background:none;
-    font-size: 3rem;
-    --fa-secondary-color: #d4d1d1;
-    --fa-secondary-opacity: 0.8;
-    color: #fff;
-    @media screen and (max-width:1068px){
-      font-size: 2.5rem;
-    }
-    @media screen and (max-width:768px){
-      font-size: 2rem;
-    }
-    @media screen and (max-width:414px) {
-      font-size: 1.75rem;
-    }
+  top: 0;
+  display: grid;
+  pointer-events: none;
+  align-content: center;
 }
-.prev {
+.next {
+  pointer-events: all;
+  cursor: pointer;
+  z-index: 9999;
+  outline: none;
+  border: none;
+  padding: 8px 14px;
+  background: none;
+  font-size: 3rem;
+  --fa-secondary-color: #d4d1d1;
+  --fa-secondary-opacity: 0.8;
+  color: #fff;
+  @media screen and (max-width:1068px){
+    font-size: 2.5rem;
+  }
+  @media screen and (max-width:768px){
+    font-size: 2rem;
+  }
+  @media screen and (max-width:414px) {
+    font-size: 1.75rem;
+  }
+}
+.prev--centering--div  {
+  height: 100dvh;
   position:absolute;
   left: 0;
-  top: 50%;
+  top: 0;
+  display: grid;
+  pointer-events: none;
+  align-content: center;
+}
+.prev {
+  pointer-events: all;
   cursor: pointer;
   z-index: 9999;
   outline: none;

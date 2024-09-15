@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import EasePack from 'gsap/EasePack';
 import { Power4 , Power2} from 'gsap/gsap-core';
 import Timeline from 'gsap/all';
+import { exit } from 'process';
 gsap.registerPlugin(Power4);
 gsap.registerPlugin(EasePack);
 gsap.registerPlugin(Timeline);
@@ -24,29 +25,42 @@ export class Navigation {
 
 setupAnimations(): void {
     this.tl
-      .to('.navigation', {
-        opacity: 1,
-        duration: 1,
+      .fromTo('.navigation', {
+        autoAlpha: 0,
+        duration: 0.4,
         backgroundColor: "rgba(0, 0, 0, 0.90)",
         ease: 'power4.in',
-      })
-      .fromTo('.xmark--closer', {
-        scaleY: 0,
-        autoAlpha: 0,
-        yPercent: 5,
+  
       }, {
-        scaleY: 1,
         autoAlpha: 1,
-        yPercent: -5,
-        duration: 0.7,
-        ease: 'power4.inOut',
+        duration: 0.2,
+        ease: 'power4.in',
       }, "<")
+
       .fromTo('.sidenav__desktop', {
         autoAlpha: 0,
+        duration: 0.3,
       }, {
         autoAlpha: 1,
-        duration: 0.7,
+        duration: 0.3,
+      
         ease: 'power4.in',
+      }, "<")
+      .fromTo('.navtext', {
+        autoAlpha: 1,
+        duration: 0.3,
+      }, {
+        autoAlpha: 0,
+        duration: 0.3,
+      
+        ease: 'power4.in',
+      }, "<")
+      .to('.xmark--closer', 
+        {
+        scaleY: 1,
+        autoAlpha: 1,
+        duration: 0.3,
+        ease: 'power4.inOut',
       }, "<");
   }
 
@@ -59,11 +73,13 @@ setupAnimations(): void {
   toggleNavigation = (e: Event): void => {
     e.stopPropagation();
     this.isOpen ? this.closeNavigation() : this.openNavigation();
+    // this.tl.play();
   }
 
   handleDocumentClick = (e: Event): void => {
     if (this.isOpen && !this.navigation.contains(e.target as Node)) {
       this.closeNavigation();
+      // exitTl.play();
     }
   }
 
@@ -71,43 +87,43 @@ setupAnimations(): void {
     this.isOpen = true;
     this.navigation?.classList.add('open');
     this.navText?.classList.add("hideme");
-    this.tl.play();
+    this.tl.restart();
+ 
+  
   }
 
   closeNavigation = (): void => {
     this.isOpen = false;
     this.navigation?.classList.remove('open');
     this.navText?.classList.remove("hideme");
+    
+    this.tl.reverse();
    // Create a new timeline for the exit animation
    const exitTl = gsap.timeline({
     onComplete: () => {
       this.navigation?.classList.remove('open');
       this.navText?.classList.remove("hideme");
+      exitTl.pause();
     }
   });
 
   exitTl
-    .to('.sidenav__desktop', {
-      autoAlpha: 0,
-      duration: 0.3,
-      ease: 'power2.out'
-    })
-    .to('.xmark--closer', {
-      scaleY: 0,
-      autoAlpha: 0,
-      yPercent: 5,
-      duration: 0.3,
-      ease: 'power2.in'
-    }, "<")
-    .to('.navigation', {
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power2.inOut'
-    }, "-=0.2");
+  .to('.xmark--closer', {
+    autoAlpha: 0,
+    duration: 0.3,
+    scaleY: 0,
+    ease: 'power2.in',
+
+  }, "-=0.1")
+    .to('.navtext', {
+      autoAlpha: 1,
+      duration: 0.4,
+      ease: 'power2.in',
+
+    }, "-=0.1");
 
   // play the exit animation
   exitTl.play();
-
-  this.tl.reverse();
+  this.tl.play();
   }
 }

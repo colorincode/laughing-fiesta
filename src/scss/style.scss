@@ -5,91 +5,7 @@
     font-family: "Manrope";
     src: url('../../assets/fonts/Manrope-VariableFont_wght.ttf');
 }
-// html.lenis, html.lenis body {
-//   height: auto;
-// }
 
-// .lenis.lenis-smooth {
-//   scroll-behavior: auto !important;
-// }
-
-// .lenis.lenis-smooth [data-lenis-prevent] {
-//   overscroll-behavior: contain;
-// }
-
-// .lenis.lenis-stopped {
-//   overflow: hidden;
-// }
-
-// .lenis.lenis-smooth iframe {
-//   pointer-events: none;
-// }
-/*! locomotive-scroll v4.1.3 | MIT License | https://github.com/locomotivemtl/locomotive-scroll */
-// html.has-scroll-smooth {
-//   overflow: hidden; }
-
-// html.has-scroll-dragging {
-//   -webkit-user-select: none;
-//   -moz-user-select: none;
-//   -ms-user-select: none;
-//   user-select: none; }
-
-// .has-scroll-smooth body {
-//   overflow: hidden; }
-
-// .has-scroll-smooth [data-scroll-container] {
-//   min-height: 100vh; }
-
-// [data-scroll-direction="horizontal"] [data-scroll-container] {
-//   height: 100vh;
-//   display: inline-block;
-//   white-space: nowrap; }
-
-// [data-scroll-direction="horizontal"] [data-scroll-section] {
-//   display: inline-block;
-//   vertical-align: top;
-//   white-space: nowrap;
-//   height: 100%; }
-
-// .c-scrollbar {
-//   position: absolute;
-//   right: 0;
-//   top: 0;
-//   width: 11px;
-//   height: 100%;
-//   transform-origin: center right;
-//   transition: transform 0.3s, opacity 0.3s;
-//   opacity: 0; }
-//   .c-scrollbar:hover {
-//     transform: scaleX(1.45); }
-//   .c-scrollbar:hover, .has-scroll-scrolling .c-scrollbar, .has-scroll-dragging .c-scrollbar {
-//     opacity: 1; }
-//   [data-scroll-direction="horizontal"] .c-scrollbar {
-//     width: 100%;
-//     height: 10px;
-//     top: auto;
-//     bottom: 0;
-//     transform: scaleY(1); }
-//     [data-scroll-direction="horizontal"] .c-scrollbar:hover {
-//       transform: scaleY(1.3); }
-
-// .c-scrollbar_thumb {
-//   position: absolute;
-//   top: 0;
-//   right: 0;
-//   background-color: black;
-//   opacity: 0.5;
-//   width: 7px;
-//   border-radius: 10px;
-//   margin: 2px;
-//   cursor: -webkit-grab;
-//   cursor: grab; }
-//   .has-scroll-dragging .c-scrollbar_thumb {
-//     cursor: -webkit-grabbing;
-//     cursor: grabbing; }
-//   [data-scroll-direction="horizontal"] .c-scrollbar_thumb {
-//     right: auto;
-//     bottom: 0; }
 .maskingintro--container {
   position: absolute;
   width: 100%;
@@ -100,15 +16,11 @@
 
 }
 .maskingintro--element {
-  // height: 100%;
-  // width: 100%;
   background: #000000;
   visibility: hidden;
   position: relative;
   transform: translateY(-100%);
   pointer-events: none;
-  // visibility: hidden;
-  // transform: translateY(100%);
 }
 .maskingintro--element:after{
   content: '';
@@ -160,91 +72,6 @@ h1,h2,h3,h4,h5,h6 {
   overflow: hidden;
 }
 
-// h1,
-// h2,
-// h3,
-// h4 {
-//   margin: 10px 0 10px 0;
-//   font-weight: 400;
-//   line-height: 1.2;
-//   color: var(--color-surface-white);
-// }
-
-// h1,
-// .h1 {
-//   font-size: var(--step-4);
-// }
-
-// h2,
-// .h2 {
-//   font-size: var(--step-3);
-// }
-
-// h3,
-// .h3 {
-//   font-size: var(--step-2);
-// }
-
-// h4,
-// .h4,
-// .lead {
-//   font-size: var(--step-1);
-// }
-
-// .green {
-//   background-color: var(--green);
-// }
-// .blue {
-//   background-color: var(--blue);
-// }
-// .purple {
-//   background-color: var(--purple);
-// }
-// .red {
-//   background-color: var(--red);
-// }
-// .orange {
-//   background-color: var(--orange);
-// }
-
-// .dark {
-//   background-color: var(--dark);
-//   color: var(--light);
-// }
-
-// .light {
-//   background-color: var(--light);
-//   color: var(--dark);
-// }
-
-// .text-light {
-//   color: var(--light);
-// }
-
-// .text-dark {
-//   color: var(--dark);
-// }
-
-// .gray,
-// .grey {
-//   background-color: var(--grey);
-// }
-
-// .containerpoop {
-// max-width: 800px;
-// margin: auto;
-// width: 100%;
-// line-height: 0;
-// display: flex;
-// align-items: center;
-// justify-content: center;
-// flex-wrap: wrap;
-// }
-// .hideme {
-//   visibility:hidden;
-//   opacity:0;
-
-// }
 .topbar--global {
     // background: black;
       position: absolute;
@@ -252,10 +79,15 @@ h1,h2,h3,h4,h5,h6 {
       left:15px;
       z-index: 999;
       width: 100%;
+      pointer-events: all;
+  }
+  .topbar--global a {
+    pointer-events: auto;
   }
   .topbar--svg {
     width: 150px;
     height: 125px;
+    pointer-events: all;
     @media (max-width: 768px) {
       width: 120px;
       height: 105px;
@@ -297,18 +129,7 @@ h1,h2,h3,h4,h5,h6 {
     position: absolute;
     top: 0;
 }
-  // .outer__wrapper {
-  //   display: grid;
-  //   min-height: 100vh;
-  //   width: 100%;
-  //   pointer-events: all;
-  //   grid-row: auto;
-  //   position: relative;
-  //   @media (max-width: 768px) {
-  //     // overflow-y: scroll;
-  //     // overflow-x: hidden;
-  // }
-  // }
+
   .outer__wrapper {
     visibility: hidden;
     pointer-events: all;
@@ -328,18 +149,6 @@ h1,h2,h3,h4,h5,h6 {
       }
       
     }
-//   .scroll-section {
-//   	--padding: 10vmin;
-// 		position: relative;
-// 		padding: var(--padding);
-// 		--pad2: calc(var(--padding) * 2);
-// 		width: calc(100vw - var(--pad2));
-// 		height: calc(100vh - var(--pad2));
-// 		// min-height: 400px;
-// 		margin: 0 auto;
-// 		z-index: 2;
-
-// }
 
 .homegrid__container {
   width: 100%;
@@ -451,34 +260,9 @@ h1,h2,h3,h4,h5,h6 {
     }
   }
   
-  // #about {
-  //   // grid-area: 1 / 4 / 2 / 5;
-  //   // justify-self: end;
-  //   // align-self: start;
-  // }
+
   .grid-item {
-    // margin-top: unset;
-    // background-size: cover;
-    // background-position: center;
-    // position: absolute;
-    // overflow: hidden;
-    // // width: 100%;
-    // height: 100%;
-    // // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // overflow: hidden;
-    // position: relative;
-    // // align-items: center;
-    // width: 100%;
-    // margin: 0;
-    // display: grid;
-    // cursor: pointer;
-    // will-change: transform;
-    // box-sizing: content-box; 
-    // height: fit-content; //need for height to stay consistent
-    // // width: var(--item-width, 100%);
-    // // height: var(--item-height, 100%);
+
     position: relative;
     width: 100%;
     height: auto; // To maintain aspect ratio
@@ -548,9 +332,6 @@ h1,h2,h3,h4,h5,h6 {
     box-sizing: content-box; 
     // height: fit-content; //need for height to stay consistent
     @media (max-width: 768px) {
-      // aspect-ratio: 16 / 9;
-      // height: 100%;
-      // align-items: center;
     }
   }
   .video--item {
@@ -1048,10 +829,7 @@ h1,h2,h3,h4,h5,h6 {
   grid-row: 1 / 2;
   width: auto;
   height: auto;
-  // background: rgba(0, 0, 0, 0.7);
   color: #fff;
-  // padding: 10px;
-  // border: 1px solid black;
   z-index: 9999;
   // cursor: pointer;
   cursor:default;
@@ -1076,10 +854,7 @@ h1,h2,h3,h4,h5,h6 {
     // margin-left: 10px;
   }
 }
-// .company-name:hover {
-//   border-top: 1px solid #fff;
-//   border-bottom: 1px solid #fff;
-// }
+
 .company-name-revealed {
   font-family: inherit;
   text-transform: uppercase;
@@ -1118,73 +893,25 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 // // end link styles
-// .shadow-inner-grid {
-//   display: grid;
-//   // grid-auto-columns: 50% 50% auto;
-//   grid-template-columns: 1fr;
-//   grid-template-rows: 1fr .25fr 1fr;
-//   width: 100%;
-//   height: 100%;
-//   position: fixed;
-//   bottom: 0;
-//   left: 0;
-//   z-index: 99999;
-//   grid-area: unset;
-//   grid-auto-rows: 100%;
-//   align-items: center;
-//   justify-items: center;
-//   margin: 0;
-//   padding: 0;
-//   pointer-events: all;
-// }
+
       
 .fullscreen--scale {
   position: fixed;
   pointer-events: all;
   // height: auto;
   // width:70vw;
-  @media screen and (min-width: 1024px) {
-  // width:95vw;
+  // @media screen and (min-width: 1024px) {
+  // // width:95vw;
     
-  }
-  // grid-auto-rows: 100%;
-  // place-items: center;
-  // align-items:center;
-  // justify-items: center;
-  //   display: grid;
-// width: 100%;
-// height: auto;
-
+  // }
 }
-// .fullscreen--scale:focus-visible, :focus-within, :focus {
-//   outline: none;
-//   scale:1;
-//   // grid-template-rows: 1fr .25fr 1fr;
-//   // grid-template-columns: 1fr;
-//   grid-area: unset;
-//   pointer-events: all;
-//   grid-auto-rows: 100%;
-//   place-items: center;
-//   align-items:center;
-//   justify-items: center;
-//   width: 100%;
-//   height: 100vh;
-//   margin: 0;
-//   // padding: 0 0 29% 0;
-//   display: grid;
-//   position: fixed;
-//   // bottom: 0;
-//   // left: 0;
-//   backdrop-filter: blur(5px);
-// 	background: rgba(0,0,0,0.5);
-// }
+
 
 .active-overlay {
   backdrop-filter: blur(5px);
 	background: rgba(0,0,0,0.5);
 }
 
-  
   .xmark--closer {
     position: absolute;
     top: 20px;
@@ -1215,43 +942,7 @@ h1,h2,h3,h4,h5,h6 {
   height: 100vh;
   flex-shrink: 0;
 }
-//   .section {
-//     // padding-top:100vw;
-//     // // scroll-padding: 100vw;
 
-//     // border: 1px solid aliceblue;
-//     // height: 100%;
-//     // overflow-x: auto;
-//     // // overflow-y: hidden;
-//     // position:relative;
-//     // width: 100vw;
-//     width: calc(100vw );
-// 		height: calc(100vh );
-// 		// min-height: 400px;
-// 		// margin: 0 auto;
-// 		z-index: 2;
-//     right:-100vw;
-//     overflow-x: auto;
-//     white-space: nowrap;
-//     // width: 100vw;
-//     position: absolute;
-//   }
-//   .scroll-section {
-//   	// --padding: 1vmin;
-// 		// position: relative;
-// 		// padding: var(--padding);
-// 		// --pad2: calc(var(--padding) * 2);
-// 		width: calc(100vw );
-// 		height: calc(100vh );
-// 		// min-height: 400px;
-// 		// margin: 0 auto;
-// 		z-index: 2;
-//     right:-100vw;
-//     overflow-x: auto;
-//     white-space: nowrap;
-//     // width: 100vw;
-//     position: absolute;
-// }
 .secondgrid_wrapper {
   height: 100%;
   overflow-x: auto;
@@ -1260,20 +951,6 @@ h1,h2,h3,h4,h5,h6 {
   width: 100vw;
 }
   .homegrid__container-new {
-    // --cgap: 5%;
-    // --rgap: 5%;
-    // --rows: 8;
-    // --columns: 12;
-    // overflow: visible;
-    // width: 200vh;
-    // overflow-x: scroll;
-    // position:absolute;
-    // right:-100vw;
-    // overflow-x: auto;
-    // white-space: nowrap;
-    // width: 100vw;
-    // position: absolute;
-    // position:relative;
     display: grid;
     grid-template: 
     "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
@@ -1285,11 +962,9 @@ h1,h2,h3,h4,h5,h6 {
     "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5%
     "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
     ;
-      // grid-auto-flow: dense;
       width: 100%;
       height: 100%;
       box-sizing: border-box;
-      // overflow: hidden;
     @media (min-width: 1624px) {
       
   
@@ -1314,10 +989,6 @@ h1,h2,h3,h4,h5,h6 {
     @media (max-width: 768px) {
       --rows:4;
       --columns:6;
-      //  overflow-y: scroll;
-      // overflow: visible;
-      // width: 200vh;
-      // overflow-x: scroll;
       grid-template: 
       "     .      .      .      .      . video1 video1 video1     . video3 video3      ." 12.5%
       "     . video2 video2 video2      .      .     .      .      . video3 video3      ." 12.5%
@@ -1328,27 +999,7 @@ h1,h2,h3,h4,h5,h6 {
       "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5%
       "     .      . video4 video4 video4 video4     . video7 video7 video7      .      ." 12.5% / 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33% 8.33%
       ;
-      // grid-template: 
-      // "     .      .      .      .      .      .      ." 7.5%
-      // "     .      .      .      . video1 video1 video1" 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "video2 video2 video2      .      .      .      ." 17.5%
-      // "     .      .      .      .      .      .      ." 12%
-      // "     .      .      .      . video3 video3 video3" 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "video4 video4 video4      .      .      .      ." 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "     .      .      .      . video5 video5 video5" 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "video6 video6 video6      .      .      .      ." 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "     .      .      .      . video7 video7 video7" 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "video8 video8 video8      .      .      .      ." 17.5%
-      // "     .      .      .      .      .      .      ." 1.5%
-      // "     .      .      .      . video9 video9 video9" 17.5%
-      // "     .      .      .      .      .      .      ." 30% / 16.25% 16.25% 16.25% 2.5% 16.25% 16.25% 16.25%
-      // ;
+
     }
     @media (max-width: 480px) {}
   }
