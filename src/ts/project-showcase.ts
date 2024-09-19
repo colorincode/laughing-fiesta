@@ -13,6 +13,7 @@ import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
+import Lenis from 'lenis'
 
 // globals
 let browserHash: string | null;
@@ -133,7 +134,18 @@ function mrScopertonShufflerton() {
   processImages();
   projReplacePositioningClasses();
 }
+const lenis = new Lenis()
 
+lenis.on('scroll', (e) => {
+  console.log(e)
+})
+
+function raf(time) {
+  lenis.raf(time)
+  requestAnimationFrame(raf)
+}
+
+requestAnimationFrame(raf)
 const hash = window.location.hash.substring(1);
 const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
 let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
@@ -169,10 +181,12 @@ function  seamlessLoopScroll() {
       onUpdate(self) {
         if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
           wrapForward(self);
-          console.log('wrapping forward')
+          // console.log("velocity:", self.getVelocity())
+          // console.log('wrapping forward')
         } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
           wrapBackward(self);
-          console.log('wrapping backward')
+          // console.log('wrapping backward')
+          // console.log("velocity:", self.getVelocity())
         } else {
           scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
           scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
@@ -264,7 +278,7 @@ function wrapForward(trigger) { // when the ScrollTrigger reaches the end, loop 
 function wrapBackward(trigger) { // when the ScrollTrigger reaches the start again, loop back to the end
 	iteration--;
 	if (iteration < 0) { // to keep the playhead from stopping at the beginning, we jump ahead 10 iterations
-		iteration = 9;
+		iteration = 10;
 		seamlessLoop.totalTime(seamlessLoop.totalTime() + seamlessLoop.duration() * 10);
     scrub.pause(); // otherwise it may update the totalTime right before the trigger updates 
 	}
@@ -281,7 +295,7 @@ function scrubTo(totalTime) { // moves the scroll position to the place that cor
 	} else {
 		trigger.scroll(trigger.start + progress * (trigger.end - trigger.start));
 	}
-  // trigger.wrapping = true;
+  trigger.wrapping = true;
 }
 
 function buildSeamlessLoop(items, spacing) {
@@ -441,7 +455,7 @@ function projectmaskingAnimationTransition() {
   let tl = gsap.timeline();
   tl.to(".maskingintro--element", {
     opacity: 0,
-    duration: 1.65,
+    duration: 1.25,
     
     ease: "power1.out",
     autoAlpha: 1,
@@ -461,7 +475,8 @@ sliderVerticalCentering();
 projectmaskingAnimationTransition();
 const onDOMContentLoaded = () => {
   navigation.setupNavigationEvents();
-  console.clear();
+  // console.clear();
+  // luxy.init();
   setupVideos();
   adjustXPositionIOS();
   document.querySelector(".next").addEventListener("click", () => scrubTo(scrub.vars.totalTime + spacing));
@@ -476,11 +491,15 @@ const onResize = () => {
 
 const onClick = () => {
   // navigation.checkforAnimation();
-  console.log("clicked");
+  // console.log("clicked");
 
 };
 
 const onScroll = () => {
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time)=>{
+    lenis.raf(time * 1000)
+  })
   gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
 };
 const onhashchange = () => {
@@ -500,7 +519,8 @@ if (isTrackpadDevice()) {
   let scrollTimeout;
 
   document.addEventListener('wheel', (e) => {
-    e.preventDefault();
+ 
+    // e.preventDefault();
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
 
       const scrollAmount = e.deltaX * 1;
@@ -531,13 +551,13 @@ function adjustXPositionIOS() {
 
 function isTouchDevice() {
   return (
-    ('ontouchstart' in window) ||
-    (navigator.maxTouchPoints > 0) ||
-    (window.matchMedia("(pointer: coarse)").matches)
+    ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) 
+    // ||(window.matchMedia("(pointer: coarse)").matches)
   );
 }
 
 if (isTouchDevice()) {
+  // stopOverscroll('#masterWrap');
   let startX, startY;
   let isSwiping = false;
 
@@ -557,7 +577,7 @@ if (isTouchDevice()) {
     
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       // e.preventDefault(); // this is throwing an error 
-      const scrollAmount = deltaX * 1.25;
+      const scrollAmount = deltaX * 1;
       window.scrollBy(0, scrollAmount);
       startX = currentX;
       startY = currentY;

@@ -22,7 +22,7 @@
             "publicUrl": "./"
         },
         "production": {
-           "distDir": "./production/",
+            "distDir": "./production/",
             "publicUrl": "./"
         }
     },
@@ -77,7 +77,6 @@
         "@gatsbyjs/parcel-namer-relative-to-cwd": "^2.13.1",
         "@parcel/bundler-library": "^2.11.1-canary.3149",
         "cjs-loader": "^0.1.0",
-        "curtainsjs": "^8.1.6",
         "glob": "^10.3.10",
         "gsap": "^3.12.5",
         "hsl-to-hex": "^1.0.0",

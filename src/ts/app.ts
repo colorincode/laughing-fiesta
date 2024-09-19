@@ -88,7 +88,7 @@ const loadingAnimation = () => {
     ease: "power4.in",
     // opacity: 1,
     stagger: 0,
-    duration: 1.25,
+    duration: 1,
     onInterrupt: () => {
     //set an interrupt protocol, if this animation fails to fire then nothing will be visible, it should rarely if ever have to be accessed
     tl.restart();
@@ -100,10 +100,10 @@ const loadingAnimation = () => {
   const figures = gsap.utils.toArray('.video--item')
   tl.fromTo(figures, 
     { 
-      delay: 1, // we want to set this tl delay to fire just a little bit before our outer wrap ends
+      delay: 0.7, // we want to set this tl delay to fire just a little bit before our outer wrap ends
       // opacity: 0,	
       scale: 0, 
-      duration: 1,
+      duration: 0.6,
       stagger:0.1
     },
     {
@@ -112,7 +112,7 @@ const loadingAnimation = () => {
       scale: 1, 
       autoAlpha: 1,
       stagger: 0.2,
-      duration: 1,
+      duration: 0.6,
     }
     )
 }

@@ -2,6 +2,8 @@
 @font-face {
     font-family: "Manrope";
     src: url('../../assets/fonts/Manrope-VariableFont_wght.ttf');
+    font-display: swap;
+
 }
 .hidden {
     visibility: hidden;
@@ -85,13 +87,14 @@ ul.sidenav__text>li>a {
 .about--text--inner__wrapper {
     display: flex;
     height: 100%;
-    flex-basis: 72dvw;
-    // padding: 5% 3%;
-    padding: 5dvw 3dvw 5dvw 2dvw;
+    flex-basis: 70%;
+    padding: 5% 13%;
+    // padding: 5dvw 3dvw 5dvw 2dvw;
     justify-content: center;
     box-sizing: border-box;
     @media screen and (min-width:1551px) {
-        flex-basis: 75dvw;
+        // flex-basis: 75dvw;
+        flex-basis:75%;
         // padding: 3% 5% 3% 1%;
         // max-width: 1500px;
     }
@@ -99,7 +102,8 @@ ul.sidenav__text>li>a {
         max-width: 1050px;
         height: auto;
         // padding: 5dvw 5dvw 5dvw 3dvw;
-        flex-basis: 55dvw;
+        // flex-basis: 55%;
+        flex-basis: 64%;
         width: 100%;
         height: auto;
         padding: 2.5%;
@@ -281,7 +285,6 @@ ul.sidenav__text>li>a {
 .navtext {
     line-height: 80px;
     text-align: center;
-    background-color: transparent;
     color: inherit;
     font-weight: 400;
     cursor: pointer;
@@ -291,10 +294,12 @@ ul.sidenav__text>li>a {
     position: absolute;
     top: 0;
     right: 20px; //match togglr
+    @media screen and (max-width:768px) {
+        line-height: 60px;
+    }
 }
 .navigation .toggle-wrapper span {
     text-align: center;
-    background-color: transparent;
     color: inherit;
     cursor: pointer;
     position: absolute;

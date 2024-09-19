@@ -4,6 +4,8 @@
  @font-face {
     font-family: "Manrope";
     src: url('../../assets/fonts/Manrope-VariableFont_wght.ttf');
+    font-display: swap;
+
 }
 
 .maskingintro--container {
@@ -76,9 +78,9 @@ h1,h2,h3,h4,h5,h6 {
     // background: black;
       position: absolute;
       top:0;
-      left:15px;
+      left:0;
       z-index: 999;
-      width: 99%;
+      width: 100%;
       pointer-events: none;
   }
   .topbar--global a {
@@ -88,6 +90,7 @@ h1,h2,h3,h4,h5,h6 {
     width: 150px;
     height: 125px;
     pointer-events: all;
+    margin-left:15px;
     
     @media (max-width: 768px) {
       width: 120px;
