@@ -85,7 +85,7 @@ ul.sidenav__text>li>a {
 .about--text--inner__wrapper {
     display: flex;
     height: 100%;
-    flex-basis: 60dvw;
+    flex-basis: 72dvw;
     // padding: 5% 3%;
     padding: 5dvw 3dvw 5dvw 2dvw;
     justify-content: center;
@@ -112,7 +112,7 @@ ul.sidenav__text>li>a {
         padding:2.5%;
     }
     @media screen and (max-width:414px) {
-        flex-basis: 100%;
+        flex-basis: 80%;
         width: 100%;
         height: auto;
         max-width: 414px;
@@ -265,15 +265,11 @@ ul.sidenav__text>li>a {
 // start toggle button
 .navigation .toggle-wrapper {
     border: none;
-    // height: 52px;
     height: 75px;
     width: 85px;
     pointer-events: all;
     overflow: hidden;
-    // position: absolute;
     position: fixed;
-    // top: -30px;
-    // left: calc(0px - 105px);
     background: transparent;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -283,9 +279,6 @@ ul.sidenav__text>li>a {
     }
 }
 .navtext {
-    // width: 60px;
-    // // height: 50px;
-    // height: 70px;
     line-height: 80px;
     text-align: center;
     background-color: transparent;

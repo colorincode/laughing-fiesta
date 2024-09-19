@@ -61,16 +61,18 @@ h1,h2,h3,h4,h5,h6 {
   pointer-events: auto;
 }
 .topbar--global {
-    pointer-events: auto;
+    pointer-events: none;
     position: fixed;
     top:0;
-    left:15px;
+    left:0;
     z-index: 999;
+    width: 99%;
 }
 .topbar--svg {
   width: 150px;
   height: 125px;
   pointer-events: all;
+  margin-left:15px;
   @media (max-width: 768px) {
     width: 120px;
     height: 105px;

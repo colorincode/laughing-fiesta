@@ -2,14 +2,7 @@
     "name": "colorincode-devsite",
     "browserslist": "> 0.5%, last 2 versions, not dead",
     "version": "1.0.8",
-    "source": [
-        "src/*.html",
-        "src/ts/*.ts",
-        "src/ts/**/*.ts",
-        "src/ts/**/**/*.ts",
-        "src/scss/*.scss",
-        "src/scss/**/*.scss"
-    ],
+    "source": "src/*.html",
     "web": "dist/index.html",
     "license": "MIT",
     "private": true,
@@ -29,24 +22,22 @@
             "publicUrl": "./"
         },
         "production": {
-            "context": "node",
-            "distDir": "./production/",
+           "distDir": "./production/",
             "publicUrl": "./"
         }
     },
     "scripts": {
-        "build": "parcel build './src/*.html' --target web --no-optimize --no-source-maps",
-        "test": "yarn build src/index.html --reporter @parcel/reporter-bundle-analyzer r @parcel/reporter-bundle-buddy",
+        "build": "parcel build ./src/index.html --target web --no-optimize --no-source-maps",
+        "test": "yarn build ./src/index.html --reporter @parcel/reporter-bundle-analyzer r @parcel/reporter-bundle-buddy",
         "start": "parcel --open --no-cache ./src/index.html --target web --no-source-maps",
         "clear-cache": "rimraf --glob '.parcel-cache/*'",
         "clear-dist": "rimraf --glob 'dist/*'",
         "remove-maps": "rimraf --glob 'dist/**/*.*.map'",
         "clean": "npm run clear-dist && npm run clear-cache",
         "format": "prettier --write 'dist/**/*' --no-error-on-unmatched-pattern",
-        "production": "parcel build ./src/index.html --target production --no-cache --no-source-maps --no-content-hash"
+        "production": "parcel build ./src/index.html  --target production --no-source-maps"
     },
     "devDependencies": {
-        "@parcel/bundler-library": "^2.11.1-canary.3149",
         "@parcel/compressor-gzip": "^2.12.0",
         "@parcel/diagnostic": "2.12.0",
         "@parcel/reporter-bundle-analyzer": "^2.12.0",
@@ -59,7 +50,6 @@
         "@parcel/utils": "^2.12.0",
         "@swc/helpers": "^0.5.3",
         "@types/jquery": "^3.5.30",
-        "@types/locomotive-scroll": "^4.1.3",
         "@types/node": "^20.14.10",
         "@types/three": "^0.167.1",
         "parcel": "latest",
@@ -84,7 +74,8 @@
     "dependencies": {
         "@awesome.me/kit-41423f075f": "latest",
         "@fortawesome/fontawesome-pro": "^6.6.0",
-        "@parcel/transformer-image": "^2.12.0",
+        "@gatsbyjs/parcel-namer-relative-to-cwd": "^2.13.1",
+        "@parcel/bundler-library": "^2.11.1-canary.3149",
         "cjs-loader": "^0.1.0",
         "curtainsjs": "^8.1.6",
         "glob": "^10.3.10",
@@ -94,11 +85,8 @@
         "jquery": "^3.7.0",
         "lenis": "^1.1.9",
         "lil-gui": "^0.19.2",
-        "locomotive-scroll": "^4.1.4",
-        "overlayscrollbars": "^2.3.0",
         "posthtml": "^0.16.6",
         "three": "^0.167.1",
-        "video.js": "^8.17.2",
-        "yarn": "^1.22.21"
+        "yarn": "^1.22.22"
     }
 }

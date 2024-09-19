@@ -78,8 +78,8 @@ h1,h2,h3,h4,h5,h6 {
       top:0;
       left:15px;
       z-index: 999;
-      width: 100%;
-      pointer-events: all;
+      width: 99%;
+      pointer-events: none;
   }
   .topbar--global a {
     pointer-events: auto;
@@ -88,6 +88,7 @@ h1,h2,h3,h4,h5,h6 {
     width: 150px;
     height: 125px;
     pointer-events: all;
+    
     @media (max-width: 768px) {
       width: 120px;
       height: 105px;
