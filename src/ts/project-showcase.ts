@@ -416,7 +416,14 @@ function setupVideos() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           video.play();
+          let xclick = video.parentElement?.querySelector(".xmark--atag") as HTMLElement | null;
+          if (xclick) {
+            xclick.addEventListener("touchstart", function(event) {
+              window.location.href = '/';
+            });
+          }
           document.addEventListener("click", () => {
+            // console.log("clicked");
             clicked = true;
             video.controls = true // Show controls
           });
@@ -522,9 +529,9 @@ const onScroll = () => {
   })
   // gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
 };
-const onhashchange = () => {
-  handleInitialHash();
-}
+// const onhashchange = () => {
+//   handleInitialHash();
+// }
 function isIOS() {
   return /iPad|iPhone|iPod/.test(navigator.userAgent);
 }
@@ -628,7 +635,7 @@ if (isTouchDevice()) {
 
 // eventDispatcher.addEventListener("load", onready);
 eventDispatcher.addEventListener("DOMContentLoaded", onDOMContentLoaded);
-eventDispatcher.addEventListener('hashchange', onhashchange);
+// eventDispatcher.addEventListener('hashchange', onhashchange);
 eventDispatcher.addEventListener("onResize", onResize);
 eventDispatcher.addEventListener("click", onClick);
 eventDispatcher.addEventListener("scroll", onScroll);
