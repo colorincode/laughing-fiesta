@@ -75,7 +75,7 @@ ul.sidenav__text>li>a {
     width: 100%;
     position: relative;
     display: flex;
-    flex-flow: row wrap;
+    // flex-flow: row wrap;
     justify-content: flex-start;
     @media screen and (min-width: 769px) and (max-width: 1150px) {
         flex-direction: column;

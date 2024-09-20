@@ -134,11 +134,23 @@ function mrScopertonShufflerton() {
   processImages();
   projReplacePositioningClasses();
 }
-const lenis = new Lenis()
-
-lenis.on('scroll', (e) => {
-  console.log(e)
+const lenis = new Lenis( {
+  wrapper: document.body,
+  infinite: true,
+	syncTouch: true,
+  smooth: true,
+  smoothWheel: true,
+  lerp: 0.1,
+  smoothTouch: true,
+  touchMultiplier: 2,
+  syncTouchLerp: 1,
+  touchInertiaMultiplier: 25,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  gestureOrientation: "horizontal",
+  direction: "horizontal",
 })
+
+
 
 function raf(time) {
   lenis.raf(time)
@@ -171,6 +183,7 @@ function  seamlessLoopScroll() {
     }), 
     trigger = ScrollTrigger.create({
       start: 0,
+      scrub: true,
       // trigger: 'video-matching',
       invalidateOnRefresh: true,
       // pinSpacing: false,
@@ -336,7 +349,7 @@ function buildSeamlessLoop(items, spacing) {
       {  
       opacity: 1, 
       zIndex: 100, 
-      duration: 0.5, 
+      duration: 1, 
       yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
     .fromTo(item, {
       xPercent: 420
@@ -416,7 +429,7 @@ function setupVideos() {
           video.muted = true; // Unmute the video
         }
       });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.9 });
 
     observer.observe(video);
   });
@@ -479,8 +492,14 @@ const onDOMContentLoaded = () => {
   // luxy.init();
   setupVideos();
   adjustXPositionIOS();
-  document.querySelector(".next").addEventListener("click", () => scrubTo(scrub.vars.totalTime + spacing));
-  document.querySelector(".prev").addEventListener("click", () => scrubTo(scrub.vars.totalTime - spacing));
+  document.querySelector(".next").addEventListener("click", () => 
+    scrubTo(scrub.vars.totalTime + spacing)
+
+
+);
+  document.querySelector(".prev").addEventListener("click", () => 
+    scrubTo(scrub.vars.totalTime - spacing)
+);
 };
  
 
@@ -494,13 +513,14 @@ const onClick = () => {
   // console.log("clicked");
 
 };
-
+// this._isScrolling = !1, this._isStopped = !1, this._isLocked = !1, this._preventNextNativeScrollEvent = !1, this._resetVelocityTimeout = null, this.time = 0, this.userData = {}, this.lastVelocity = 0, this.velocity = 0, this.direction = 0, this.animate = new Animate, this.emitter = new Emitter, this.onPointerDown = (t)=>{
+//   1 === t.button && this.reset();
 const onScroll = () => {
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time)=>{
     lenis.raf(time * 1000)
   })
-  gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
+  // gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
 };
 const onhashchange = () => {
   handleInitialHash();
@@ -557,33 +577,49 @@ function isTouchDevice() {
 }
 
 if (isTouchDevice()) {
-  // stopOverscroll('#masterWrap');
   let startX, startY;
   let isSwiping = false;
 
+  // Sensitivity multipliers for X and Y directions
+  const sensitivityX = 1.25; // Adjust this value to change horizontal sensitivity
+  const sensitivityY = 0.77; // Adjust this value to change vertical sensitivity
+
   document.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent default scrolling
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     isSwiping = true;
-  });
+  }, { passive: false });
 
   document.addEventListener('touchmove', (e) => {
     if (!isSwiping) return;
-    
+    e.preventDefault(); // Prevent default scrolling
+
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
-    const deltaX = startX - currentX;
-    const deltaY = startY - currentY;
+    const deltaX = (startX - currentX) * sensitivityX;
+    const deltaY = (startY - currentY) * sensitivityY;
     
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // e.preventDefault(); // this is throwing an error 
-      const scrollAmount = deltaX * 1;
-      window.scrollBy(0, scrollAmount);
-      startX = currentX;
-      startY = currentY;
+    // Calculate scroll amount based on both horizontal and vertical movement
+    const scrollAmountX = deltaX;
+    const scrollAmountY = deltaY;
+    
+    // Determine the dominant direction
+    if (Math.abs(scrollAmountX) > Math.abs(scrollAmountY)) {
+      // Horizontal swipe is dominant
+      window.scrollBy(0, scrollAmountX);
+    } else {
+      // Vertical swipe is dominant
+      window.scrollBy(0, scrollAmountY);
+    }
+    
+    startX = currentX;
+    startY = currentY;
+    
+    if (typeof onScroll === 'function') {
       onScroll();
     }
-  });
+  }, { passive: false });
 
   document.addEventListener('touchend', () => {
     isSwiping = false;
