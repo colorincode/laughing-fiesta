@@ -76,6 +76,8 @@
         "@fortawesome/fontawesome-pro": "^6.6.0",
         "@gatsbyjs/parcel-namer-relative-to-cwd": "^2.13.1",
         "@parcel/bundler-library": "^2.11.1-canary.3149",
+        "@splidejs/splide": "^4.1.4",
+        "@splidejs/splide-extension-url-hash": "^0.3.0",
         "cjs-loader": "^0.1.0",
         "glob": "^10.3.10",
         "gsap": "^3.12.5",

@@ -38,15 +38,6 @@ const videoObserver = new IntersectionObserver((entries, observer) => {
           video.loop = false;
         });
       }
-      // video.play();
-      // video.controls = true;
-      // video.autoplay = true;
-      // video.loop = true;
-
-      // thumbtextTl.restart();
-      // thumbtextTl.play();
-
-
 
     } else {
       video.pause();

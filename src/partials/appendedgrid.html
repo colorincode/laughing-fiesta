@@ -1,16 +1,26 @@
-<section id="masterWrap" class="horizontal">
-    <div class="gallery" >
-        <ul class="cards">
+<!-- <section class="splide" aria-label="Splide Basic HTML Example">
+  <div class="splide__track">
+		<ul class="splide__list">
+			<li class="splide__slide">Slide 01</li>
+			<li class="splide__slide">Slide 02</li>
+			<li class="splide__slide">Slide 03</li>
+		</ul>
+  </div>
+</section> -->
+
+<section id="masterWrap" class=" splide">
+    <div class="gallery splide__track" >
+        <ul class="cards splide__list">
          
-            <li data-hashnav="#selfie-by-flip" class="section">
+            <li data-splide-hash="#selfie-by-flip" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                     class="slider-video"
                     crossOrigin="anonymous" 
                     playsInline 
                     muted 
-                    loop="true"
-                    autoPlay 
+         
+               
                     controls
                     data-project="Selfie by Flip"
                     data-hashnav="#selfie-by-flip"
@@ -25,15 +35,15 @@
                     <source src="../assets/optimized/full/selfie-by-flip-compressed-full.mp4" type="video/mp4">
                 </video>
             </li>
-            <li data-hashnav="#food-mood" class="section" >  
+            <li data-splide-hash="#food-mood" class="section splide__slide" >  
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>  
                 <video 
                     class="slider-video"
                     crossOrigin="anonymous" 
                     playsInline 
                     muted 
-                    loop="true"
-                    autoPlay 
+          
+              
                     controls
                     preload="auto"
                     controlsList="nopictureinpicture"
@@ -46,36 +56,31 @@
                     <source src="../assets/optimized/full/food-mood-compressed-full.mp4" type="video/mp4">
                 </video>
             </li>
-            <li data-hashnav="#fold-4-launch" class="section">
+            <li data-splide-hash="#fold-4-launch" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                     class="slider-video"
                     crossOrigin="anonymous" 
                     playsInline 
-                    muted 
-                    loop="true"
-                    autoPlay 
+                    muted  
                     controls
                     preload="auto"
                     controlsList="nopictureinpicture"
                     disablepictureinpicture
                     picture-in-picture="false"
-
                     data-project="Galaxy Fold 4 Launch"
                     data-hashnav="#fold-4-launch"
                     poster="../assets/optimized/04-galaxy-fold-4-compressed.jpg">
                 <source src="../assets/optimized/full/galaxy-fold-4-launch-compressed-full.mp4" type="video/mp4">
                 </video>
             </li>
-            <li data-hashnav="#coca-cola-y3000" class="section">
+            <li data-splide-hash="#coca-cola-y3000" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                     class="slider-video"
                     crossOrigin="anonymous" 
                     playsInline 
                     muted 
-                    loop="true"
-                    autoPlay 
                     controls
                     preload="auto"
                     controlsList="nopictureinpicture"
@@ -88,15 +93,13 @@
                     <source src="../assets/optimized/full/y3000-case-film-compressed-full.mp4" type="video/mp4">
                 </video>
             </li>
-            <li data-hashnav="#tiny-type" class="section">
+            <li data-splide-hash="#tiny-type" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                   class="slider-video"
                   crossOrigin="anonymous" 
                   playsInline 
                   muted 
-                  loop="true"
-                  autoPlay 
                   controls
                   preload="auto"
                   controlsList="nopictureinpicture"
@@ -109,15 +112,13 @@
                   <source src="../assets/optimized/full/samsung-tiny-type-compressed-full.mp4" type="video/mp4">
                 </video>
             </li>
-            <li data-hashnav="#voices-of-galaxy" class="section">
+            <li data-splide-hash="#voices-of-galaxy" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                   class="slider-video"
                   crossOrigin="anonymous" 
                   playsInline 
                   muted 
-                  loop="true"
-                  autoPlay 
                   controls
                   preload="auto"
                   controlsList="nopictureinpicture"
@@ -130,15 +131,13 @@
                   <source src="../assets/optimized/full/voices-of-galaxy-compressed-full.mp4" type="video/mp4">
               </video>
             </li>
-            <li data-hashnav="#hrblock-lifes-uncertainties" class="section">
+            <li data-splide-hash="#hrblock-lifes-uncertainties" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                   class="slider-video"
                   crossOrigin="anonymous" 
                   playsInline 
                   muted 
-                  loop="true"
-                  autoPlay 
                   controls
                   preload="auto"
                   controlsList="nopictureinpicture"
@@ -152,15 +151,13 @@
                   <source src="../assets/optimized/full/hrblock-life-uncertainties-compressed-full.mp4" type="video/mp4">
               </video>
             </li>
-            <li data-hashnav="#lenovo-thinkpad-mountain" class="section">  
+            <li data-splide-hash="#lenovo-thinkpad-mountain" class="section splide__slide">  
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                     class="slider-video"
                     crossOrigin="anonymous" 
                     playsInline 
                     muted 
-                    loop="true"
-                    autoPlay 
                     controls
                     preload="auto"
                     controlsList="nopictureinpicture"
@@ -174,15 +171,13 @@
                     <source src="../assets/optimized/full/lenovo-thinkpad-mountain-compressed-full.mp4" type="video/mp4">
                 </video>
             </li>
-            <li data-hashnav="#flip-and-fold" class="section">
+            <li data-splide-hash="#flip-and-fold" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                     class="slider-video"
                     crossOrigin="anonymous" 
                     playsInline 
                     muted 
-                    loop="true"
-                    autoPlay 
                     controls
                     data-project="Flip and Fold Launch"
                     data-hashnav="#flip-and-fold"
@@ -195,34 +190,31 @@
                     <source src="../assets/optimized/full/flip-and-fold-launch-compressed-full.mp4" type="video/mp4" >
                 </video>
             </li>
-            <li data-hashnav="#voices-of-galaxy" class="section">
+            <li data-splide-hash="#voices-of-galaxy" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                   class="slider-video"
                   crossOrigin="anonymous" 
                   playsInline 
                   muted 
-                  loop="true"
                   data-project="Samsung Voices of Galaxy"
                   data-hashnav="#voices-of-galaxy"
                   controls
                   preload="auto"
                   controlsList="nopictureinpicture"
-                    disablepictureinpicture
-                    picture-in-picture="false"
-
+                  disablepictureinpicture
+                  picture-in-picture="false"
                   poster="../assets/optimized/06-voices-of-galaxy-compressed.jpg">
                   <source src="../assets/optimized/full/voices-of-galaxy-compressed-full.mp4" type="video/mp4">
               </video>
             </li>
-            <li data-hashnav="#burn-book-case-study" class="section">
+            <li data-splide-hash="#burn-book-case-study" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                   class="slider-video"
                   crossOrigin="anonymous" 
                   playsInline 
                   muted 
-                  loop="true"
                   data-project="Last Prisoner Project x Field Trip"
                   data-hashnav="#burn-book-case-study"
                   controls
@@ -236,14 +228,13 @@
                   <source src="../assets/optimized/full/burnbook-casestudy-compressed-full.mp4" type="video/mp4">
               </video>
             </li>
-            <li data-hashnav="#apple-at-work" class="section">
+            <li data-splide-hash="#apple-at-work" class="section splide__slide">
                 <div class="panel-overlay-text"><a href="https://specialprojectsgroup.xyz/"><i class="fa-sharp fa-regular fa-xmark fa-fw panel-overlay-x"></i></a></div>
                 <video 
                   class="slider-video"
                   crossOrigin="anonymous" 
                   playsInline 
                   muted 
-                  loop="true"
                   data-project="Apple At Work"
                   data-hashnav="#apple-at-work"
                   controls
@@ -257,12 +248,11 @@
               </video>
             </li>
         </ul>
-        <div class="prev--centering--div">
-            <button class="prev"><i class="fa-duotone fa-solid fa-arrow-left"></i></button>
+        <div class="prev--centering--div splide__arrows splide__arrows--ltr">
+            <button class="prev splide__arrow splide__arrow--prev" type="button" aria-label="Previous slide" aria-controls="masterWrap-track"><i class="fa-duotone fa-solid fa-arrow-left"></i></button>
         </div>
-        <div class="next--centering--div">
-            <button class="next"><i class="fa-duotone fa-solid fa-arrow-right"></i></button>
+        <div class="next--centering--div splide__arrows splide__arrows--ltr">
+            <button class=" splide__arrow splide__arrow--next next" type="button" aria-label="Next slide" aria-controls="masterWrap-track"><i class="fa-duotone fa-solid fa-arrow-right"></i></button>
         </div>
-    </div>
-
+        
     </section>

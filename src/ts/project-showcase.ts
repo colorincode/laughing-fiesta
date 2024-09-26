@@ -14,6 +14,8 @@ import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
 import Lenis from 'lenis'
+import Splide from '@splidejs/splide';
+import { URLHash } from '@splidejs/splide-extension-url-hash';
 
 // globals
 let browserHash: string | null;
@@ -41,7 +43,7 @@ function reorderListItems() {
   }
   const lis = Array.from(ul.querySelectorAll('li'));
   if (browserHash) {
-    const matchingLi = lis.find(li => li.getAttribute('data-hashnav') === browserHash);
+    const matchingLi = lis.find(li => li.getAttribute('data-splide-hash') === browserHash);
     if (matchingLi) {
       ul.removeChild(matchingLi);
       ul.insertBefore(matchingLi, ul.firstChild);
@@ -134,81 +136,144 @@ function mrScopertonShufflerton() {
   processImages();
   projReplacePositioningClasses();
 }
-const lenis = new Lenis( {
-  wrapper: document.body,
-  infinite: true,
-	syncTouch: true,
-  smooth: true,
-  smoothWheel: true,
-  lerp: 0.1,
-  smoothTouch: true,
-  touchMultiplier: 2,
-  syncTouchLerp: 1,
-  touchInertiaMultiplier: 25,
-  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  gestureOrientation: "horizontal",
-  direction: "horizontal",
-})
+
+
+let splide =new Splide( '.splide', {
+  type   : 'loop',
+  rewind      : true,
+  rewindByDrag: true,
+  // drag   : 'free',
+  // autoWidth: true,
+  // direction: "ltr",
+  fixedHeight    : '32rem',
+  fixedWidth : "52rem",
+  gap        : '4rem',
+  // snap   : true,
+  arrows:true,
+  perPage: 3,
+  focus  : 'center',
+  lazyLoad: 'nearby',
+  // trimSpace : 'move',
+  wheel       : true,
+  releaseWheel: true,
+  noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
+  // pagination: '',
+  easing : "cubic-bezier(0.25, 1, 0.5, 1)",
+  breakpoints: {
+		640: {
+      // destroy : "completely",
+      perPage: 3,
+      focus  : 'center',
+      // autoWidth: "true",
+      // heightRatio: 0.75,
+      noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
+      fixedHeight    : '16rem',
+      fixedWidth : "33rem",
+      type   : 'loop',
+      rewind      : true,
+      rewindByDrag: true,
+      // lazyLoad: 'nearby',
+		},
+  },
+    dragMinThreshold: {
+      mouse: 0,
+      touch: 10,
+    },
+  
+} );
+  splide.mount({ URLHash });
+
+  //  mm.add("(max-width: 412px)", () => {
+  //   if ('.splide') {
+    
+  //   } else {
+  //     console.error('splide element not found');
+  //   }
+
+  // })
+
+  // if (cardsElement) {
+  //   cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
+
+  // } else {
+  //   console.error('Cards element not found');
+  // } 
+
+// const lenis = new Lenis( {
+//   wrapper: document.body,
+//   // infinite: true,
+// 	// syncTouch: true,
+//   smooth: true,
+//   // smoothWheel: true,
+//   // // lerp: 0.1,
+//   // // smoothTouch: true,
+//   // touchMultiplier: 2,
+//   // syncTouchLerp: 1,
+//   // touchInertiaMultiplier: 25,
+//   // easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+//   // gestureOrientation: "horizontal",
+//   // direction: "horizontal",
+// })
 
 
 
-function raf(time) {
-  lenis.raf(time)
-  requestAnimationFrame(raf)
-}
+// function raf(time) {
+//   lenis.raf(time)
+//   requestAnimationFrame(raf)
+// }
 
-requestAnimationFrame(raf)
-const hash = window.location.hash.substring(1);
-const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
-let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
-let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
+// requestAnimationFrame(raf)
+// const hash = window.location.hash.substring(1);
+// const videoArray = gsap.utils.toArray('.slider-video') as HTMLElement[];
+// let videoWrap = gsap.utils.selector('#masterWrap'); //find videos only on master wrap
+// let videoHashElems = videoWrap(`[data-hashnav="#${hash}"]`); 
 
 // updateDOMFromArray(cardsArray).then(() => {
-  let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
-// });
+//   let { iteration, seamlessLoop, scrub, trigger, spacing } = seamlessLoopScroll();
+// // });
 
-function  seamlessLoopScroll() {
+// function  seamlessLoopScroll() {
 
 
-  let iteration = 0; // gets iterated when we scroll all the way to the end or start and wraps around 
-  const spacing = 0.1, // (stagger)
-    snap = gsap.utils.snap(spacing), // we'll use this to snap the playhead on the seamlessLoop
-    cards = gsap.utils.toArray('.cards li'), 
-    seamlessLoop = buildSeamlessLoop(cards, spacing), 
-    scrub = gsap.to(seamlessLoop, {
-      totalTime: 0,
-      duration: 0.5,
-      ease: "power3",
-      paused: true
-    }), 
-    trigger = ScrollTrigger.create({
-      start: 0,
-      scrub: true,
-      // trigger: 'video-matching',
-      invalidateOnRefresh: true,
-      // pinSpacing: false,
-      // markers: {startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20},
-      onEnter: () => {
-        // console.log("scrolltrigger entered");
-      },
-      onUpdate(self) {
-        if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
-          wrapForward(self);
-          // console.log("velocity:", self.getVelocity())
-          // console.log('wrapping forward')
-        } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
-          wrapBackward(self);
-          // console.log('wrapping backward')
-          // console.log("velocity:", self.getVelocity())
-        } else {
-          scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
-          scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
-          self.wrapping = false;
-        }
-    },
-      end: "+=3000",
-      pin: ".gallery"
-    });
+//   let iteration = 0; // gets iterated when we scroll all the way to the end or start and wraps around 
+//   const spacing = 0.1, // (stagger)
+//     snap = gsap.utils.snap(spacing), // we'll use this to snap the playhead on the seamlessLoop
+//     cards = gsap.utils.toArray('.cards li'), 
+//     seamlessLoop = buildSeamlessLoop(cards, spacing), 
+//     scrub = gsap.to(seamlessLoop, {
+//       totalTime: 0,
+//       duration: 0.5,
+//       ease: "power3",
+//       paused: true
+//     }), 
+//     trigger = ScrollTrigger.create({
+//       start: 0,
+//       scrub: true,
+//       // trigger: 'video-matching',
+//       invalidateOnRefresh: true,
+//       // pinSpacing: false,
+//       // markers: {startColor: "white", endColor: "white", fontSize: "18px", fontWeight: "bold", indent: 20},
+//       onEnter: () => {
+//         // console.log("scrolltrigger entered");
+//       },
+//       onUpdate(self) {
+//         if (self.progress === 1 && self.direction > 0 && !self.wrapping) {
+//           wrapForward(self);
+//           // console.log("velocity:", self.getVelocity())
+//           // console.log('wrapping forward')
+//         } else if (self.progress < 1e-5 && self.direction < 0 && !self.wrapping) {
+//           wrapBackward(self);
+//           // console.log('wrapping backward')
+//           // console.log("velocity:", self.getVelocity())
+//         } else {
+//           scrub.vars.totalTime = snap((iteration + self.progress) * seamlessLoop.duration());
+//           scrub.invalidate().restart(); // to improve performance, we just invalidate and restart the same tween.
+//           self.wrapping = false;
+//         }
+//     },
+//       end: "+=3000",
+//       pin: ".gallery"
+//     });
     // let mm = gsap.matchMedia();
     // let maxWidth = 0;
 
@@ -279,85 +344,85 @@ function  seamlessLoopScroll() {
     //   // tolerance: 10,
     //   // preventDefault: true
     // });
-  return { iteration, seamlessLoop, scrub, trigger, spacing };
-}
+//   return { iteration, seamlessLoop, scrub, trigger, spacing };
+// }
 
-function wrapForward(trigger) { // when the ScrollTrigger reaches the end, loop back to the beginning
-	iteration++;
-	trigger.wrapping = true;
-	trigger.scroll(trigger.start + 1);
-}
+// function wrapForward(trigger) { // when the ScrollTrigger reaches the end, loop back to the beginning
+// 	iteration++;
+// 	trigger.wrapping = true;
+// 	trigger.scroll(trigger.start + 1);
+// }
 
-function wrapBackward(trigger) { // when the ScrollTrigger reaches the start again, loop back to the end
-	iteration--;
-	if (iteration < 0) { // to keep the playhead from stopping at the beginning, we jump ahead 10 iterations
-		iteration = 10;
-		seamlessLoop.totalTime(seamlessLoop.totalTime() + seamlessLoop.duration() * 10);
-    scrub.pause(); // otherwise it may update the totalTime right before the trigger updates 
-	}
-	trigger.wrapping = true;
-	trigger.scroll(trigger.end - 1);
-}
+// function wrapBackward(trigger) { // when the ScrollTrigger reaches the start again, loop back to the end
+// 	iteration--;
+// 	if (iteration < 0) { // to keep the playhead from stopping at the beginning, we jump ahead 10 iterations
+// 		iteration = 10;
+// 		seamlessLoop.totalTime(seamlessLoop.totalTime() + seamlessLoop.duration() * 10);
+//     scrub.pause(); // otherwise it may update the totalTime right before the trigger updates 
+// 	}
+// 	trigger.wrapping = true;
+// 	trigger.scroll(trigger.end - 1);
+// }
 
-function scrubTo(totalTime) { // moves the scroll position to the place that corresponds to the totalTime value of the seamlessLoop
-	let progress = (totalTime - seamlessLoop.duration() * iteration) / seamlessLoop.duration();
-	if (progress > 1) {
-		wrapForward(trigger);
-	} else if (progress < 0) {
-		wrapBackward(trigger);
-	} else {
-		trigger.scroll(trigger.start + progress * (trigger.end - trigger.start));
-	}
-  trigger.wrapping = true;
-}
+// function scrubTo(totalTime) { // moves the scroll position to the place that corresponds to the totalTime value of the seamlessLoop
+// 	let progress = (totalTime - seamlessLoop.duration() * iteration) / seamlessLoop.duration();
+// 	if (progress > 1) {
+// 		wrapForward(trigger);
+// 	} else if (progress < 0) {
+// 		wrapBackward(trigger);
+// 	} else {
+// 		trigger.scroll(trigger.start + progress * (trigger.end - trigger.start));
+// 	}
+//   trigger.wrapping = true;
+// }
 
-function buildSeamlessLoop(items, spacing) {
+// function buildSeamlessLoop(items, spacing) {
 
-	let overlap = Math.ceil(1 / spacing), //  accommodate the seamless looping
-		startTime = items.length * spacing + 0.5, // the time on the rawSequence at which we'll start the seamless loop
-		loopTime = (items.length + overlap) * spacing + 1, // the spot at the end where we loop back to the startTime 
-		rawSequence = gsap.timeline({paused: true}), // this is where all the "real" animations live
-		seamlessLoop = gsap.timeline({ // this merely scrubs the playhead of the rawSequence so that it appears to seamlessly loop
-			paused: true,
-			repeat: -1, // to accommodate infinite scrolling/looping
-			onRepeat() { // may be overkill
-				this._time === this._dur && (this._tTime += this._dur - 0.01);
-			}
-		}),
-		l = items.length + overlap * 2,
-		time = 0,
-		i, index, item;
+// 	let overlap = Math.ceil(1 / spacing), //  accommodate the seamless looping
+// 		startTime = items.length * spacing + 0.5, // the time on the rawSequence at which we'll start the seamless loop
+// 		loopTime = (items.length + overlap) * spacing + 1, // the spot at the end where we loop back to the startTime 
+// 		rawSequence = gsap.timeline({paused: true}), // this is where all the "real" animations live
+// 		seamlessLoop = gsap.timeline({ // this merely scrubs the playhead of the rawSequence so that it appears to seamlessly loop
+// 			paused: true,
+// 			repeat: -1, // to accommodate infinite scrolling/looping
+// 			onRepeat() { // may be overkill
+// 				this._time === this._dur && (this._tTime += this._dur - 0.01);
+// 			}
+// 		}),
+// 		l = items.length + overlap * 2,
+// 		time = 0,
+// 		i, index, item;
 
-  // set initial state of items
-  gsap.set(items, {
-    xPercent: 'auto', 
-    opacity:1,  
-    marginRight: 0,
-    marginLeft: 0,
-    paddingLeft:'10%', 
-    paddingRight: '10%',
-  });
+//   // set initial state of items
+//   gsap.set(items, {
+//     xPercent: 'auto', 
+//     opacity:1,  
+//     marginRight: 0,
+//     marginLeft: 0,
+//     paddingLeft:'10%', 
+//     paddingRight: '10%',
+//   });
 
-  for (i = 0; i < l; i++) { 
-    index = i % items.length;
-    item = items[index];
-    time = i * spacing;
-    rawSequence
+//   for (i = 0; i < l; i++) { 
+//     index = i % items.length;
+//     item = items[index];
+//     time = i * spacing;
+//     rawSequence
   
-    .fromTo(item, {
-      opacity: 1}, 
-      {  
-      opacity: 1, 
-      zIndex: 100, 
-      duration: 1, 
-      yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
-    .fromTo(item, {
-      xPercent: 420
-    }, {
-      xPercent: -420, 
-      duration: 1, ease: "none", immediateRender:true}, time);
-    i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
-  }
+//     .fromTo(item, {
+//       opacity: 1}, 
+//       {  
+//       opacity: 1, 
+//       zIndex: 100, 
+//       duration: 1, 
+//       yoyo: true, repeat: 1, ease: "power1.in", immediateRender: true}, time)
+//     .fromTo(item, {
+//       xPercent: 420
+//     }, {
+//       xPercent: -420, 
+//       duration: 1, ease: "none", immediateRender:true}, time);
+//     i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
+//   }
 
 //   function toIndex(index, vars) {
 //     vars = vars || {};
@@ -386,89 +451,71 @@ function buildSeamlessLoop(items, spacing) {
 //   }
 //   return tl;
 // }
-gsap.timeline({}) //overkill prob
+// gsap.timeline({}) //overkill prob
 
-.addLabel('start', startTime)  //overkill prob
-	// set up the scrubbing of the playhead to make it appear seamless. 
-	rawSequence.time(startTime);
-  // rawSequence.addLabel("time", time);
-  seamlessLoop.addLabel("start", time);
-	seamlessLoop.to(rawSequence, {
-		time: loopTime,
-		duration: loopTime - startTime,
-		ease: "none",
-	}).fromTo(rawSequence, {time: overlap * spacing + 1}, {
-		time: startTime,
-		duration: startTime - (overlap * spacing + 1),
-		immediateRender: false,
-		ease: "none"
-	});
-	return seamlessLoop;
-}
+// .addLabel('start', startTime)  //overkill prob
+// 	// set up the scrubbing of the playhead to make it appear seamless. 
+// 	rawSequence.time(startTime);
+//   // rawSequence.addLabel("time", time);
+//   seamlessLoop.addLabel("start", time);
+// 	seamlessLoop.to(rawSequence, {
+// 		time: loopTime,
+// 		duration: loopTime - startTime,
+// 		ease: "none",
+// 	}).fromTo(rawSequence, {time: overlap * spacing + 1}, {
+// 		time: startTime,
+// 		duration: startTime - (overlap * spacing + 1),
+// 		immediateRender: false,
+// 		ease: "none"
+// 	});
+// 	return seamlessLoop;
+// }
 
 function setupVideos() {
-  let videos = gsap.utils.toArray('.slider-video') as HTMLVideoElement[];
+  const videos = document.querySelectorAll('.slider-video');
   //this is to avoid null throws on video only for mobile
   let clicked = false;
-
-  videos.forEach((video) => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
+        const video = entry.target as HTMLVideoElement;
         if (entry.isIntersecting) {
+     
+              // Automatic playback started!
+              // Show playing UI.
           video.play();
+          video.autoplay = true;
+          video.controls = true // Show controls
+          video.muted = false; // Unmute the video
+          playXMarkForVideo(video);
           let xclick = video.parentElement?.querySelector(".xmark--atag") as HTMLElement | null;
           if (xclick) {
             xclick.addEventListener("touchstart", function(event) {
               window.location.href = '/';
             });
+            xclick.addEventListener("click", function(event) {
+              window.location.href = '/';
+            });
           }
-          document.addEventListener("click", () => {
-            // console.log("clicked");
-            clicked = true;
-            video.controls = true // Show controls
-          });
-          video.controls = true // Show controls
-          video.muted = false; // Unmute the video
-          playXMarkForVideo(video);
-        } else {
-          video.pause();
-          video.controls = false; // hide controls
-          video.muted = true; // Unmute the video
-        }
-      });
-    }, { threshold: 0.9 });
-
-    observer.observe(video);
-  });
+  } else {
+    video.pause();
+    video.controls = false;
+    video.autoplay = false;
+    video.muted = true;
+    video.loop = false;
+    // thumbtextTl.pause();
+  }
+});
+}, { threshold: 0.5 });
+videos.forEach(video => {
+  observer.observe(video as HTMLVideoElement);
+});
 }
+
 
 function sliderVerticalCentering() {
   const windowHeight = window.innerHeight;
   const sectionElement = document.querySelector('.section') as HTMLElement;
-  
-  if (!sectionElement) {
-    console.error('Section element not found');
-    return;
-  }
 
-  const remainingSpace = windowHeight - sectionElement.offsetHeight;
-
-  const cardsElement = document.querySelector('.cards') as HTMLElement;
-  mm.add("(max-width: 412px)", () => {
-    if (cardsElement) {
-      cardsElement.style.marginTop = `200px`;
-    } else {
-      console.error('Cards element not found');
-    }
-
-  })
-
-  if (cardsElement) {
-    cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
-
-  } else {
-    console.error('Cards element not found');
-  }
 }
 // proj animation transition 
 function projectmaskingAnimationTransition() {
@@ -476,9 +523,8 @@ function projectmaskingAnimationTransition() {
   tl.to(".maskingintro--element", {
     opacity: 0,
     duration: 1.25,
-    
     ease: "power1.out",
-    autoAlpha: 1,
+    autoAlpha: 0,
   }, 0)
   .then(() => {
     setTimeout(() => {
@@ -487,8 +533,6 @@ function projectmaskingAnimationTransition() {
   });
 }
 
-// reorderListItems();
-// sliderVerticalCentering();
 window.addEventListener('resize', sliderVerticalCentering);
 
 sliderVerticalCentering();
@@ -496,23 +540,15 @@ projectmaskingAnimationTransition();
 const onDOMContentLoaded = () => {
   navigation.setupNavigationEvents();
   // console.clear();
-  // luxy.init();
   setupVideos();
   adjustXPositionIOS();
-  document.querySelector(".next").addEventListener("click", () => 
-    scrubTo(scrub.vars.totalTime + spacing)
-
-
-);
-  document.querySelector(".prev").addEventListener("click", () => 
-    scrubTo(scrub.vars.totalTime - spacing)
-);
 };
  
 
 const onResize = () => {
   sliderVerticalCentering();
-  // gsap.ticker.tick();
+  splide.refresh();
+  splide.mount({ URLHash });
 }
 
 const onClick = () => {
@@ -523,10 +559,10 @@ const onClick = () => {
 // this._isScrolling = !1, this._isStopped = !1, this._isLocked = !1, this._preventNextNativeScrollEvent = !1, this._resetVelocityTimeout = null, this.time = 0, this.userData = {}, this.lastVelocity = 0, this.velocity = 0, this.direction = 0, this.animate = new Animate, this.emitter = new Emitter, this.onPointerDown = (t)=>{
 //   1 === t.button && this.reset();
 const onScroll = () => {
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time)=>{
-    lenis.raf(time * 1000)
-  })
+  // lenis.on('scroll', Splide.STATES.SCROLLING);
+  // gsap.ticker.add((time)=>{
+  //   lenis.raf(time * 1000)
+  // })
   // gsap.ticker.lagSmoothing(0); // adjust for a small jump in the tweening
 };
 // const onhashchange = () => {
@@ -542,28 +578,28 @@ function isTrackpadDevice() {
   );
 }
 if (isTrackpadDevice()) {
-  let isScrolling = false;
-  let scrollTimeout;
+  // let isScrolling = false;
+  // let scrollTimeout;
 
-  document.addEventListener('wheel', (e) => {
+  // document.addEventListener('wheel', (e) => {
  
-    // e.preventDefault();
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+  //   // e.preventDefault();
+  //   if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
 
-      const scrollAmount = e.deltaX * 1;
+  //     const scrollAmount = e.deltaX * 1;
 
-      window.scrollBy(0, scrollAmount);
+  //     window.scrollBy(0, scrollAmount);
 
-      onScroll();
+  //     onScroll();
 
-      isScrolling = true;
+  //     isScrolling = true;
 
-      clearTimeout(scrollTimeout!);
-      scrollTimeout = setTimeout(() => {
-        isScrolling = false;
-      }, 150);
-    }
-  }, { passive: false });
+  //     clearTimeout(scrollTimeout!);
+  //     scrollTimeout = setTimeout(() => {
+  //       isScrolling = false;
+  //     }, 150);
+  //   }
+  // }, { passive: false });
 }
 function adjustXPositionIOS() {
   if (isIOS()) {
@@ -584,53 +620,53 @@ function isTouchDevice() {
 }
 
 if (isTouchDevice()) {
-  let startX, startY;
-  let isSwiping = false;
+  // let startX, startY;
+  // let isSwiping = false;
 
-  // Sensitivity multipliers for X and Y directions
-  const sensitivityX = 1.25; // Adjust this value to change horizontal sensitivity
-  const sensitivityY = 0.77; // Adjust this value to change vertical sensitivity
+  // // Sensitivity multipliers for X and Y directions
+  // const sensitivityX = 1.25; // Adjust this value to change horizontal sensitivity
+  // const sensitivityY = 0.77; // Adjust this value to change vertical sensitivity
 
-  document.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // Prevent default scrolling
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    isSwiping = true;
-  }, { passive: false });
+  // document.addEventListener('touchstart', (e) => {
+  //   e.preventDefault(); // Prevent default scrolling
+  //   startX = e.touches[0].clientX;
+  //   startY = e.touches[0].clientY;
+  //   isSwiping = true;
+  // }, { passive: false });
 
-  document.addEventListener('touchmove', (e) => {
-    if (!isSwiping) return;
-    e.preventDefault(); // Prevent default scrolling
+  // document.addEventListener('touchmove', (e) => {
+  //   if (!isSwiping) return;
+  //   e.preventDefault(); // Prevent default scrolling
 
-    const currentX = e.touches[0].clientX;
-    const currentY = e.touches[0].clientY;
-    const deltaX = (startX - currentX) * sensitivityX;
-    const deltaY = (startY - currentY) * sensitivityY;
+  //   const currentX = e.touches[0].clientX;
+  //   const currentY = e.touches[0].clientY;
+  //   const deltaX = (startX - currentX) * sensitivityX;
+  //   const deltaY = (startY - currentY) * sensitivityY;
     
-    // Calculate scroll amount based on both horizontal and vertical movement
-    const scrollAmountX = deltaX;
-    const scrollAmountY = deltaY;
+  //   // Calculate scroll amount based on both horizontal and vertical movement
+  //   const scrollAmountX = deltaX;
+  //   const scrollAmountY = deltaY;
     
-    // Determine the dominant direction
-    if (Math.abs(scrollAmountX) > Math.abs(scrollAmountY)) {
-      // Horizontal swipe is dominant
-      window.scrollBy(0, scrollAmountX);
-    } else {
-      // Vertical swipe is dominant
-      window.scrollBy(0, scrollAmountY);
-    }
+  //   // Determine the dominant direction
+  //   if (Math.abs(scrollAmountX) > Math.abs(scrollAmountY)) {
+  //     // Horizontal swipe is dominant
+  //     window.scrollBy(0, scrollAmountX);
+  //   } else {
+  //     // Vertical swipe is dominant
+  //     window.scrollBy(0, scrollAmountY);
+  //   }
     
-    startX = currentX;
-    startY = currentY;
+  //   startX = currentX;
+  //   startY = currentY;
     
-    if (typeof onScroll === 'function') {
-      onScroll();
-    }
-  }, { passive: false });
+  //   if (typeof onScroll === 'function') {
+  //     onScroll();
+  //   }
+  // }, { passive: false });
 
-  document.addEventListener('touchend', () => {
-    isSwiping = false;
-  });
+  // document.addEventListener('touchend', () => {
+  //   isSwiping = false;
+  // });
 }
 
 // eventDispatcher.addEventListener("load", onready);
