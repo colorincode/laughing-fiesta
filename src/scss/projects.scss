@@ -1,6 +1,14 @@
 // @forward './style.scss';
 // @use './style.scss' as *;
 @use './helpers.scss' as *;
+$play-button-background-color: #ccc !default;
+$play-button-color: #000 !default;
+$play-button-width: 40px !default;
+$play-button-height: 40px !default;
+$play-button-border-radius: 50% !default;
+$play-icon-width: 9px !default;
+$play-icon-height: 17px !default;
+$play-button-transition: opacity .1s linear !default;
 
 //// resets 
 @font-face {
@@ -630,7 +638,7 @@ h1,h2,h3,h4,h5,h6 {
   margin-top: 170px;
   @media screen and (max-width:768px) {
     // border:var(--set-dev-border-2);
-    margin-top: 40dvh;
+    margin-top: 30dvh;
   }
 }
 
@@ -659,6 +667,11 @@ h1,h2,h3,h4,h5,h6 {
   text-align: center;
   line-height: 1rem;
   font-size: 1rem;
+  @media screen and (max-width:451px){
+    width: auto;
+    height: 100%;
+    // max-height:18rem;
+  }
   // background-color: #9d7cce;
   // border: 20px solid black;
   // position: absolute;
@@ -829,10 +842,10 @@ h1,h2,h3,h4,h5,h6 {
     font-size: 2rem;
   }
   @media screen and (max-width:768px){
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   @media screen and (max-width:414px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
 .prev--centering--div  {
@@ -873,10 +886,10 @@ h1,h2,h3,h4,h5,h6 {
     font-size: 2rem;
   }
   @media screen and (max-width:768px){
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   @media screen and (max-width:414px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
 .prev:hover {
@@ -891,269 +904,98 @@ h1,h2,h3,h4,h5,h6 {
   --fa-secondary-opacity: 0.8;
   color: #f8f3f4fb;
 }
-// button {
-//   display:inline-block;
-//   outline: none;
-//   border: none;
-//   padding: 8px 14px;
-//   background: #414141;
-//   background-image: -webkit-linear-gradient(top, #575757, #414141);
-//   background-image: -moz-linear-gradient(top, #575757, #414141);
-//   background-image: -ms-linear-gradient(top, #575757, #414141);
-//   background-image: -o-linear-gradient(top, #575757, #414141);
-//   background-image: linear-gradient(to bottom, #575757, #414141);
-//   text-shadow: 0px 1px 0px #414141;
-//   -webkit-box-shadow: 0px 1px 0px 414141;
-//   -moz-box-shadow: 0px 1px 0px 414141;
-//   box-shadow: 0px 1px 0px 414141;
-//   color: #ffffff;
-//   text-decoration: none;
-//   margin: 0 auto 10px;
-//   -webkit-border-radius: 4;
-//   -moz-border-radius: 4;
-//   border-radius: 4px;
-//   padding: 12px 25px;
-//   font-family: Mori;
-//   font-weight:400;
-//   text-transform: uppercase;
-//   font-weight: 600;
-//   cursor: pointer;
-//   font-size: 20px;
-//   line-height: 18px;
-// }
 
-// button:hover {
-//   background: #57a818;
-//   background-image: -webkit-linear-gradient(top, #57a818, #4d9916);
-//   background-image: -moz-linear-gradient(top, #57a818, #4d9916);
-//   background-image: -ms-linear-gradient(top, #57a818, #4d9916);
-//   background-image: -o-linear-gradient(top, #57a818, #4d9916);
-//   background-image: linear-gradient(to bottom, #57a818, #4d9916);
-//   text-shadow: 0px 1px 0px #32610e;
-//   -webkit-box-shadow: 0px 1px 0px fefefe;
-//   -moz-box-shadow: 0px 1px 0px fefefe;
-//   box-shadow: 0px 1px 0px fefefe;
-//   color: #ffffff;
-//   text-decoration: none;
-// }
-// .prev {
-//   display: inline-grid;
-// }
-// newwww
+.splide:not( .is-overflow ) .splide__list {
+  justify-content: center;
+}
+.splide:not( .is-overflow ) .splide__slide:last-child {
+  margin: 0 !important;
+}
 
-// @media screen {
+.splide {
+  $root: &;
+
+  &__slide {
+    &--has-video {
+      cursor: pointer;
+
+      &:hover {
+        #{ $root }__video {
+          &__play {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    &__container {
+      &--has-video {
+        cursor: pointer;
+        position: relative;
+
+        &:hover {
+          #{ $root }__video {
+            &__play {
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 
-//   /*** layout ***/
+.splide {
+  $root: &;
 
-//   .flex-wrapper {
-//       display: -webkit-box;
-//       display: -moz-box;
-//       display: -ms-flexbox;
-//       display: flexbox;
-//       display: -moz-flex;
-//       display: -o-flex;
-//       display: -webkit-flex;
-//       display: -ms-flex;
-//       display: flex;
-//       -moz-flex-wrap: wrap;
-//       -ms-flex-wrap: wrap;
-//       -o-flex-wrap: wrap;
-//       -webkit-flex-wrap: wrap;
-//       flex-wrap: wrap;
-//   }
+  &__video {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
 
-//   #page-wrap {
-//       width: 100%;
-//       height: 100vh;
+    &__wrapper {
+      background: #000;
+      height: inherit;
+      width: inherit;
 
-//       overflow: hidden;
-//       background: black;
-//   }
+      // div is for Vimeo
+      div,
+      iframe,
+      video {
+        height: 100%;
+        width: 100%;
+      }
+    }
 
-//   #content {
-//       opacity: 0;
-//       pointer-events: none;
-//   }
+    &__play {
+      align-items: center;
+      background: $play-button-background-color;
+      border: 0;
+      border-radius: $play-button-border-radius;
+      cursor: pointer;
+      display: flex;
+      height: $play-button-height;
+      justify-content: center;
+      left: 50%;
+      opacity: .7;
+      position: absolute;
+      top: 50%;
+      transform: translate( -50%, -50% );
+      transition: $play-button-transition;
+      width: $play-button-width;
 
-//   #page-wrap.load-images #content {
-//       opacity: 1;
-//       pointer-events: auto;
-//   }
-
-//   #load-images-wrapper {
-//       position: absolute;
-//       top: 0;
-//       right: 0;
-//       bottom: 0;
-//       left: 0;
-
-//       z-index: 30;
-
-//       justify-content: center;
-//       align-items: center;
-//       align-content: center;
-//   }
-
-//   #page-wrap.load-images #load-images-wrapper {
-//       display: none;
-//   }
-
-//   #load-images {
-//       cursor: pointer;
-//       display: inline-block;
-//       padding: 0.25em 0.5em;
-//       margin: 0 20px;
-//       background: black;
-//       color: white;
-//   }
-
-//   /*** canvas ***/
-
-//   // #canvas {
-//   //     position: absolute;
-//   //     top: 0;
-//   //     right: 0;
-//   //     bottom: 0;
-//   //     left: 0;
-
-//   //     z-index: 10;
-//   // }
-
-
-
-//   .async-textures {
-//       position: absolute;
-//       top: 15%;
-//       right: 15%;
-//       bottom: 15%;
-//       left: 15%;
-//       z-index: 15;
-
-//       cursor: pointer;
-//       font-size: 3em;
-//       color: white;
-
-//       justify-content: center;
-//       align-items: center;
-//       align-content: center;
-
-//   }
-
-//   .async-textures img {
-//       display: none;
-//   }
-
-
-//   #async-textures-wrapper {
-//       position: absolute;
-//       top: 0;
-//       right: 0;
-//       bottom: 0;
-//       left: 0;
-
-//       z-index: 5;
-//   }
-
-//   .image-wrapper {
-//       position: absolute;
-//       top: 0;
-//       right: 0;
-//       bottom: 0;
-//       left: 0;
-//       display: flex;
-//   }
-
-//   #async-textures-wrapper img {
-//       display: block;
-//       min-width: 100%;
-//       min-height: 100%;
-//       width: auto;
-//       height: auto;
-
-//       object-fit: cover;
-
-//       transition: opacity 1s ease-in;
-//   }
-
-//   #async-textures-wrapper .image-wrapper:last-child img {
-//       opacity: 0;
-//   }
-
-//   #async-textures-wrapper.second-image-shown .image-wrapper:first-child img {
-//       opacity: 0;
-//   }
-
-//   #async-textures-wrapper.second-image-shown .image-wrapper:last-child img {
-//       opacity: 1;
-//   }
-
-//   /*** handling error ***/
-
-//   .no-curtains #load-images {
-//       background: #333;
-//       pointer-events: none
-//   }
-
-// }
-
-// @media screen and (max-width: 720px) {
-
-//   .async-textures {
-//       font-size: 2em
-//   }
-
-// }
-
-// .video-started #canvas {
-//   opacity: 1;
-// }
-
-// .curtain-wrapper {
-//   position: absolute;
-//   z-index: 15;
-//   top: 10%;
-//   right: 10%;
-//   bottom: 10%;
-//   left: 10%;
-// }
-
-// .curtain {
-//   position: absolute;
-//   top: 0;
-//   right: 0;
-//   bottom: 0;
-//   left: 0;
-// }
-
-// .curtain img, .curtain video {
-//   opacity: 0;
-// }
-
-
-// #enter-site-wrapper {
-//   justify-content: center;
-//   align-items: center;
-//   align-content: center;
-
-//   position: absolute;
-//   top: 0;
-//   right: 0;
-//   bottom: 0;
-//   left: 0;
-//   z-index: 30;
-
-//   opacity: 0;
-//   transition: opacity 0.5s ease-in;
-// }
-
-// .curtains-ready #enter-site-wrapper {
-//   opacity: 1;
-// }
-
-// .curtains-ready.video-started #enter-site-wrapper {
-//   opacity: 0;
-//   pointer-events: none;
-// }
-
-/*! locomotive-scroll v3.1.5 | MIT License | https://github.com/locomotivemtl/locomotive-scroll */
+      &::after {
+        border-color: transparent;
+        border-left-color: $play-button-color;
+        border-style: solid;
+        border-width: $play-icon-width 0 $play-icon-width $play-icon-height;
+        content: '';
+        display: inline-block;
+        margin-left: 4px;
+      }
+    }
+  }
+}

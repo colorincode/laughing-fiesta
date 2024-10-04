@@ -13,9 +13,10 @@ import  Tween  from 'gsap/src/all';
 import {EventDispatcher} from "./shared/eventdispatch";
 import {Navigation} from "./shared/nav";
 import { Canvas } from './Canvas'
-import Lenis from 'lenis'
 import Splide from '@splidejs/splide';
+import { Video } from '@splidejs/splide-extension-video';
 import { URLHash } from '@splidejs/splide-extension-url-hash';
+import { Intersection } from '@splidejs/splide-extension-intersection';
 
 // globals
 let browserHash: string | null;
@@ -159,20 +160,27 @@ let splide =new Splide( '.splide', {
   noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
   // pagination: '',
   easing : "cubic-bezier(0.25, 1, 0.5, 1)",
+  keyboard:"focused",
   breakpoints: {
 		640: {
       // destroy : "completely",
-      perPage: 3,
+      // perPage: 3,
+      drag   : 'free',
+      snap   : true,
       focus  : 'center',
-      // autoWidth: "true",
-      // heightRatio: 0.75,
+      autoWidth: "true",
+      padding: { left: '0', right: '0' },
+      // gap        : '2rem',
+      trimSpace : 'move',
       noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
-      fixedHeight    : '16rem',
-      fixedWidth : "33rem",
+      fixedHeight    : '14rem',
+      fixedWidth : "17rem",
+      // autoWidth:true,
+      // width:'80%',
       type   : 'loop',
       rewind      : true,
       rewindByDrag: true,
-      // lazyLoad: 'nearby',
+      lazyLoad: 'nearby',
 		},
   },
     dragMinThreshold: {
@@ -181,7 +189,12 @@ let splide =new Splide( '.splide', {
     },
   
 } );
-  splide.mount({ URLHash });
+  splide.mount({ URLHash , Video });
+  // let paddingVal = splide.Components.Layout.getPadding(true);
+  // console.log("splide padding", paddingVal);
+  // if (splide.isOverflow) {
+
+  // }
 
   //  mm.add("(max-width: 412px)", () => {
   //   if ('.splide') {
@@ -479,13 +492,53 @@ function setupVideos() {
       entries.forEach((entry) => {
         const video = entry.target as HTMLVideoElement;
         if (entry.isIntersecting) {
-     
+    
+// play promise so goog and ff dont throw an error
+          var playPromise = video.play();
+
+          if (playPromise !== undefined) {
+            playPromise.then(_ => {
               // Automatic playback started!
+              document.addEventListener("click", function(event) {
+                clicked = true;
+                video.autoplay = true;
+                video.controls = true // Show controls
+                video.muted = false; // Unmute the video
+                video.setAttribute('aria-pressed', 'true');
+              }
+                
+              )
+              video.play();
+            })
+            .catch(error => {
+              // Auto-play was prevented
+              video.pause();
+            });
+          }
+          // Add space bar event listener
+          document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && video) {
+              event.preventDefault(); // Prevent scrolling
+              if (video.paused) {
+                video.play();
+                video.muted = false; // Unmute the video
+                video.autoplay = true;
+                video.controls = true // Show controls
+                video.setAttribute('aria-pressed', 'true');
+                // announceState('Video playing');
+              } else {
+                video.pause();
+                video.controls = false;
+                video.autoplay = false;
+                video.setAttribute('aria-pressed', 'false');
+              }
+            }
+          });
               // Show playing UI.
           video.play();
-          video.autoplay = true;
+          // video.autoplay = true;
           video.controls = true // Show controls
-          video.muted = false; // Unmute the video
+          // video.muted = false; // Unmute the video
           playXMarkForVideo(video);
           let xclick = video.parentElement?.querySelector(".xmark--atag") as HTMLElement | null;
           if (xclick) {
@@ -505,7 +558,7 @@ function setupVideos() {
     // thumbtextTl.pause();
   }
 });
-}, { threshold: 0.5 });
+}, { threshold: 1,  });
 videos.forEach(video => {
   observer.observe(video as HTMLVideoElement);
 });
@@ -516,6 +569,29 @@ function sliderVerticalCentering() {
   const windowHeight = window.innerHeight;
   const sectionElement = document.querySelector('.section') as HTMLElement;
 
+  if (!sectionElement) {
+    console.error('Section element not found');
+    return;
+  }
+
+  const remainingSpace = windowHeight - sectionElement.offsetHeight;
+
+  const cardsElement = document.querySelector('.cards') as HTMLElement;
+  mm.add("(max-width: 412px)", () => {
+    if (cardsElement) {
+      // cardsElement.style.marginTop = `150px`;
+    } else {
+      console.error('Cards element not found');
+    }
+
+  })
+
+  // if (cardsElement) {
+  //   cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
+
+  // } else {
+  //   console.error('Cards element not found');
+  // }
 }
 // proj animation transition 
 function projectmaskingAnimationTransition() {
@@ -533,10 +609,10 @@ function projectmaskingAnimationTransition() {
   });
 }
 
-window.addEventListener('resize', sliderVerticalCentering);
 
-sliderVerticalCentering();
 projectmaskingAnimationTransition();
+sliderVerticalCentering();
+window.addEventListener('resize', sliderVerticalCentering);
 const onDOMContentLoaded = () => {
   navigation.setupNavigationEvents();
   // console.clear();
@@ -546,6 +622,24 @@ const onDOMContentLoaded = () => {
  
 
 const onResize = () => {
+  // var splide     = new Splide();
+var Components = splide.Components;
+
+splide.on( 'resized', function() {
+  var isOverflow = Components.Layout.isOverflow();
+  var list       = Components.Elements.list;
+  var lastSlide  = Components.Slides.getAt( splide.length - 1 );
+
+  if ( lastSlide ) {
+    // Toggles `justify-content: center`
+    list.style.justifyContent = isOverflow ? '' : 'center';
+
+    // Remove the last margin
+    if ( ! isOverflow ) {
+      lastSlide.slide.style.marginRight = '';
+    }
+  }
+} );
   sliderVerticalCentering();
   splide.refresh();
   splide.mount({ URLHash });

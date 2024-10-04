@@ -851,7 +851,20 @@ function setupVideoObservers() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const video = entry.target as HTMLVideoElement;
+
+      
       if (entry.isIntersecting) {
+          // Add space bar event listener
+          document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && video) {
+              event.preventDefault(); // Prevent scrolling
+              if (video.paused) {
+                video.play();
+              } else {
+                video.pause();
+              }
+            }
+          });
         video.play();
         video.controls = true;
         video.autoplay = true;
@@ -867,6 +880,8 @@ function setupVideoObservers() {
 
   videos.forEach(video => observer.observe(video));
 }
+
+
 
 // Event listeners
 window.addEventListener('DOMContentLoaded', () => {
