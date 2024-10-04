@@ -165,7 +165,7 @@ h1,h2,h3,h4,h5,h6 {
     font-size: 1.1em;
     font-family: "Manrope", sans-serif;
     font-display: swap;
-    // overflow-y: hidden;
+    overflow-y: hidden;
     // background: #111;
     // min-height: 100dvh;
     margin: 0;
@@ -173,8 +173,9 @@ h1,h2,h3,h4,h5,h6 {
     background-color: #000 !important;
     // --velocity: 0;
     @media (max-width: 768px) {
+        overflow-y: hidden;
         // overflow-y: scroll;
-        // overflow-x: scroll;
+        overflow-x: scroll;
         // min-height: 50dvh;
     }
   }
@@ -914,7 +915,11 @@ h1,h2,h3,h4,h5,h6 {
 
 .splide {
   $root: &;
-
+  // position: absolute;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  // width: 100%;
   &__slide {
     &--has-video {
       cursor: pointer;

@@ -140,12 +140,27 @@ function mrScopertonShufflerton() {
 
 
 let splide =new Splide( '.splide', {
+  intersection: {
+    inView: {
+      autoScroll:false,
+      keyboard:true,
+      video:false,
+    },
+    outView: {
+      autoScroll:false,
+      keyboard:false,
+      video:false,
+   
+    },
+  },
   type   : 'loop',
   rewind      : true,
   rewindByDrag: true,
   // drag   : 'free',
   // autoWidth: true,
   // direction: "ltr",
+  slideFocus: true,
+  focusableNodes: "a, button, i, div, input, select, video",
   fixedHeight    : '32rem',
   fixedWidth : "52rem",
   gap        : '4rem',
@@ -168,13 +183,13 @@ let splide =new Splide( '.splide', {
       drag   : 'free',
       snap   : true,
       focus  : 'center',
-      autoWidth: "true",
+      // autoWidth: "true",
       padding: { left: '0', right: '0' },
       // gap        : '2rem',
       trimSpace : 'move',
       noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
-      fixedHeight    : '14rem',
-      fixedWidth : "17rem",
+      fixedHeight    : '11rem',
+      fixedWidth : "18rem",
       // autoWidth:true,
       // width:'80%',
       type   : 'loop',
@@ -189,7 +204,8 @@ let splide =new Splide( '.splide', {
     },
   
 } );
-  splide.mount({ URLHash , Video });
+  splide.mount({ URLHash , Intersection });
+
   // let paddingVal = splide.Components.Layout.getPadding(true);
   // console.log("splide padding", paddingVal);
   // if (splide.isOverflow) {
@@ -486,14 +502,15 @@ let splide =new Splide( '.splide', {
 
 function setupVideos() {
   const videos = document.querySelectorAll('.slider-video');
+  let currentVideo: HTMLVideoElement | null = null;
   //this is to avoid null throws on video only for mobile
   let clicked = false;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const video = entry.target as HTMLVideoElement;
         if (entry.isIntersecting) {
-    
-// play promise so goog and ff dont throw an error
+          currentVideo = video;
+          // play promise so goog and ff dont throw an error
           var playPromise = video.play();
 
           if (playPromise !== undefined) {
@@ -515,25 +532,6 @@ function setupVideos() {
               video.pause();
             });
           }
-          // Add space bar event listener
-          document.addEventListener('keydown', (event) => {
-            if (event.code === 'Space' && video) {
-              event.preventDefault(); // Prevent scrolling
-              if (video.paused) {
-                video.play();
-                video.muted = false; // Unmute the video
-                video.autoplay = true;
-                video.controls = true // Show controls
-                video.setAttribute('aria-pressed', 'true');
-                // announceState('Video playing');
-              } else {
-                video.pause();
-                video.controls = false;
-                video.autoplay = false;
-                video.setAttribute('aria-pressed', 'false');
-              }
-            }
-          });
               // Show playing UI.
           video.play();
           // video.autoplay = true;
@@ -549,18 +547,97 @@ function setupVideos() {
               window.location.href = '/';
             });
           }
-  } else {
+  } 
+  else {
+    //do nothing, will dispatch this with observe boi
     video.pause();
     video.controls = false;
     video.autoplay = false;
     video.muted = true;
     video.loop = false;
+    // Optionally, stop observing the element
+    // observer.unobserve(entry.target);
     // thumbtextTl.pause();
   }
 });
-}, { threshold: 1,  });
+}, { 
+  // root: null, // observing relative to viewport
+  // rootMargin: "0px",
+  threshold: [0.5, 1], // observe between 0.5 and 1 threshold
+ });
+
+     // Add space bar event listener
+     document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' && currentVideo) {
+        event.preventDefault(); // Prevent scrolling
+        console.log(currentVideo);
+        if (currentVideo.paused) {
+          currentVideo.play();
+          currentVideo.muted = false; // Unmute the video
+          currentVideo.autoplay = true;
+          currentVideo.controls = true; // Show controls
+          currentVideo.setAttribute('aria-pressed', 'true');
+        } else {
+          currentVideo.pause();
+          currentVideo.controls = false;
+          currentVideo.autoplay = false;
+          currentVideo.setAttribute('aria-pressed', 'false');
+        }
+      }
+    });
+
 videos.forEach(video => {
   observer.observe(video as HTMLVideoElement);
+// play promise so goog and ff dont throw an error
+
+// var playPromise = (video  as HTMLVideoElement).play();
+
+// if (playPromise !== undefined) {
+//   playPromise.then(_ => {
+//     // Automatic playback started!
+//     document.addEventListener("click", function(event) {
+//       clicked = true;
+//       // currentVideo.autoplay = true;
+//       // currentVideo.controls = true // Show controls
+//       // currentVideo.muted = false; // Unmute the currentVideo
+//       // video.setAttribute('aria-pressed', 'true');
+//     }
+      
+//     )
+//     // video.play();
+//   })
+//   .catch(error => {
+//     // Auto-play was prevented
+//     // video.pause();
+//   });
+// }
+//   //bind the observe to splide visibility chang event, observe
+//   splide.on( "visible", function( e:Event ) {
+//     observer.observe(video as HTMLVideoElement);
+//   })
+//     //bind the hidden visibility of splide to unobserve
+//     splide.on( "hidden", function( e:Event ) {
+//       observer.unobserve(video as HTMLVideoElement);
+//       // video.pause();
+//       // video.controls = false;
+//       // video.autoplay = false;
+//       // video.muted = true;
+//       // video.loop = false;
+
+//     })
+//   // observer.observe(video as HTMLVideoElement);
+// // on the scroll, unobserve
+//   splide.on( "scroll", function( e:Event ) {
+//     observer.unobserve(video as HTMLVideoElement);
+//   })
+//   // on the drag, unobserve
+//   splide.on( "drag", function(  e:Event) {
+//     observer.unobserve(video as HTMLVideoElement);
+//   })
+//     // when the slider has refreshed, eg after window resize, call de observe back. 
+//   splide.on( "refresh", function(  e:Event) {
+//     observer.observe(video as HTMLVideoElement);
+//   })
 });
 }
 
@@ -612,7 +689,7 @@ function projectmaskingAnimationTransition() {
 
 projectmaskingAnimationTransition();
 sliderVerticalCentering();
-window.addEventListener('resize', sliderVerticalCentering);
+// window.addEventListener('resize', sliderVerticalCentering);
 const onDOMContentLoaded = () => {
   navigation.setupNavigationEvents();
   // console.clear();
@@ -642,11 +719,14 @@ splide.on( 'resized', function() {
 } );
   sliderVerticalCentering();
   splide.refresh();
-  splide.mount({ URLHash });
+  splide.mount({ URLHash, Intersection });
+  // splide.on( "refresh", function(  e:Event) {
+  //   observer.observe(video as HTMLVideoElement);
+  // })
 }
 
 const onClick = () => {
-  // navigation.checkforAnimation();
+  // navigation.checkforAnimation()
   // console.log("clicked");
 
 };
