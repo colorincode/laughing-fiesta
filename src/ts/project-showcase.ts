@@ -161,12 +161,14 @@ let splide =new Splide( '.splide', {
   // direction: "ltr",
   slideFocus: true,
   focusableNodes: "a, button, i, div, input, select, video",
-  fixedHeight    : '32rem',
+  fixedHeight    : 'calc(52rem * 9 / 16)',
   fixedWidth : "52rem",
   gap        : '4rem',
   // snap   : true,
   arrows:true,
   perPage: 3,
+  drag   : 'free',
+  snap   : true,
   focus  : 'center',
   lazyLoad: 'nearby',
   // trimSpace : 'move',
@@ -177,7 +179,8 @@ let splide =new Splide( '.splide', {
   easing : "cubic-bezier(0.25, 1, 0.5, 1)",
   keyboard:"focused",
   breakpoints: {
-		640: {
+		
+    640: {
       // destroy : "completely",
       // perPage: 3,
       drag   : 'free',
@@ -188,8 +191,8 @@ let splide =new Splide( '.splide', {
       // gap        : '2rem',
       trimSpace : 'move',
       noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
-      fixedHeight    : '11rem',
-      fixedWidth : "18rem",
+      fixedWidth    : '17rem',
+      fixedHeight : "calc(17rem * 9 / 16)",
       // autoWidth:true,
       // width:'80%',
       type   : 'loop',
