@@ -179,7 +179,7 @@ let splide =new Splide( '.splide', {
   easing : "cubic-bezier(0.25, 1, 0.5, 1)",
   keyboard:"focused",
   breakpoints: {
-		
+  
     640: {
       // destroy : "completely",
       // perPage: 3,
@@ -209,46 +209,82 @@ let splide =new Splide( '.splide', {
 } );
   splide.mount({ URLHash , Intersection });
 
-  // let paddingVal = splide.Components.Layout.getPadding(true);
-  // console.log("splide padding", paddingVal);
-  // if (splide.isOverflow) {
+  const width = window.innerWidth;
 
-  // }
+if (width > 1969) {
+  console.log("window height greater than 1268");
+ splide.destroy();
 
-  //  mm.add("(max-width: 412px)", () => {
-  //   if ('.splide') {
-    
-  //   } else {
-  //     console.error('splide element not found');
-  //   }
-
-  // })
-
-  // if (cardsElement) {
-  //   cardsElement.style.marginTop = `${Math.floor(remainingSpace / 2)}px`;
-
-  // } else {
-  //   console.error('Cards element not found');
-  // } 
-
-// const lenis = new Lenis( {
-//   wrapper: document.body,
-//   // infinite: true,
-// 	// syncTouch: true,
-//   smooth: true,
-//   // smoothWheel: true,
-//   // // lerp: 0.1,
-//   // // smoothTouch: true,
-//   // touchMultiplier: 2,
-//   // syncTouchLerp: 1,
-//   // touchInertiaMultiplier: 25,
-//   // easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-//   // gestureOrientation: "horizontal",
-//   // direction: "horizontal",
-// })
-
-
-
+ let desktopSplide =new Splide( '.splide', {
+  intersection: {
+    inView: {
+      autoScroll:false,
+      keyboard:true,
+      video:false,
+    },
+    outView: {
+      autoScroll:false,
+      keyboard:false,
+      video:false,
+   
+    },
+  },
+  type   : 'loop',
+  rewind      : true,
+  rewindByDrag: true,
+  // drag   : 'free',
+  // autoWidth: true,
+  // direction: "ltr",
+  slideFocus: true,
+  focusableNodes: "a, button, i, div, input, select, video",
+  fixedHeight    : 'calc(82rem * 9 / 16)',
+  fixedWidth : "82rem",
+  gap        : '4rem',
+  // snap   : true,
+  arrows:true,
+  perPage: 3,
+  drag   : 'free',
+  snap   : true,
+  focus  : 'center',
+  lazyLoad: 'nearby',
+  // trimSpace : 'move',
+  wheel       : true,
+  releaseWheel: true,
+  noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
+  // pagination: '',
+  easing : "cubic-bezier(0.25, 1, 0.5, 1)",
+  keyboard:"focused",
+  breakpoints: {
+  
+    640: {
+      // destroy : "completely",
+      // perPage: 3,
+      drag   : 'free',
+      snap   : true,
+      focus  : 'center',
+      // autoWidth: "true",
+      padding: { left: '0', right: '0' },
+      // gap        : '2rem',
+      trimSpace : 'move',
+      noDrag: '.topbar--global, header, .navigation, .toggle-wrapper, .proj--background--grid__wrapper, .maskingintro--container',
+      fixedWidth    : '17rem',
+      fixedHeight : "calc(17rem * 9 / 16)",
+      // autoWidth:true,
+      // width:'80%',
+      type   : 'loop',
+      rewind      : true,
+      rewindByDrag: true,
+      lazyLoad: 'nearby',
+		},
+  },
+    dragMinThreshold: {
+      mouse: 0,
+      touch: 10,
+    },
+  
+} );
+desktopSplide.mount({ URLHash , Intersection });
+}
 // function raf(time) {
 //   lenis.raf(time)
 //   requestAnimationFrame(raf)
@@ -521,9 +557,9 @@ function setupVideos() {
               // Automatic playback started!
               document.addEventListener("click", function(event) {
                 clicked = true;
-                video.autoplay = true;
-                video.controls = true // Show controls
-                video.muted = false; // Unmute the video
+                // video.autoplay = true;
+                // video.controls = true // Show controls
+                // video.muted = false; // Unmute the video
                 video.setAttribute('aria-pressed', 'true');
               }
                 
@@ -539,7 +575,7 @@ function setupVideos() {
           video.play();
           // video.autoplay = true;
           video.controls = true // Show controls
-          // video.muted = false; // Unmute the video
+          video.muted = false; // Unmute the video
           playXMarkForVideo(video);
           let xclick = video.parentElement?.querySelector(".xmark--atag") as HTMLElement | null;
           if (xclick) {
@@ -568,29 +604,51 @@ function setupVideos() {
   // rootMargin: "0px",
   threshold: [0.5, 1], // observe between 0.5 and 1 threshold
  });
-
-     // Add space bar event listener
-     document.addEventListener('keydown', (event) => {
-      if (event.code === 'Space' && currentVideo) {
-        event.preventDefault(); // Prevent scrolling
-        console.log(currentVideo);
-        if (currentVideo.paused) {
-          currentVideo.play();
-          currentVideo.muted = false; // Unmute the video
-          currentVideo.autoplay = true;
-          currentVideo.controls = true; // Show controls
-          currentVideo.setAttribute('aria-pressed', 'true');
-        } else {
-          currentVideo.pause();
-          currentVideo.controls = false;
-          currentVideo.autoplay = false;
-          currentVideo.setAttribute('aria-pressed', 'false');
-        }
-      }
-    });
-
+//  currentVideo.forEach((entry) => {
+//      // Add space bar event listener
+//      document.addEventListener('keydown', (event) => {
+//       if (event.code === 'Space' && currentVideo) {
+//         event.preventDefault(); // Prevent scrolling
+//         console.log(currentVideo);
+//         if (currentVideo.paused) {
+//           currentVideo.play();
+//           currentVideo.muted = false; // Unmute the video
+//           currentVideo.autoplay = true;
+//           currentVideo.controls = true; // Show controls
+//           currentVideo.setAttribute('aria-pressed', 'true');
+//         } else {
+//           currentVideo.pause();
+//           currentVideo.muted = true;
+//           currentVideo.controls = false;
+//           currentVideo.autoplay = false;
+//           currentVideo.setAttribute('aria-pressed', 'false');
+//         }
+//       }
+//     });
+//   }
+// }
 videos.forEach(video => {
   observer.observe(video as HTMLVideoElement);
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && currentVideo) {
+      event.preventDefault(); // Prevent scrolling
+      console.log(currentVideo);
+      if (currentVideo.paused) {
+        currentVideo.play();
+        currentVideo.muted = false; // Unmute the video
+        currentVideo.autoplay = true;
+        currentVideo.controls = true; // Show controls
+        currentVideo.setAttribute('aria-pressed', 'true');
+      } else {
+        currentVideo.pause();
+        currentVideo.muted = true;
+        currentVideo.controls = false;
+        currentVideo.autoplay = false;
+        currentVideo.setAttribute('aria-pressed', 'false');
+      }
+    }
+  });
+
 // play promise so goog and ff dont throw an error
 
 // var playPromise = (video  as HTMLVideoElement).play();
